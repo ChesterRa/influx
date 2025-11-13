@@ -148,17 +148,21 @@ Exit code 0 = valid; non-zero = schema violation (CI blocks merge).
 
 **Problem**: Schema requires `meta` object with `score`, `last_refresh_at`, `sources`, `provenance_hash` (all required per schema/bigv.schema.json:L220-225), but intermediate outputs from `influx-harvest` lack scores (scoring occurs in `influx-score`).
 
-**Solution (Option A)**: `influx-harvest` writes **minimal compliant meta placeholders**:
-- `meta.score`: `0` (placeholder; actual score computed by influx-score)
+**Solution (Option A - IMPLEMENTED M0.0)**: `influx-harvest` writes **minimal compliant meta**; `influx-score` computes proxy scores:
+- `meta.score`: **Proxy formula v0** (M0.0+): `20*log10(max(followers_count/1000, 1)) + verified_boost`, clipped [0,100]
+  - Verified boost: {blue: 10, legacy: 5, org: 0, none: 0}
+  - Deterministic, no API calls, sortable prioritization
+  - M1 will replace with full formula (activity 30% + quality 50% + relevance 20% with 30d metrics)
 - `meta.last_refresh_at`: Current timestamp (ISO 8601)
-- `meta.sources`: Array of source objects with `method`, `fetched_at`, `evidence` (already collected during harvest)
+- `meta.sources`: Array of source objects with `method`, `fetched_at`, `evidence` (collected during harvest)
 - `meta.provenance_hash`: SHA-256 of canonical JSON fields (`id`+`handle`+`followers_count`+`verified`+`sources`)
 
 **Rationale**:
 - Enables end-to-end validation at every pipeline stage (harvest → score → export)
 - Prevents "validate later" technical debt
-- `score=0` is semantically correct for unscored records
+- Proxy scoring unblocks M0 "scored" deliverable within API budget (≤150 calls)
 - `provenance_hash` based on harvest-time fields is stable and reproducible
+- **M0.0 Evidence**: 48 authors scored, range 0.0-82.3 (mean 37.7), 100% validation pass, manifest notes "v0_proxy_no_metrics"
 
 **Alternative (Option B - REJECTED)**: Define separate intermediate schema and only validate final artifacts. Rejected because it creates schema drift risk and dual-contract maintenance burden.
 
@@ -266,5 +270,102 @@ influx-harvest following \
 
 ---
 
+## M0.1 One-shot Run (Manual CSV Pipeline)
+
+**Context**: M0.0 validated proxy scoring with 48 authors; M0.1 scales to 150-200 via manual CSV curation (Bet 1 automation paths blocked by GitHub OAuth + Twitter v2 enrollment).
+
+### Prerequisites
+- Curated seed CSV in `lists/seeds/m0_1_seeds.csv` (format: `handle,name,note,source_url`)
+- 80-120 additional handles from X Lists + public team pages
+- Tools: `influx-validate`, `influx-score`, `influx-export` (implemented with proxy scoring v0)
+
+### Command Sequence
+
+**Step 1: Prepare seed CSV** (manual curation, 2-3h):
+```bash
+# Create M0.1 seed CSV (combines T000002's 48 + new 80-120 handles)
+# Format: handle,name,note,source_url
+# Example:
+# sama,Sam Altman,OpenAI CEO,https://github.com/openai
+# karpathy,Andrej Karpathy,Tesla AI Director,https://github.com/tesla
+
+# Save to lists/seeds/m0_1_seeds.csv
+```
+
+**Step 2: Fetch Twitter profiles** (using RUBE MCP TWITTER_USER_LOOKUP_BY_USERNAMES):
+```bash
+# Input: lists/seeds/m0_1_seeds.csv (handles column)
+# Method: TWITTER_USER_LOOKUP_BY_USERNAMES (batches 100 handles/call)
+# Output: raw_profiles.jsonl
+# Expected: ~2-3 API calls for 150-200 handles
+```
+
+**Step 3: Filter & format** (apply entry filters + brand/risk rules):
+```bash
+# Apply filters:
+# - Entry: (verified + 30k followers) OR 50k followers
+# - Brand: lists/rules/brand_heuristics.yml (exclude Official/News/PR/etc)
+# - Risk: lists/rules/risk_terms.yml (exclude nsfw/political/etc)
+# Add meta placeholders: score=0 (pre-scoring), sources, last_refresh_at, provenance_hash
+# Output: filtered.jsonl
+```
+
+**Step 4: Proxy scoring**:
+```bash
+python3 tools/influx-score update \
+  --input filtered.jsonl \
+  --out scored.jsonl
+
+# Formula: 20*log10(followers/1000) + verified_boost [0,100]
+# Output: scored.jsonl (all records with meta.score populated)
+```
+
+**Step 5: Validation**:
+```bash
+python3 tools/influx-validate \
+  -s schema/bigv.schema.json \
+  scored.jsonl
+
+# Expected: 100% pass for ≥150 records
+```
+
+**Step 6: Export to latest**:
+```bash
+python3 tools/influx-export latest \
+  --input scored.jsonl \
+  --out data/latest/
+
+# Output:
+# - data/latest/latest.jsonl.gz (sorted: score desc → followers desc → handle lex)
+# - data/latest/manifest.json (count, sha256, score_version=v0_proxy_no_metrics)
+```
+
+**Step 7: Final validation**:
+```bash
+python3 tools/influx-validate \
+  -s schema/bigv.schema.json \
+  data/latest/latest.jsonl.gz
+
+# Confirm: ≥150 records, 100% pass
+```
+
+### M0.1 Acceptance Criteria
+- ✓ `data/latest/latest.jsonl.gz` count ≥150
+- ✓ Schema validation 100% pass
+- ✓ Manifest updated (count, sha256, score_version=v0_proxy_no_metrics)
+- ✓ Score distribution reasonable (e.g., min 0, max <100, mean 30-50)
+- ✓ Brand/risk filters applied (documented in manifest or SUBPOR)
+- ✓ Deterministic: Same seed CSV → same output (stable sort + deterministic proxy scoring)
+
+### M0.0 Baseline (Reference)
+- **Commit**: 4060da8
+- **Tag**: v0.0.0-m0.0
+- **Count**: 48 authors
+- **Score range**: 0.0-82.3 (mean 37.7)
+- **Validation**: 48/48 pass
+- **SHA-256**: 43b89903656fbf1d632291fd3de325699a76f2eb7499fd6cfd9eed66ae454345
+
+---
+
 **Last Updated**: 2025-11-13
-**Refs**: POR#L20-L26 (M0 Now), POR#L39 (pivot decision), POR#L42 (R1 rate limits)
+**Refs**: POR#L20-L35 (M0.0/M0.1 Now), POR#L51 (pivot decision), POR#L54 (R1a escalation), M0.0 tag v0.0.0-m0.0
