@@ -102,6 +102,25 @@ X Lists CSV → influx-harvest x-lists → curated.jsonl (40-80 authors)
 - Keywords: `nsfw`, `political`, `controversy`, `spam`, `hate_speech`
 - Action: Set `risk_flags=[...]`; exclude from M0 pool by default
 
+### Filter Implementation Specification (M1 Week 1)
+
+**CLI Flags** (`influx-harvest`):
+- `--min-followers N`: Entry threshold (default: 50000)
+- `--verified-min-followers N`: Lower threshold for verified accounts (default: 30000)
+- `--brand-rules PATH`: Brand heuristics YAML (default: `lists/rules/brand_heuristics.yml`)
+- `--risk-rules PATH`: Risk terms YAML (default: `lists/rules/risk_terms.yml`)
+- `--allow-brands`: Disable brand exclusion (default: false)
+- `--allow-risk FLAGS`: Comma-separated risk flags to allow (default: none)
+
+**YAML Keys Used**: `name_keywords.{official_indicators,corporate_indicators,brand_commerce}`, `bio_keywords.{organizational,service_language}`, `domain_patterns`, `verification_rules.flag_org_verification`, `confidence_weights.*` (brand); `nsfw.{bio_keywords,flag_name,auto_exclude}`, `political.*`, `controversy.*`, `spam.*` (risk)
+
+**Smoke Test**:
+```bash
+python3 tools/influx-harvest x-lists --list-urls lists/seeds/m03-additional-batch.csv --out .cccc/work/m01/harvest.raw.jsonl && python3 tools/influx-validate -s schema/bigv.schema.json .cccc/work/m01/harvest.raw.jsonl
+```
+
+**Acceptance**: (1) Filters enforced at harvest; zero brand/official accounts in output (spot-check N=30 random sample). (2) Risk flags excluded by default; output passes schema validation with ≥40 records.
+
 ---
 
 ## Rate Limit Guardrails (POR R1)
