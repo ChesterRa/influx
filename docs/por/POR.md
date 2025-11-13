@@ -13,7 +13,7 @@
 - **D4: Governance & Docs** - `README.md`, `LICENSE`, `docs/schema.md`, heuristics YAMLs - PeerB
 
 ## Bets & Assumptions
-- **Bet 1 (FALSIFIED for M0)**: 80–90% authors discoverable via GitHub org seeds (twitter_username field) + following-graph expansion (TWITTER_FOLLOWING_BY_USER_ID, 1–2 pages per seed) | **Finding (M0)**: BOTH automation paths blocked - (1) GitHub OAuth unresolved (T000002 pivoted to manual CSV), (2) Twitter v2 enrollment blocker (TWITTER_FOLLOWING_BY_USER_ID fails "client-not-enrolled", 0/5 API calls succeeded) | **Evidence**: T000002 delivered 48 via manual CSV (83% hit rate); following probe failed with credential error | **Pivot**: M0 uses manual CSV approach (PROJECT.md §4.3.2); automation paths deferred to M1 post-credential-fix | **Original success criteria** (Aux refined, defer to M1): twitter_username coverage≥65%, mapping precision≥95%, active handles≥70%, follower Gini≥0.6, org affiliation≥30%, duplicate≤5% | Window: M1 (post-auth-fix)
+- **Bet 1 (FALSIFIED permanently)**: 80–90% authors discoverable via GitHub org seeds (twitter_username field) + following-graph expansion (TWITTER_FOLLOWING_BY_USER_ID, 1–2 pages per seed) | **Finding**: GitHub-seed automation path is **STRUCTURALLY INFEASIBLE** - RUBE MCP GitHub OAuth integration does not offer `read:org` scope option required for GITHUB_LIST_ORGANIZATION_MEMBERS (User #000077 verification + PeerB technical confirmation); Twitter v2 following-graph has low standalone value without GitHub seed layer | **Evidence**: T000003 investigation complete (`.cccc/work/validation/github_scope_infeasibility.md`); GitHub OAuth achieved PARTIAL SUCCESS (connection active, `['user']` scope only, cannot access org members) | **Pivot**: M1 commits to Fallback Path A (manual CSV + X Lists, proven M0 method scaled to 1.5k-2k authors, +2 week timeline vs automation) | **Original success criteria** (DEFERRED indefinitely): twitter_username coverage≥65%, mapping precision≥95%, active handles≥70%, follower Gini≥0.6, org affiliation≥30%, duplicate≤5% | Window: Automation paths unavailable within RUBE MCP free tier constraints
 - **Bet 2**: Brand/official heuristics (name/bio keywords + domain patterns) filter ≥80% noise with <10% false positive | Probe: Manual review of 50 random filtered-out + 50 kept | Evidence: Precision ≥90%, Recall ≥80% | Window: M0 week 1
 - **Bet 3**: Score (activity 30% + quality 50% + relevance 20%) correlates with downstream value | Probe: xoperator A/B test top-500 vs random-500 from pool | Evidence: Top-500 yield ≥2× actionable tweets | Window: M1
 
@@ -35,10 +35,10 @@
   - **Three-path bootstrap (BLOCKED, DEFERRED M1)**: GitHub-seed + following-graph blocked by auth issues (GitHub OAuth + Twitter v2 enrollment); automation paths move to M1 post-credential-fix
   - **Execution Guardrails** (per d2-pipeline-contract.md, POR R1): ✓ API total calls ≤150/run; ✓ Entry filters: (verified+30k) OR 50k; ✓ Brand/risk rules mandatory (lists/rules/); ✓ Every stage output includes meta placeholders (proxy_score, last_refresh_at, sources≥1, provenance_hash)
   - Heuristics: brand_heuristics.yml ✓, risk_terms.yml ✓
-- **Next (M1, ≤6 weeks)**:
-  - **🔴 GATING: Auth-unblock (week 1, BLOCKING M1 automation)**: Two credential blockers must be resolved before automation paths (GitHub-seed + following-graph) can proceed: (1) **GitHub OAuth** - requires valid OAuth token with org:read scope for GITHUB_LIST_ORGANIZATION_MEMBERS + GITHUB_GET_A_USER (owner: PeerB + external Composio integration team; ETA: M1 day 1-2, ~4-8h setup + test); (2) **Twitter v2 enrollment** - TWITTER_FOLLOWING_BY_USER_ID fails "client-not-enrolled" error, requires Composio credentials upgrade to Twitter v2 API Project (owner: External Composio/user account admin; ETA: M1 day 1-3, dependent on Composio support response time). Validation: Retry following slice-1 probe (5 seeds × 1 page, tools/influx-harvest following) to confirm both paths unblocked. **M0→M1 Migration Gate**: M1 automation paths (GitHub-seed + following-graph targeting 2k-3k scale) cannot begin until T000003 auth-unblock completes; if unresolved >72h, M1 must pivot to extended manual CSV + x-lists approach with +2 week timeline. **Risk**: If auth unblock >3 days, M1 automation paths remain blocked and scale must continue via manual CSV approach through M1.
+- **Next (M1, ≤5 weeks, Manual CSV + X Lists PRIMARY)**:
+  - **Collection Method (PIVOTED)**: Fallback Path A promoted to M1 primary strategy following T000003 findings (GitHub automation structurally infeasible within RUBE MCP). Manual CSV extraction from GitHub orgs + curated X Lists + domain-specific seeds. Target: 1.5k-2k authors across 5-6 domains (AI/Tech, Creator, Business, Finance, Science, Design). Timeline: 4-5 weeks (+2 weeks vs original automation plan). Method proven via M0 (151/151 success rate, 100% precision).
   - **Filter implementation (week 1)**: Implement entry filters ((verified+30k) OR 50k) + brand/risk rules in tools/influx-harvest; replaces M0 manual CSV pre-filtering with automated pipeline enforcement
-  - Scale to 2k–3k via incremental refresh (6–12h cadence)
+  - Scale to 1.5k–2k via manual collection + batch validation (weekly 300-400 author increments)
   - Refine heuristics based on manual review (sample 100/week)
   - Snapshot automation: daily Release w/ tag YYYYMMDD
   - Add shards/ (topic/lang) when count >1.5k
@@ -52,7 +52,7 @@
 
 **Strategy**: Phased bootstrap-then-expand approach to maintain quality gates while scaling across heterogeneous verticals.
 
-### M1 Bootstrap Domains (5-6 domains, 2k-3k authors, 2-3 weeks)
+### M1 Bootstrap Domains (5-6 domains, 1.5k-2k authors, 4-5 weeks MANUAL)
 **Target Domains** (confirmed via PeerB feasibility analysis):
 1. **AI & Technology** (1000-1500 authors, PROVEN M0)
    - Discovery: GitHub org seeds, research papers, tech conferences
@@ -73,10 +73,10 @@
    - Discovery: Product designers, UX, visual artists
    - Complexity: MEDIUM (portfolio links, Dribbble/Behance crossover)
 
-**M1 Quotas**: 2k-3k total, ~350-500 per domain (flexible allocation based on discovery yield)
-**API Budget**: ~30k calls/month (6% of RUBE MCP free tier 500k quota) – SAFE
+**M1 Quotas**: 1.5k-2k total, ~250-350 per domain (flexible allocation based on manual curation yield)
+**API Budget**: ~15k-20k calls/month (3-4% of RUBE MCP free tier 500k quota) – USER_LOOKUP batch validation only
 **Validation**: 100-author manual review per domain (600 total) for heuristic tuning
-**Timeline**: 2-3 weeks (Week 1: Business + Finance, Week 2: Science + Design, Week 3: Integration + release)
+**Timeline**: 4-5 weeks (Week 1-2: AI/Tech/Business/Finance collection 1k, Week 3: Science/Design collection +500, Week 4-5: Batch validation + release)
 
 ### M2 Expansion Domains (6 additional domains, +3k-5k authors, Week 4-6)
 **Target Domains** (deferred due to complexity/risk):
@@ -112,14 +112,14 @@
 - **Precision target**: ≥90% per Bet 2 (measured via 100-sample manual review per domain)
 
 ### Success Metrics
-- **M1 Bootstrap Success**: 2k-3k authors, ≥90% precision, <10% brand/official contamination, 100% schema-compliant
+- **M1 Bootstrap Success**: 1.5k-2k authors (manual CSV+Lists method), ≥90% precision, <10% brand/official contamination, 100% schema-compliant
 - **M2 Expansion Success**: 5k-8k cumulative, maintain ≥90% precision across all domains, <20% churn/week
 
-## Fallback M1 (Twitter v2 Blocked >7 Days)
+## M1 Strategy (PIVOTED to Manual Approach)
 
-**Trigger**: If Twitter v2 enrollment remains unresolved >7 days (T000003 blocked), M1 automation paths (GitHub-seed + following-graph) remain unavailable.
+**Status**: Path A promoted to M1 PRIMARY following T000003 findings (2025-11-13). GitHub automation structurally infeasible within RUBE MCP constraints.
 
-**Fallback Strategy**: Extended manual CSV + X Lists approach (proven M0 method) scaled to M1 targets.
+**Strategy**: Manual CSV + X Lists approach (proven M0 method) scaled to M1 targets.
 
 ### Fallback Path A: Manual CSV + Curated X Lists (PRIMARY)
 **Method**: Extend M0 manual curation approach with structured sourcing:
@@ -149,32 +149,25 @@
 
 **Timeline**: +2 weeks vs automation path (4-5 weeks total for M1 vs 2-3 weeks with automation)
 
-### Fallback Path B: Hybrid Automation (GitHub-Only, No Twitter Following)
-**Method**: If GitHub OAuth succeeds but Twitter v2 remains blocked, use GitHub-seed without following-graph expansion:
-1. **GitHub Org Discovery**: Automated via GITHUB_LIST_ORGANIZATION_MEMBERS + GITHUB_GET_A_USER
-2. **Twitter Handle Extraction**: twitter_username field from GitHub profiles
-3. **Batch Validation**: TWITTER_USER_LOOKUP (v1 API, no enrollment required) for profile enrichment
-4. **Manual Supplementation**: Fill gaps with curated X Lists (200-300 handles/domain)
+### ~~Fallback Path B: Hybrid Automation (GitHub-Only)~~ ❌ **INFEASIBLE**
 
-**Scaling**:
-- Week 1: GitHub discovery (500-800 handles, Tech/AI/Business domains)
-- Week 2: Batch validation + X Lists supplementation (+500-700 handles, remaining domains)
-- Week 3: Scoring + M1 release with 1.2k-1.5k authors
+**Status**: STRUCTURALLY INFEASIBLE - RUBE MCP GitHub OAuth does not support `read:org` scope required for GITHUB_LIST_ORGANIZATION_MEMBERS.
 
-**Trade-offs**:
-- ✅ **Pros**: Partially automated (GitHub discovery), faster than full manual (3 weeks vs 4-5)
-- ❌ **Cons**: Limited to GitHub-heavy domains (Tech/AI/Business), misses Creator/Finance/Design depth
+**Finding**: T000003 investigation (2025-11-13) confirmed RUBE MCP GitHub integration uses fixed OAuth scopes (`['user']` only), cannot be upgraded to include `read:org`. User verification + PeerB technical confirmation via RUBE_MANAGE_CONNECTIONS.
 
-**Timeline**: +1 week vs full automation (3 weeks for M1 vs 2 weeks)
+**Evidence**: `.cccc/work/validation/github_scope_infeasibility.md`
 
-### Fallback Decision Tree
-- **T+72h (3 days)**: Twitter v2 unresolved → Start Fallback Path B (GitHub-only) in parallel with continued auth-unblock efforts
-- **T+7d (1 week)**: Twitter v2 unresolved → Commit to Fallback Path A (manual CSV + Lists), notify user of +2 week timeline
-- **T+14d (2 weeks)**: Twitter v2 unresolved → M1 releases with 1.5k-2k authors via Fallback Path A; defer automation to M2
+**Impact**: GitHub-seed automation permanently unavailable within RUBE MCP free tier. Path B abandoned.
 
-**Risk Mitigation**: Fallback paths maintain M1 delivery (albeit slower/smaller) while preserving option to resume automation in M2 when auth unblocks.
+### Decision Timeline (EXECUTED)
+- **2025-11-13 (T+0)**: T000003 investigation identified GitHub `read:org` scope unavailable in RUBE MCP → Path B infeasible
+- **2025-11-13 (T+0)**: Path A activated as M1 primary strategy, M1 timeline updated to 4-5 weeks
+- **Deferred to M2**: Twitter v2 following-graph (opportunistic, not M1-critical)
+
+**Outcome**: M1 commits to manual CSV+Lists method (1.5k-2k authors, 4-5 weeks). Automation paths unavailable within current tooling constraints.
 
 ## Decision & Pivot Log (recent 6)
+- 2025-11-13 15:50 | PIVOT: M1 strategy GitHub automation → manual CSV+Lists | T000003 investigation confirmed RUBE MCP GitHub OAuth does not support `read:org` scope (User #000077 finding + PeerB verification); GitHub-seed automation structurally infeasible, not just blocked | Path A (manual CSV+Lists) promoted from fallback to M1 primary; Path B marked INFEASIBLE; Bet 1 FALSIFIED permanently; M1 target 1.5k-2k (was 2k-3k), timeline 4-5 weeks (was 2-3 weeks); Twitter v2 following-graph deferred to M2 (opportunistic) | Proven M0 method (151/151 success, 100% precision) scales to M1
 - 2025-11-13 11:16 | Bootstrap approach | Use 3-path synthesis (auto-discover + seeds + lists) vs single keyword crawl | Reduces cold-start risk, diversifies sources, auditable | default
 - 2025-11-13 11:19 | PIVOT: Collection strategy | Shift from keyword-heavy (60-70%) to GitHub-seed + following-graph (80-90%); TWITTER_RECENT_SEARCH requires paid API (Aux validation) | Eliminates M0 blocking risk, stays within free RUBE MCP, fully automatable | New proportions: 40-50% GitHub org twitter_username + 40-50% TWITTER_FOLLOWING + 10% curated Lists CSV
 - 2025-11-13 12:20 | M0 target refinement | Set M0 target to 600 authors (not 400-600 range) based on Aux ROI analysis; 600 provides optimal balance vs 800-1000 (faster evidence with sufficient xoperator validation confidence) | Trades +30-60% time/cost for ±5-8% confidence vs ±3-5% for 800-1000 | Target: 600
@@ -212,6 +205,7 @@
 - 2025-11-13 13:52 | PeerA | Added M1 auth-fix plan (GitHub OAuth + Twitter v2 enrollment resolution, week 1 blocking) + filter implementation plan (week 1, tools/influx-harvest); added R6 risk (pipeline filter enforcement gap, sev=med); verified PeerB schema blocker FALSE (meta fields always required); confirmed guardrails gap (influx-harvest L53/L80 TODO placeholders) | evidence: Foreman 000035 directive, PeerB 000036 schema verification, tools/influx-harvest:L53/L80 grep, POR.md updated (Next, Risk Radar, Maintenance Log)
 - 2025-11-13 14:05 | PeerA | Enhanced Auth-unblock section per Foreman 000038: expanded to 1-paragraph format with owners (PeerB + Composio team for GitHub OAuth, External admin for Twitter v2 enrollment), ETA (M1 day 1-2 for GitHub, day 1-3 for Twitter), validation method (following slice-1 probe retry), and inline risk statement (>3 days blocks M1 automation) | evidence: Foreman 000038 directive post-M0.2 completion (121 authors), POR.md:L37 updated Auth-unblock paragraph
 - 2025-11-13 14:15 | PeerA | M0.1 ACHIEVED milestone marked (151 authors, commit 28a8381); created T000003 Auth-unblock SUBPOR (docs/por/T000003-auth-unblock/SUBPOR.md) with resolution steps, dependencies, validation probe, owners/ETA/contacts; updated R1a risk to clarify X API dependency + alternative priorities (GitHub-seed+Following PRIMARY, Manual CSV+X Lists PROVEN fallback, TWITTER_RECENT_SEARCH DOWNGRADED) | evidence: Foreman 000042 directive (Chinese), POR.md:L28-33 M0.1 achieved, T000003 SUBPOR created, POR.md:L58 R1a updated with priorities
+- 2025-11-13 15:50 | PeerA | MAJOR STRATEGIC PIVOT: Bet 1 FALSIFIED permanently (GitHub-seed automation structurally infeasible); Path A promoted from fallback to M1 primary; Path B marked INFEASIBLE; M1 targets revised (1.5k-2k authors, 4-5 weeks); roadmap/Next section rewritten (manual CSV+Lists method); Domain Coverage Plan quotas updated; Fallback M1 section renamed to "M1 Strategy (PIVOTED)"; Decision Log entry added | evidence: T000003 investigation complete (User #000077 + PeerB #000076 confirmation RUBE MCP lacks `read:org` scope), POR.md comprehensive update (Bet 1, Roadmap, Domain Coverage, M1 Strategy sections), Decision Log 2025-11-13 15:50 entry
 
 ## Aux Delegations - Meta-Review/Revise (strategic)
 - [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19
