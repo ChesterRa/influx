@@ -8,13 +8,254 @@ Usage:
     influx-harvest x-lists --list-urls lists.txt --out curated.jsonl
 
 M0 approach: GitHub org members (twitter_username) + TWITTER_FOLLOWING expansion
+M1 approach: Manual CSV + X Lists with brand/risk filtering
 """
 import argparse
 import sys
 import json
 import os
-from datetime import datetime
+import re
+import csv
+import hashlib
+import yaml
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Dict, List, Set, Tuple, Any
+
+
+def load_yaml_rules(path: str) -> Dict:
+    """Load YAML filter rules from file"""
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
+    except Exception as e:
+        print(f"[ERROR] Failed to load {path}: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def match_keywords(text: str, keywords: List[str], word_boundary: bool = False) -> List[str]:
+    """Match keywords in text (case-insensitive)
+
+    Args:
+        text: Text to search in
+        keywords: List of keywords to match
+        word_boundary: If True, match whole words only; else substring match
+
+    Returns:
+        List of matched keywords
+    """
+    if not text:
+        return []
+
+    text_lower = text.lower()
+    matches = []
+
+    for keyword in keywords:
+        keyword_lower = keyword.lower()
+        if word_boundary:
+            # Word boundary match using regex
+            pattern = r'\b' + re.escape(keyword_lower) + r'\b'
+            if re.search(pattern, text_lower):
+                matches.append(keyword)
+        else:
+            # Substring match
+            if keyword_lower in text_lower:
+                matches.append(keyword)
+
+    return matches
+
+
+def check_brand_heuristics(user: Dict, brand_rules: Dict, allow_brands: bool) -> Tuple[bool, float, List[str]]:
+    """Check if user matches brand/official heuristics
+
+    Returns:
+        (is_brand, confidence_score, matched_rules)
+    """
+    if allow_brands:
+        return (False, 0.0, [])
+
+    name = user.get('name', '')
+    username = user.get('username', '')
+    bio = user.get('description', '')
+    verified = user.get('verified_type', 'none')
+    url = user.get('url', '')
+
+    confidence = 0.0
+    matched_rules = []
+    weights = brand_rules.get('confidence_weights', {})
+
+    # Check org verification
+    if brand_rules.get('verification_rules', {}).get('flag_org_verification', True):
+        if verified == 'org':
+            confidence += weights.get('org_verification', 1.0)
+            matched_rules.append('verification=org')
+
+    # Check name keywords (word boundary)
+    name_kw = brand_rules.get('name_keywords', {})
+    for category, keywords in name_kw.items():
+        matches = match_keywords(name, keywords, word_boundary=True)
+        if not matches:
+            matches = match_keywords(username, keywords, word_boundary=True)
+        if matches:
+            confidence += weights.get('name_keyword_match', 0.6)
+            matched_rules.append(f'name_kw:{category}:{matches[0]}')
+            break  # Count once per category
+
+    # Check bio keywords (substring match)
+    bio_kw = brand_rules.get('bio_keywords', {})
+    for category, keywords in bio_kw.items():
+        matches = match_keywords(bio, keywords, word_boundary=False)
+        if matches:
+            confidence += weights.get('bio_keyword_match', 0.4)
+            matched_rules.append(f'bio_kw:{category}:{matches[0]}')
+            break
+
+    # Check domain patterns
+    domain_patterns = brand_rules.get('domain_patterns', [])
+    for pattern_entry in domain_patterns:
+        pattern = pattern_entry.get('pattern', '')
+        reason = pattern_entry.get('reason', '')
+        exceptions = pattern_entry.get('exceptions', [])
+
+        # Check URL and bio links
+        domains_to_check = []
+        if url:
+            domains_to_check.append(url)
+        # Extract URLs from bio
+        url_pattern = r'https?://([^\s]+)'
+        bio_urls = re.findall(url_pattern, bio)
+        domains_to_check.extend(bio_urls)
+
+        for domain in domains_to_check:
+            # Check if domain matches pattern and not in exceptions
+            if re.search(pattern, domain, re.IGNORECASE):
+                is_exception = any(exc in domain for exc in exceptions)
+                if not is_exception:
+                    confidence += weights.get('domain_match', 0.8)
+                    matched_rules.append(f'domain:{reason}')
+                    break
+
+        if matched_rules and 'domain:' in matched_rules[-1]:
+            break
+
+    # Check exceptions list
+    exceptions = brand_rules.get('exceptions', [])
+    if username.lower() in [e.lower() for e in exceptions]:
+        return (False, 0.0, ['exception_override'])
+
+    # Threshold check
+    threshold = weights.get('flag_threshold', 0.7)
+    is_brand = confidence >= threshold
+
+    return (is_brand, confidence, matched_rules)
+
+
+def check_risk_flags(user: Dict, risk_rules: Dict, allow_risk: Set[str]) -> Tuple[List[str], List[str]]:
+    """Check if user matches risk term patterns
+
+    Returns:
+        (risk_flags, matched_rules)
+    """
+    name = user.get('name', '')
+    username = user.get('username', '')
+    bio = user.get('description', '')
+
+    risk_flags = []
+    matched_rules = []
+
+    # Check each risk category
+    risk_categories = ['nsfw', 'political', 'controversy', 'spam', 'hate_speech', 'scam']
+
+    for category in risk_categories:
+        if category not in risk_rules:
+            continue
+
+        rules = risk_rules[category]
+        flag_name = rules.get('flag_name', category)
+        auto_exclude = rules.get('auto_exclude', True)
+
+        # Check bio keywords
+        bio_kw = rules.get('bio_keywords', [])
+        matches = match_keywords(bio, bio_kw, word_boundary=False)
+        if matches:
+            risk_flags.append(flag_name)
+            matched_rules.append(f'{category}:bio:{matches[0]}')
+            continue
+
+        # Check name keywords
+        name_kw = rules.get('name_keywords', [])
+        if name_kw:
+            matches = match_keywords(name, name_kw, word_boundary=False)
+            if not matches:
+                matches = match_keywords(username, name_kw, word_boundary=False)
+            if matches:
+                risk_flags.append(flag_name)
+                matched_rules.append(f'{category}:name:{matches[0]}')
+                continue
+
+        # Check name patterns (regex)
+        name_patterns = rules.get('name_patterns', [])
+        for pattern in name_patterns:
+            if re.search(pattern, username, re.IGNORECASE) or re.search(pattern, name, re.IGNORECASE):
+                risk_flags.append(flag_name)
+                matched_rules.append(f'{category}:name_pattern')
+                break
+
+    # Filter out allowed risks
+    filtered_flags = [flag for flag in risk_flags if flag not in allow_risk]
+
+    return (filtered_flags, matched_rules)
+
+
+def compute_provenance_hash(user: Dict) -> str:
+    """Compute SHA-256 provenance hash from canonical fields"""
+    canonical = {
+        'id': user.get('id', ''),
+        'username': user.get('username', ''),
+        'followers_count': user.get('public_metrics', {}).get('followers_count', 0),
+        'verified': user.get('verified_type', 'none'),
+    }
+    # Sort keys and compact JSON (no spaces)
+    canonical_json = json.dumps(canonical, sort_keys=True, separators=(',', ':'))
+    return hashlib.sha256(canonical_json.encode('utf-8')).hexdigest()
+
+
+def transform_to_schema(user: Dict, method: str, category: str = '') -> Dict:
+    """Transform Twitter API user object to influx schema format"""
+    now = datetime.now(timezone.utc).isoformat()
+
+    public_metrics = user.get('public_metrics', {})
+    verified_type = user.get('verified_type', 'none')
+
+    # Map verified_type to schema format
+    if verified_type in ['blue', 'business', 'government']:
+        verified = verified_type
+    elif verified_type == 'none':
+        verified = 'none'
+    else:
+        verified = 'legacy' if user.get('verified', False) else 'none'
+
+    record = {
+        'id': user.get('id', ''),
+        'handle': user.get('username', ''),
+        'name': user.get('name', ''),
+        'verified': verified,
+        'followers_count': public_metrics.get('followers_count', 0),
+        'lang_primary': 'en',  # Placeholder
+        'topic_tags': [category] if category else [],
+        'meta': {
+            'score': 0.0,  # Placeholder for M1
+            'last_refresh_at': now,
+            'sources': [{
+                'method': method,
+                'fetched_at': now,
+                'evidence': f"@{user.get('username', '')}"
+            }],
+            'provenance_hash': compute_provenance_hash(user)
+        }
+    }
+
+    return record
 
 
 def github_seeds(args):
@@ -84,10 +325,117 @@ def following_expansion(args):
 
 def x_lists(args):
     """Import curated X Lists (manual CSV one-time)"""
-    print(f"[TODO] Read list URLs from {args.list_urls}")
-    print(f"[TODO] Use TWITTER_FETCH_LIST_MEMBERS_BY_ID or manual CSV")
-    print(f"[TODO] Apply filters and output to {args.out}")
-    return 1  # Not implemented
+    try:
+        # Load filter rules
+        brand_rules = load_yaml_rules(args.brand_rules)
+        risk_rules = load_yaml_rules(args.risk_rules)
+        allow_risk = set(args.allow_risk.split(',')) if args.allow_risk else set()
+
+        print(f"[INFO] Loading handles from {args.list_urls}", file=sys.stderr)
+
+        # Read CSV handles
+        handles = []
+        categories = {}
+
+        with open(args.list_urls, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                handle = row.get('handle', '').strip().lstrip('@')
+                category = row.get('category', '').strip()
+                if handle:
+                    handles.append(handle)
+                    categories[handle] = category
+
+        print(f"[INFO] Loaded {len(handles)} handles from CSV", file=sys.stderr)
+
+        if not handles:
+            print("[ERROR] No handles found in CSV", file=sys.stderr)
+            return 1
+
+        # Batch lookup via Twitter API (RUBE MCP)
+        # For M1 smoke test, we need to call TWITTER_USER_LOOKUP_BY_USERNAMES
+        # This requires RUBE MCP integration - placeholder for now
+
+        print(f"[INFO] Looking up Twitter users (batch size: {len(handles)})", file=sys.stderr)
+        print(f"[INFO] This requires TWITTER_USER_LOOKUP_BY_USERNAMES via RUBE MCP", file=sys.stderr)
+        print(f"[WARN] RUBE MCP integration not implemented - would lookup {len(handles)} users", file=sys.stderr)
+
+        # For smoke test, simulate with empty result
+        # In production, this would call RUBE_MULTI_EXECUTE_TOOL with TWITTER_USER_LOOKUP_BY_USERNAMES
+        users = []  # Would contain API responses
+
+        # Apply filters
+        print(f"[INFO] Applying filters...", file=sys.stderr)
+        filtered_users = []
+        filter_stats = {
+            'total': 0,
+            'entry_threshold_fail': 0,
+            'brand_filtered': 0,
+            'risk_filtered': 0,
+            'passed': 0
+        }
+
+        for user in users:
+            filter_stats['total'] += 1
+
+            # Entry threshold: (verified AND followers>=30k) OR followers>=50k
+            followers = user.get('public_metrics', {}).get('followers_count', 0)
+            verified = user.get('verified_type', 'none') != 'none'
+
+            entry_pass = (verified and followers >= args.verified_min_followers) or (followers >= args.min_followers)
+
+            if not entry_pass:
+                filter_stats['entry_threshold_fail'] += 1
+                continue
+
+            # Brand heuristics
+            is_brand, brand_conf, brand_matches = check_brand_heuristics(user, brand_rules, args.allow_brands)
+            if is_brand:
+                filter_stats['brand_filtered'] += 1
+                print(f"[FILTER] Brand: @{user.get('username')} (conf={brand_conf:.2f}, rules={brand_matches})", file=sys.stderr)
+                continue
+
+            # Risk flags
+            risk_flags, risk_matches = check_risk_flags(user, risk_rules, allow_risk)
+            if risk_flags:
+                filter_stats['risk_filtered'] += 1
+                print(f"[FILTER] Risk: @{user.get('username')} (flags={risk_flags}, rules={risk_matches})", file=sys.stderr)
+                continue
+
+            # Transform to schema format
+            category = categories.get(user.get('username', ''), '')
+            record = transform_to_schema(user, method='manual_csv', category=category)
+            filtered_users.append(record)
+            filter_stats['passed'] += 1
+
+        # Write output
+        output_path = Path(args.out)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            for record in filtered_users:
+                f.write(json.dumps(record, ensure_ascii=False) + '\n')
+
+        # Print summary
+        print(f"\n[SUMMARY] Filter Statistics:", file=sys.stderr)
+        print(f"  Total users: {filter_stats['total']}", file=sys.stderr)
+        print(f"  Entry threshold fail: {filter_stats['entry_threshold_fail']}", file=sys.stderr)
+        print(f"  Brand filtered: {filter_stats['brand_filtered']}", file=sys.stderr)
+        print(f"  Risk filtered: {filter_stats['risk_filtered']}", file=sys.stderr)
+        print(f"  ✅ Passed: {filter_stats['passed']}", file=sys.stderr)
+        print(f"\n[OUTPUT] {args.out} ({filter_stats['passed']} records)", file=sys.stderr)
+
+        if filter_stats['passed'] == 0:
+            print("[WARN] No records passed filters - output file is empty", file=sys.stderr)
+            print("[INFO] This is expected for M1 smoke test without RUBE MCP integration", file=sys.stderr)
+
+        return 0
+
+    except Exception as e:
+        print(f"[ERROR] {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        return 1
 
 
 def main():
@@ -124,10 +472,33 @@ def main():
         "x-lists", help="Import curated X Lists (manual CSV)"
     )
     lists_parser.add_argument(
-        "--list-urls", required=True, help="File with X List URLs (one per line)"
+        "--list-urls", required=True, help="CSV file with handles (handle,category,source,note)"
     )
     lists_parser.add_argument(
         "--out", required=True, help="Output JSONL file (curated authors)"
+    )
+    lists_parser.add_argument(
+        "--min-followers", type=int, default=50000, help="Entry threshold (default: 50000)"
+    )
+    lists_parser.add_argument(
+        "--verified-min-followers", type=int, default=30000,
+        help="Lower threshold for verified accounts (default: 30000)"
+    )
+    lists_parser.add_argument(
+        "--brand-rules", default="lists/rules/brand_heuristics.yml",
+        help="Brand heuristics YAML (default: lists/rules/brand_heuristics.yml)"
+    )
+    lists_parser.add_argument(
+        "--risk-rules", default="lists/rules/risk_terms.yml",
+        help="Risk terms YAML (default: lists/rules/risk_terms.yml)"
+    )
+    lists_parser.add_argument(
+        "--allow-brands", action="store_true",
+        help="Disable brand exclusion (default: false)"
+    )
+    lists_parser.add_argument(
+        "--allow-risk", default="",
+        help="Comma-separated risk flags to allow (default: none)"
     )
 
     args = parser.parse_args()
