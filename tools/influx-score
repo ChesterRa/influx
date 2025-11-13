@@ -1,28 +1,101 @@
 #!/usr/bin/env python3
 """
-influx-score: Calculate composite quality score (activity 30% + quality 50% + relevance 20%)
+influx-score: Calculate composite quality score
 
 Usage:
-    influx-score update --authors authors.jsonl --window-days 30 --out scored.jsonl
-    influx-score recalc --db state/influx.db --window-days 30
+    influx-score update --authors authors.jsonl --out scored.jsonl
 
-Scoring formula (v1):
-- activity (30%): posts_original + 7d weight + media_rate
-- quality (50%): median/p90 likes/replies/retweets (log scale)
-- relevance (20%): topic/lang match + keyword co-occurrence
+M0 (v0_proxy_no_metrics): Log-based proxy score using followers_count + verified status
+M1 (v1_full_metrics): Full formula (activity 30% + quality 50% + relevance 20%) with 30d metrics
+
+Proxy formula (M0):
+    base_score = 20 * log10(max(followers_count, 1) / 1000)
+    verified_boost = {"blue": 10, "legacy": 5, "org": 0, "none": 0}
+    proxy_score = min(100, max(0, base_score + verified_boost))
 """
 import argparse
+import json
+import math
 import sys
+from pathlib import Path
+
+
+def calculate_proxy_score(author):
+    """Calculate M0 proxy score (log-based, no metrics API calls)"""
+    followers_count = author.get("followers_count", 0)
+    verified = author.get("verified", "none")
+
+    # Base score: log scale (20 * log10(followers/1000))
+    base_score = 20 * math.log10(max(followers_count, 1) / 1000)
+
+    # Verified boost
+    verified_boost_map = {"blue": 10, "legacy": 5, "org": 0, "none": 0}
+    verified_boost = verified_boost_map.get(verified, 0)
+
+    # Clip to [0, 100]
+    raw_score = base_score + verified_boost
+    proxy_score = min(100, max(0, raw_score))
+
+    return round(proxy_score, 1)
 
 
 def update_scores(args):
-    """Update scores for new authors"""
-    print(f"[TODO] Read authors from {args.authors}")
-    print(f"[TODO] For each author: fetch 30d metrics (TWITTER_USER_LOOKUP + timeline if needed)")
-    print(f"[TODO] Calculate activity (30%), quality (50%), relevance (20%)")
-    print(f"[TODO] Assign score (0-100), rank_global")
-    print(f"[TODO] Output to {args.out}")
-    return 1  # Not implemented
+    """Update scores for authors using M0 proxy formula"""
+    input_path = Path(args.authors)
+    output_path = Path(args.out)
+
+    if not input_path.exists():
+        print(f"Error: Input file not found: {input_path}", file=sys.stderr)
+        return 1
+
+    # Read all authors
+    print(f"Reading authors from {input_path}")
+    authors = []
+    with open(input_path, "r", encoding="utf-8") as f:
+        for line_num, line in enumerate(f, 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                author = json.loads(line)
+                authors.append(author)
+            except json.JSONDecodeError as e:
+                print(f"Warning: Skipping invalid JSON at line {line_num}: {e}", file=sys.stderr)
+                continue
+
+    print(f"Loaded {len(authors)} authors")
+
+    # Calculate proxy scores
+    print("Calculating proxy scores (M0: log-based, no metrics)")
+    scored_count = 0
+    for author in authors:
+        proxy_score = calculate_proxy_score(author)
+
+        # Update meta.score
+        if "meta" not in author:
+            author["meta"] = {}
+        author["meta"]["score"] = proxy_score
+        scored_count += 1
+
+    print(f"Scored {scored_count} authors")
+
+    # Write output
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        for author in authors:
+            line = json.dumps(author, ensure_ascii=False, separators=(',', ':'))
+            f.write(line + "\n")
+
+    print(f"Wrote scored authors to {output_path}")
+
+    # Summary stats
+    scores = [a["meta"]["score"] for a in authors]
+    print(f"\nScore summary:")
+    print(f"  Min: {min(scores):.1f}")
+    print(f"  Max: {max(scores):.1f}")
+    print(f"  Mean: {sum(scores)/len(scores):.1f}")
+
+    return 0
 
 
 def recalc_scores(args):
@@ -35,16 +108,15 @@ def recalc_scores(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="influx-score: Calculate composite quality scores"
+        description="influx-score: Calculate composite quality scores (M0: proxy formula)"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    # update subcommand
-    update_parser = subparsers.add_parser("update", help="Update scores for new authors")
-    update_parser.add_argument("--authors", required=True, help="Authors JSONL")
-    update_parser.add_argument(
-        "--window-days", type=int, default=30, help="Metrics window (default: 30)"
+    # update subcommand (M0: proxy scoring, no API calls)
+    update_parser = subparsers.add_parser(
+        "update", help="Update scores using M0 proxy formula (log-based, no metrics)"
     )
+    update_parser.add_argument("--authors", required=True, help="Input authors JSONL")
     update_parser.add_argument("--out", required=True, help="Output scored JSONL")
 
     # recalc subcommand

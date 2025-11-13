@@ -104,3 +104,4 @@ $ python3 tools/influx-validate -s schema/bigv.schema.json \
 
 - **2025-11-13T03:16:00Z**: COMPLETE - All 5 acceptance criteria met, 48/48 records validated
 - **2025-11-13T03:28:34Z**: EXPORT - Implemented influx-export; exported 48 records to data/latest/latest.jsonl.gz (SHA-256: 78cd9f7e...), manifest.json generated, validation passed 48/48
+- **2025-11-13T04:02:52Z**: SCORE - Implemented influx-score with M0 proxy formula (20*log10(followers/1000) + verified_boost); re-exported 48 authors with scores (range: 0.0-82.3, mean: 37.7); manifest updated with score_version=v0_proxy_no_metrics; validation passed 48/48 (SHA-256: 43b89903...)
