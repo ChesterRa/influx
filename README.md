@@ -83,6 +83,13 @@ All metrics under `metrics_30d` are computed over the most recent 30 days:
 
 ## Usage
 
+### Quick View
+
+```bash
+tools/influx-view              # View first 20 records with syntax highlighting
+tools/influx-view --lines 10   # View first 10 records
+```
+
 ### Quick Start
 
 1. **Download latest dataset**:
@@ -120,6 +127,8 @@ All metrics under `metrics_30d` are computed over the most recent 30 days:
 - **Sorting**: Descending by `score`, then `followers_count`, then `handle` (lexicographic)
 - **Versioning**: `data/latest/manifest.json` includes schema version, timestamp, count, SHA-256 checksum, and generation parameters
 - **Snapshots**: Daily snapshots in `data/snapshots/YYYY-MM-DD/bigv-YYYYMMDD.jsonl.gz` (published as GitHub Releases)
+- **Uncompressed sources**: `data/uncompressed/YYYY-MM-DD/` (milestone sources for reproducibility, latest only)
+- **Quick browse**: `data/samples/top200.jsonl` (first 200 records, uncompressed for preview)
 
 ---
 
