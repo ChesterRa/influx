@@ -21,6 +21,7 @@
 - **Now (M0, ≤2 weeks)**:
   - Repo skeleton: schema v1.0.0 (simplified: core+metrics_30d+meta+ext), state/influx.db (SQLite), tools/ stubs, CI (lint+validate)
   - Three-path bootstrap (REVISED): (1) GitHub org seeds (twitter_username) → 160–200, (2) following-graph expansion (TWITTER_FOLLOWING) → 160–200, (3) curated X Lists CSV → 40–80
+  - D2 collection pipeline: [Contract: docs/por/d2-pipeline-contract.md] influx-harvest (github-seeds/following/x-lists) → influx-score (30d metrics) → influx-export (latest.jsonl.gz + manifest)
   - Heuristics: brand_heuristics.yml, risk_terms.yml; scoring formula v1 (activity 30% + quality 50% + relevance 20%)
   - First release: `data/latest/latest.jsonl.gz` (400–600, scored, manifest.json); state DB persists history
   - Acceptance: Schema validates; CI green; manifest sha256 matches; xoperator ingests without error; state DB queryable
