@@ -79,8 +79,10 @@ Unblock automated data collection by resolving API authentication and authorizat
 1. Support Tickets & Timeline:
    - **GitHub OAuth**:
      * Ticket: User completed OAuth (User #000069, 2025-11-13T06:23)
-     * Status: Validation in progress (PeerB testing)
-     * ETA: ≤24h validation + confirmation
+     * Status: ⚠️ **PARTIAL SUCCESS** - Connection ACTIVE but missing `read:org` scope (only `['user']` granted)
+     * Validation: PeerB #000071 (2025-11-13T06:30) - GITHUB_GET_THE_AUTHENTICATED_USER ✅, org query ❌ INSUFFICIENT_SCOPES
+     * Action Required: User re-authorization with `read:org` scope (instructions sent)
+     * ETA: ≤24h re-authorization OR T+72h commit to Fallback Path A
    - **Twitter v2 Access**:
      * Ticket: TBD (needs filing per Foreman #000070)
      * Status: Awaiting ticket submission
