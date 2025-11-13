@@ -1,0 +1,80 @@
+name: Daily Snapshot
+
+on:
+  schedule:
+    # Run daily at 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Validate latest dataset
+        run: |
+          echo "=== Validating data/latest/latest.jsonl.gz ==="
+          python3 tools/influx-validate -s schema/bigv.schema.json data/latest/latest.jsonl.gz
+
+      - name: Export daily snapshot
+        run: |
+          echo "=== Exporting snapshot for $(date +%Y-%m-%d) ==="
+          SNAPSHOT_DATE=$(date +%Y-%m-%d)
+
+          # Check if complete_scored.jsonl exists, otherwise use latest.jsonl.gz
+          if [ -f .cccc/work/m03/complete_scored.jsonl ]; then
+            INPUT_FILE=".cccc/work/m03/complete_scored.jsonl"
+          else
+            echo "⚠ .cccc/work/m03/complete_scored.jsonl not found, using data/latest/latest.jsonl.gz"
+            INPUT_FILE="data/latest/latest.jsonl.gz"
+          fi
+
+          python3 tools/influx-export snapshot \
+            --date "$SNAPSHOT_DATE" \
+            --input "$INPUT_FILE" \
+            --out data/snapshots/
+
+      - name: Verify snapshot created
+        run: |
+          SNAPSHOT_DATE=$(date +%Y-%m-%d)
+          SNAPSHOT_DIR="data/snapshots/$SNAPSHOT_DATE"
+
+          if [ -d "$SNAPSHOT_DIR" ]; then
+            echo "✓ Snapshot directory created: $SNAPSHOT_DIR"
+            ls -lh "$SNAPSHOT_DIR"
+          else
+            echo "✗ Snapshot directory not found: $SNAPSHOT_DIR"
+            exit 1
+          fi
+
+      - name: Commit and push snapshot
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          SNAPSHOT_DATE=$(date +%Y-%m-%d)
+          git add data/snapshots/
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Daily snapshot: $SNAPSHOT_DATE
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+            git push
+          fi
