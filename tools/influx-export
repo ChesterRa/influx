@@ -91,11 +91,82 @@ def export_latest(args):
 
 def export_snapshot(args):
     """Export daily snapshot to data/snapshots/YYYY-MM-DD/"""
-    print(f"[TODO] Read authors from {args.input}")
-    print(f"[TODO] Create {args.out}/{args.date}/")
-    print(f"[TODO] Write bigv-{args.date.replace('-', '')}.jsonl.gz")
-    print(f"[TODO] Generate manifest.json")
-    return 1  # Not implemented
+    input_path = Path(args.input)
+    out_dir = Path(args.out) / args.date
+
+    # Validate date format
+    try:
+        datetime.strptime(args.date, "%Y-%m-%d")
+    except ValueError:
+        print(f"Error: Invalid date format '{args.date}' (expected YYYY-MM-DD)")
+        return 1
+
+    # Read and parse all authors
+    print(f"Reading authors from {input_path}")
+    authors = []
+    with open(input_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                authors.append(json.loads(line))
+
+    print(f"Loaded {len(authors)} authors")
+
+    # Sort: score desc → followers_count desc → handle lex
+    authors.sort(
+        key=lambda a: (
+            -a.get("meta", {}).get("score", 0),
+            -a.get("followers_count", 0),
+            a.get("handle", "")
+        )
+    )
+    print(f"Sorted by score desc → followers desc → handle lex")
+
+    # Create output directory
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write gzipped JSONL + compute sha256
+    # Filename format: bigv-YYYYMMDD.jsonl.gz (no dashes in date)
+    date_compact = args.date.replace("-", "")
+    output_filename = f"bigv-{date_compact}.jsonl.gz"
+    output_path = out_dir / output_filename
+    sha256_hash = hashlib.sha256()
+
+    print(f"Writing {output_path}")
+    with gzip.open(output_path, "wt", encoding="utf-8") as gz:
+        for author in authors:
+            line = json.dumps(author, ensure_ascii=False, separators=(',', ':'))
+            gz.write(line + "\n")
+            # Hash the line as it would appear in uncompressed form
+            sha256_hash.update((line + "\n").encode("utf-8"))
+
+    sha256_digest = sha256_hash.hexdigest()
+    print(f"SHA-256: {sha256_digest}")
+
+    # Generate manifest.json
+    manifest = {
+        "schema_version": "1.0.0",
+        "snapshot_date": args.date,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "count": len(authors),
+        "sha256": sha256_digest,
+        "filename": output_filename,
+        "source_file": str(input_path),
+        "sort_order": "score desc, followers_count desc, handle asc",
+        "score_version": "v0_proxy_no_metrics",
+        "score_formula": "20*log10(followers/1000) + verified_boost, clipped [0,100]",
+        "score_note": "M0 proxy pending 30d metrics collection (M1)"
+    }
+
+    manifest_path = out_dir / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as mf:
+        json.dump(manifest, mf, indent=2, ensure_ascii=False)
+        mf.write("\n")
+
+    print(f"Manifest: {manifest_path}")
+    print(f"✓ Snapshot export complete: {len(authors)} authors → {out_dir}")
+
+    return 0
 
 
 def main():
