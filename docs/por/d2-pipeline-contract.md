@@ -1,8 +1,40 @@
 # D2 Collection Pipeline Contract
 
-**Version**: 1.0.0
+**Version**: 1.1.0 (M1 Manual CSV+Lists)
 **Owner**: PeerA (architecture) + PeerB (implementation)
-**Purpose**: Define CLI interface, JSONL I/O format, and rate-limit guardrails for M0 collection tools
+**Purpose**: Define CLI interface, JSONL I/O format, rate-limit guardrails, and filter specifications for M1 manual collection
+
+---
+
+## Changelog
+
+### v1.1.0 (2025-11-13) - M1 Manual CSV+Lists
+- **ADDED**: Filter Implementation Specification (CLI flags, YAML keys, smoke test) - NORMATIVE for M1 Week 1 (commit 9779756)
+- **SCOPE PIVOT**: GitHub automation endpoints (`github-seeds`, `following`) marked DEFERRED (RUBE MCP `read:org` scope unavailable per T000003)
+- **STATUS**: M1 primary method = manual CSV curation + curated X Lists + batch TWITTER_USER_LOOKUP validation
+- **PRESERVED**: Automation probe sections retained for M2 reference (clearly marked DEFERRED)
+
+### v1.0.0 (2025-11-13) - M0 Baseline
+- Initial contract with automation probe acceptance criteria
+- Proxy scoring formula v0, validation contract, evidence requirements
+
+---
+
+## Scope (M1)
+
+**Active for M1**:
+- Manual CSV curation from GitHub org pages, curated X Lists, domain expert seeds
+- Batch TWITTER_USER_LOOKUP validation (100 handles/call)
+- Filter enforcement via `influx-harvest` (entry thresholds, brand/risk heuristics)
+- Proxy scoring v0 (follower-based), schema validation, JSONL.gz export
+- Daily snapshot workflow (`.github/workflows/snapshot.yml`)
+
+**Deferred to M2** (RUBE MCP OAuth constraints):
+- GitHub automation (`GITHUB_LIST_ORGANIZATION_MEMBERS` requires `read:org` scope - unavailable in RUBE MCP per T000003)
+- Following-graph expansion (`TWITTER_FOLLOWING_BY_USER_ID` - low standalone value without GitHub seed layer)
+- Keyword-based discovery (`TWITTER_RECENT_SEARCH` requires paid tier)
+
+**Reference**: POR.md:38-39 (M1 strategy pivot), T000003 (auth investigation closure)
 
 ---
 
@@ -10,22 +42,28 @@
 
 ### influx-harvest (Author Discovery)
 
+**M1 Active Method** (manual CSV + X Lists):
 ```bash
-# GitHub org seeds (40-50% of M0 target)
+# Manual CSV curation → TWITTER_USER_LOOKUP batch validation → filters
+# See "Filter Implementation Specification" section below for CLI flags
+
+influx-harvest x-lists \
+  --list-urls lists/seeds/m04-business-batch.csv \
+  --out harvest.raw.jsonl
+```
+
+**⏸️ DEFERRED to M2** (GitHub automation - `read:org` scope unavailable per T000003):
+```bash
+# GitHub org seeds (40-50% of M0 target) - BLOCKED
 influx-harvest github-seeds \
   --orgs openai,anthropic,pytorch,huggingface \
   --out github_seeds.jsonl
 
-# Following-graph expansion (40-50% of M0 target)
+# Following-graph expansion (40-50% of M0 target) - DEFERRED
 influx-harvest following \
   --seeds github_seeds.jsonl \
   --pages 2 \
   --out following_expanded.jsonl
-
-# Curated X Lists (10% of M0 target)
-influx-harvest x-lists \
-  --list-urls lists/seeds/x-lists.txt \
-  --out curated.jsonl
 ```
 
 **Outputs**: JSONL with minimal author records:
@@ -60,28 +98,37 @@ influx-export latest \
 
 ---
 
-## Data Flow (M0)
+## Data Flow (M1 Manual CSV+Lists)
 
 ```
-GitHub Orgs (16) → influx-harvest github-seeds → github_seeds.jsonl (160-200 authors)
-                                                          ↓
-                                              influx-harvest following (2 pages/seed)
-                                                          ↓
-                                              following_expanded.jsonl (160-200 authors)
-                                                          ↓
-                                              merge + dedupe → combined.jsonl (~320-400 unique)
-                                                          ↓
-X Lists CSV → influx-harvest x-lists → curated.jsonl (40-80 authors)
-                                                          ↓
-                                              merge + dedupe → all_authors.jsonl (~400-600)
-                                                          ↓
-                                              influx-score update (30d metrics)
-                                                          ↓
-                                              scored.jsonl (validated via influx-validate)
-                                                          ↓
-                                              influx-export latest
-                                                          ↓
-                                              data/latest/latest.jsonl.gz + manifest.json
+Manual CSV curation (GitHub org pages, X Lists, domain seeds)
+                                    ↓
+                    lists/seeds/*.csv (~250-300 handles/week)
+                                    ↓
+                    TWITTER_USER_LOOKUP (batch 100/call)
+                                    ↓
+                    influx-harvest x-lists (apply filters)
+                                    ↓
+                    harvest.filtered.jsonl (~200-250 authors after filters)
+                                    ↓
+                    influx-score update (proxy v0 scoring)
+                                    ↓
+                    scored.jsonl (validated via influx-validate)
+                                    ↓
+                    influx-export latest
+                                    ↓
+                    data/latest/latest.jsonl.gz + manifest.json
+                                    ↓
+                    snapshot.yml workflow (daily cron)
+                                    ↓
+                    data/snapshots/YYYY-MM-DD/
+```
+
+### ⏸️ DEFERRED: M0 Automation Data Flow (Reference Only)
+
+```
+[BLOCKED] GitHub Orgs → github-seeds → following expansion → merge+dedupe → all_authors.jsonl
+          [See v1.0.0 for original automation flow diagram - deferred pending RUBE MCP scope upgrade]
 ```
 
 ---
@@ -102,7 +149,9 @@ X Lists CSV → influx-harvest x-lists → curated.jsonl (40-80 authors)
 - Keywords: `nsfw`, `political`, `controversy`, `spam`, `hate_speech`
 - Action: Set `risk_flags=[...]`; exclude from M0 pool by default
 
-### Filter Implementation Specification (M1 Week 1)
+### ✅ Filter Implementation Specification (M1 Week 1) - NORMATIVE
+
+**Status**: ACTIVE for M1 - PeerB implementation complete (commit 6fd9487)
 
 **CLI Flags** (`influx-harvest`):
 - `--min-followers N`: Entry threshold (default: 50000)
@@ -206,9 +255,38 @@ Provenance enables audit trail and reproducibility.
 
 ---
 
-## Acceptance Criteria (M0)
+## Acceptance Criteria
 
-### T000002 github-seeds Probe (Minimal Validation)
+### M1 Manual Scale Acceptance (Active)
+
+**Reference**: T000004 M1 Manual Scale SUBPOR (to be created by PeerB)
+
+**Goals**: 1.5k-2k authors over 4-5 weeks via manual CSV+Lists, ~250-300/week increments
+
+**Guardrails**:
+1. Entry filters enforced: `(verified + 30k) OR 50k followers`
+2. Brand/risk exclusion mandatory: `confidence ≥0.7` (brand_heuristics.yml), auto-exclude categories (risk_terms.yml)
+3. Schema validation 100% pass rate
+4. Daily snapshots via `.github/workflows/snapshot.yml`
+5. Provenance tracking (sources array with method/fetched_at/evidence per author)
+
+**Weekly Batch Releases**:
+- Weeks 1-4: ≥250 authors/week
+- Week 5: ≥150 authors (buffer)
+- Cumulative CI green status
+
+**Final Deliverable**:
+- `data/latest/latest.jsonl.gz` with manifest.count ∈ [1500,2000]
+- SHA-256 verified, score distribution reasonable (proxy v0: mean 40-60, range 0-100)
+- Zero brand/official contamination in spot-check samples (N=30 per batch)
+
+**QA Validation**: 50-record sample per 300-author batch, second-review signoff on edge cases
+
+---
+
+## ⏸️ DEFERRED: M0 Automation Acceptance Criteria (Reference Only)
+
+### T000002 github-seeds Probe (Minimal Validation) - DEFERRED
 **Scope**: Implement `influx-harvest github-seeds` with 4 orgs (openai, anthropic, pytorch, huggingface)
 
 **Output**: `.cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl`
@@ -224,8 +302,10 @@ Provenance enables audit trail and reproducibility.
 
 **Evidence**: Commit with probe output file + README; validation passes in CI
 
-### Following Slice-1 Probe (Minimal Graph Expansion Validation)
+### Following Slice-1 Probe (Minimal Graph Expansion Validation) - DEFERRED
 **Scope**: Implement `influx-harvest following` with 5 seed authors (first 5 records from `github_seeds.sample.jsonl`) × 1 page per seed
+
+**Status**: ⏸️ DEFERRED to M2 (requires Twitter v2 enrollment + GitHub seed layer)
 
 **Input**: `.cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl` (first 5 records only, prioritize those with X user IDs already resolved)
 
@@ -256,8 +336,10 @@ influx-harvest following \
 
 **Cross-reference**: POR.md:L25 execution guardrails (API≤150/run, TWITTER_FOLLOWING≤2 pages/seed, entry filters, brand/risk rules mandatory, Option A meta placeholders)
 
-### Full M0 Pipeline (End-to-End)
+### Full M0 Pipeline (End-to-End) - DEFERRED
 **Scope**: Complete collection pipeline producing 400-600 scored authors
+
+**Status**: ⏸️ DEFERRED to M2 (automation path blocked per T000003)
 
 **Acceptance**:
 1. **Data flow completes**: GitHub seeds (160-200) → following expansion (160-200) → merge+dedupe (~320-400) → [optional: x-lists +40-80] → score → export
@@ -386,5 +468,26 @@ python3 tools/influx-validate \
 
 ---
 
-**Last Updated**: 2025-11-13
-**Refs**: POR#L20-L35 (M0.0/M0.1 Now), POR#L51 (pivot decision), POR#L54 (R1a escalation), M0.0 tag v0.0.0-m0.0
+## Appendix: M1 Execution Notes
+
+### Cheapest Probe (M1 Batch 0.5)
+**Purpose**: Empirical velocity validation before 4-5 week commitment
+**Scope**: 50-100 authors from 1-2 domains (AI/Tech + Business), ≤2 days
+**Deliverables**:
+- `.cccc/work/m1/batch05/harvest.filtered.jsonl` (≥50 records)
+- Validation 100% pass
+- Velocity log showing sustained rate (≥15-20 records/hour)
+
+**Acceptance**: Velocity measurement confirms 250-300/week assumption; if <150/week sustained rate detected, re-scope or add curator.
+
+### Heuristics Shadow-Mode Validation
+**Before**: M1 batch 1 begins
+**Method**: Run brand/risk rules on labeled gold set (N=300-400, dual-reviewed)
+**Metrics**: Precision/recall per flag category
+**Acceptance**: Brand leakage ≤1%, high-severity risk false negatives ≤2%
+**Output**: `.cccc/work/validation/heuristics_validation_report.json`
+
+---
+
+**Last Updated**: 2025-11-13 (v1.1.0 refactor)
+**Refs**: POR#L38-39 (M1 strategy), T000003 (auth closure), commit 9779756 (filter spec), commit 6fd9487 (filter implementation), Aux strategic review 2025-11-13
