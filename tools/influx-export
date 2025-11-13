@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""
+influx-export: Export scored authors to latest.jsonl.gz with manifest
+
+Usage:
+    influx-export latest --input scored.jsonl --out data/latest/
+    influx-export snapshot --date 2025-11-13 --input scored.jsonl --out data/snapshots/
+
+Output:
+- latest.jsonl.gz (sorted by score desc → followers desc → handle lex)
+- manifest.json (schema_version, timestamp, count, sha256, generation params)
+"""
+import argparse
+import sys
+
+
+def export_latest(args):
+    """Export to data/latest/ (authoritative release)"""
+    print(f"[TODO] Read authors from {args.input}")
+    print(f"[TODO] Sort by score desc, followers desc, handle lex")
+    print(f"[TODO] Write {args.out}/latest.jsonl.gz (gzip)")
+    print(f"[TODO] Generate manifest.json (schema_version, timestamp, count, sha256)")
+    return 1  # Not implemented
+
+
+def export_snapshot(args):
+    """Export daily snapshot to data/snapshots/YYYY-MM-DD/"""
+    print(f"[TODO] Read authors from {args.input}")
+    print(f"[TODO] Create {args.out}/{args.date}/")
+    print(f"[TODO] Write bigv-{args.date.replace('-', '')}.jsonl.gz")
+    print(f"[TODO] Generate manifest.json")
+    return 1  # Not implemented
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="influx-export: Export authors to latest/snapshots"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # latest subcommand
+    latest_parser = subparsers.add_parser(
+        "latest", help="Export to data/latest/ (authoritative)"
+    )
+    latest_parser.add_argument("--input", required=True, help="Scored authors JSONL")
+    latest_parser.add_argument("--out", required=True, help="Output directory")
+
+    # snapshot subcommand
+    snapshot_parser = subparsers.add_parser(
+        "snapshot", help="Export daily snapshot"
+    )
+    snapshot_parser.add_argument("--date", required=True, help="Snapshot date (YYYY-MM-DD)")
+    snapshot_parser.add_argument("--input", required=True, help="Scored authors JSONL")
+    snapshot_parser.add_argument("--out", required=True, help="Output directory")
+
+    args = parser.parse_args()
+
+    if args.command == "latest":
+        return export_latest(args)
+    elif args.command == "snapshot":
+        return export_snapshot(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,77 @@
+name: Schema Validation
+
+on:
+  pull_request:
+    paths:
+      - 'data/latest/*.jsonl'
+      - 'data/latest/*.jsonl.gz'
+      - 'schema/bigv.schema.json'
+      - 'tools/influx-validate'
+      - '.github/workflows/validate.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/latest/*.jsonl'
+      - 'data/latest/*.jsonl.gz'
+      - 'schema/bigv.schema.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Validate test fixtures
+        run: |
+          echo "=== Validating test fixtures ==="
+          python3 tools/influx-validate -s schema/bigv.schema.json test/fixtures/valid.jsonl
+
+          echo ""
+          echo "=== Testing invalid fixture (should fail) ==="
+          if python3 tools/influx-validate -s schema/bigv.schema.json test/fixtures/invalid.jsonl; then
+            echo "ERROR: invalid.jsonl should have failed validation"
+            exit 1
+          else
+            echo "✓ invalid.jsonl correctly failed validation"
+          fi
+
+      - name: Validate latest data (if exists)
+        run: |
+          if [ -f data/latest/latest.jsonl.gz ]; then
+            echo "=== Validating data/latest/latest.jsonl.gz ==="
+            python3 tools/influx-validate -s schema/bigv.schema.json data/latest/latest.jsonl.gz
+
+            if [ -f data/latest/manifest.json ]; then
+              echo "=== Validating with manifest ==="
+              python3 tools/influx-validate -s schema/bigv.schema.json -m data/latest/manifest.json data/latest/latest.jsonl.gz
+            fi
+          else
+            echo "⚠ data/latest/latest.jsonl.gz not found (OK for initial commits)"
+          fi
+
+      - name: Validate schema itself
+        run: |
+          echo "=== Checking schema validity ==="
+          python3 -c "
+          import json
+          from jsonschema import Draft7Validator
+
+          with open('schema/bigv.schema.json') as f:
+              schema = json.load(f)
+
+          Draft7Validator.check_schema(schema)
+          print('✓ Schema is valid JSON Schema Draft-07')
+          "

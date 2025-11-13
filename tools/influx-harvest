@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""
+influx-harvest: Author discovery via GitHub seeds and following-graph expansion
+
+Usage:
+    influx-harvest github-seeds --orgs openai,anthropic,pytorch --out authors.jsonl
+    influx-harvest following --seeds authors.jsonl --pages 2 --out expanded.jsonl
+    influx-harvest x-lists --list-urls lists.txt --out curated.jsonl
+
+M0 approach: GitHub org members (twitter_username) + TWITTER_FOLLOWING expansion
+"""
+import argparse
+import sys
+
+
+def github_seeds(args):
+    """Fetch GitHub org members with twitter_username field"""
+    print(f"[TODO] Fetch members from orgs: {args.orgs}")
+    print(f"[TODO] Filter to users with twitter_username")
+    print(f"[TODO] Call TWITTER_USER_LOOKUP_BY_USERNAMES for verification")
+    print(f"[TODO] Output to {args.out}")
+    return 1  # Not implemented
+
+
+def following_expansion(args):
+    """Expand via TWITTER_FOLLOWING_BY_USER_ID (who seeds follow)"""
+    print(f"[TODO] Read seeds from {args.seeds}")
+    print(f"[TODO] For each seed: TWITTER_FOLLOWING_BY_USER_ID, {args.pages} pages max")
+    print(f"[TODO] Apply filters: verified + 30k OR 50k followers")
+    print(f"[TODO] Dedupe and output to {args.out}")
+    return 1  # Not implemented
+
+
+def x_lists(args):
+    """Import curated X Lists (manual CSV one-time)"""
+    print(f"[TODO] Read list URLs from {args.list_urls}")
+    print(f"[TODO] Use TWITTER_FETCH_LIST_MEMBERS_BY_ID or manual CSV")
+    print(f"[TODO] Apply filters and output to {args.out}")
+    return 1  # Not implemented
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="influx-harvest: Discover authors via GitHub seeds + following-graph"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # github-seeds subcommand
+    github_parser = subparsers.add_parser(
+        "github-seeds", help="Fetch GitHub org members with twitter_username"
+    )
+    github_parser.add_argument(
+        "--orgs", required=True, help="Comma-separated GitHub org names"
+    )
+    github_parser.add_argument(
+        "--out", required=True, help="Output JSONL file (authors)"
+    )
+
+    # following subcommand
+    following_parser = subparsers.add_parser(
+        "following", help="Expand via TWITTER_FOLLOWING (who seeds follow)"
+    )
+    following_parser.add_argument("--seeds", required=True, help="Seed authors JSONL")
+    following_parser.add_argument(
+        "--pages", type=int, default=2, help="Pages per seed (default: 2)"
+    )
+    following_parser.add_argument(
+        "--out", required=True, help="Output JSONL file (expanded authors)"
+    )
+
+    # x-lists subcommand
+    lists_parser = subparsers.add_parser(
+        "x-lists", help="Import curated X Lists (manual CSV)"
+    )
+    lists_parser.add_argument(
+        "--list-urls", required=True, help="File with X List URLs (one per line)"
+    )
+    lists_parser.add_argument(
+        "--out", required=True, help="Output JSONL file (curated authors)"
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "github-seeds":
+        return github_seeds(args)
+    elif args.command == "following":
+        return following_expansion(args)
+    elif args.command == "x-lists":
+        return x_lists(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

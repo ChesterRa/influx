@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS authors (
     rank_global INTEGER CHECK(rank_global >= 1),
 
     -- Timestamps
-    last_active_at TEXT NOT NULL,           -- ISO 8601 timestamp of most recent tweet
+    last_active_at TEXT,                    -- ISO 8601 timestamp of most recent tweet (NULL if unknown)
     last_refresh_at TEXT NOT NULL,          -- ISO 8601 timestamp of last metrics update
     first_seen_at TEXT NOT NULL,            -- ISO 8601 timestamp when author was first added
 
@@ -120,8 +120,8 @@ CREATE TABLE IF NOT EXISTS following (
     -- Deduplication
     UNIQUE(seed_author_id, target_author_id),
 
-    FOREIGN KEY (seed_author_id) REFERENCES authors(id) ON DELETE CASCADE,
-    FOREIGN KEY (target_author_id) REFERENCES authors(id) ON DELETE CASCADE
+    -- Only FK on seed_author_id (allows storing edges to not-yet-materialized targets)
+    FOREIGN KEY (seed_author_id) REFERENCES authors(id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_following_seed ON following(seed_author_id);

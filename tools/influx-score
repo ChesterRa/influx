@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""
+influx-score: Calculate composite quality score (activity 30% + quality 50% + relevance 20%)
+
+Usage:
+    influx-score update --authors authors.jsonl --window-days 30 --out scored.jsonl
+    influx-score recalc --db state/influx.db --window-days 30
+
+Scoring formula (v1):
+- activity (30%): posts_original + 7d weight + media_rate
+- quality (50%): median/p90 likes/replies/retweets (log scale)
+- relevance (20%): topic/lang match + keyword co-occurrence
+"""
+import argparse
+import sys
+
+
+def update_scores(args):
+    """Update scores for new authors"""
+    print(f"[TODO] Read authors from {args.authors}")
+    print(f"[TODO] For each author: fetch 30d metrics (TWITTER_USER_LOOKUP + timeline if needed)")
+    print(f"[TODO] Calculate activity (30%), quality (50%), relevance (20%)")
+    print(f"[TODO] Assign score (0-100), rank_global")
+    print(f"[TODO] Output to {args.out}")
+    return 1  # Not implemented
+
+
+def recalc_scores(args):
+    """Full recalculation from state DB (weekly)"""
+    print(f"[TODO] Read all authors from {args.db}")
+    print(f"[TODO] Recalculate scores for {args.window_days}d window")
+    print(f"[TODO] Update state DB: score, rank_global, last_refresh_at")
+    return 1  # Not implemented
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="influx-score: Calculate composite quality scores"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # update subcommand
+    update_parser = subparsers.add_parser("update", help="Update scores for new authors")
+    update_parser.add_argument("--authors", required=True, help="Authors JSONL")
+    update_parser.add_argument(
+        "--window-days", type=int, default=30, help="Metrics window (default: 30)"
+    )
+    update_parser.add_argument("--out", required=True, help="Output scored JSONL")
+
+    # recalc subcommand
+    recalc_parser = subparsers.add_parser(
+        "recalc", help="Full recalculation from state DB (weekly)"
+    )
+    recalc_parser.add_argument("--db", required=True, help="State DB path")
+    recalc_parser.add_argument(
+        "--window-days", type=int, default=30, help="Metrics window (default: 30)"
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "update":
+        return update_scores(args)
+    elif args.command == "recalc":
+        return recalc_scores(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
