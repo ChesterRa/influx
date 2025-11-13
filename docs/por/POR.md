@@ -56,12 +56,13 @@
 - **R2**: Brand/official heuristic false negatives pollute pool (flat) → Weekly manual review of top-100 + random-50; iterative rule updates
 - **R3**: Score drift over time without recalc (flat) → Weekly full recalc; version score formula in manifest; log param changes
 - **R4**: xoperator integration breaks if schema changes (down) → Semver in manifest; ext field for custom; ≥90d deprecation notice
+- **R5**: Domain skew in M0.1 manual curation (new, sev=med) → Manual CSV approach may over-sample certain domains/orgs (e.g., OpenAI/Anthropic/HuggingFace heavy due to curators' network bias) affecting diversity/representativeness | **Mitigation**: Per-domain quotas (≤30% from single org, ≤50% from AI-core domain); document source distribution in manifest/SUBPOR; M1 automation (following-graph + x-lists) will rebalance via algorithmic diversity | **Acceptance**: M0.1 manifest includes source_distribution field showing org/domain breakdown
 
 ## Portfolio Health (in-progress / at-risk only)
 | ID | Title | Owner | Stage | Latest evidence (one line) | SUBPOR |
 |----|-------|-------|-------|----------------------------|--------|
 | T000001 | D1 — Schema validation + CI (M0) | peerB | completed | Commit 78efffe: validator (252L), fixtures (3 valid + 5 invalid), CI workflow, State DB fixes | docs/por/T000001-d1-validate/SUBPOR.md |
-| T000002 | D2 — Bootstrap github-seeds probe (M0) | peerB | completed | Commit eab982f: 48 profiles validated, manual CSV + Twitter verify, placeholder meta, 100% schema-compliant | docs/por/T000002-d2-bootstrap/SUBPOR.md |
+| T000002 | D2 — Bootstrap + M0.0 release (M0) | peerB | completed | M0.0 tag v0.0.0-m0.0 (commit 4060da8): 48 authors, proxy score v0 (range 0.0-82.3), 100% validated, manifest SHA-256: 43b89903..., full pipeline proven | docs/por/T000002-d2-bootstrap/SUBPOR.md |
 
 ## Operating Principles (short)
 - Falsify before expand; one decidable next step; stop with pride when wrong; Done = evidence.
