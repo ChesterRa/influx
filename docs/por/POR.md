@@ -47,7 +47,7 @@
 ## Portfolio Health (in-progress / at-risk only)
 | ID | Title | Owner | Stage | Latest evidence (one line) | SUBPOR |
 |----|-------|-------|-------|----------------------------|--------|
-| T000001 | D1 — Schema validation + CI (M0) | peerB | in-progress | Commit daebf73: schema v1.0.0, state DB, heuristics; validator stub next | docs/por/T000001-d1-validate/SUBPOR.md |
+| T000001 | D1 — Schema validation + CI (M0) | peerB | completed | Commit 78efffe: validator (252L), fixtures (3 valid + 5 invalid), CI workflow, State DB fixes | docs/por/T000001-d1-validate/SUBPOR.md |
 
 ## Operating Principles (short)
 - Falsify before expand; one decidable next step; stop with pride when wrong; Done = evidence.
