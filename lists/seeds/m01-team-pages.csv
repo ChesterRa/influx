@@ -1,0 +1,31 @@
+handle,category,source,note
+tombrownai,ai_research,anthropic_team,Anthropic Research Scientist
+amandaaskell,ai_research,anthropic_team,Anthropic Researcher (Philosophy)
+janus_mirror,ai_research,independent,AI alignment researcher
+tszzl,ai_research,openai_team,Tesla AI/OpenAI (already in M0.0)
+ylecun,ai_research,meta_team,Meta Chief AI Scientist
+fchollet,ai_research,google_team,Keras creator
+hardmaru,ai_research,independent,Research scientist
+welchlabs,ai_content,independent,AI/ML educator
+lexfridman,ai_content,independent,AI podcast host
+OriolVinyalsML,ai_research,deepmind_team,DeepMind Research Director
+demishassabis,ai_research,deepmind_team,DeepMind CEO & Co-Founder
+jeffdean,ai_research,google_team,Google Chief Scientist
+arankomatsuzaki,ai_research,independent,AI researcher (Eleuther)
+stella_biderman,ai_research,eleuther_team,EleutherAI Executive Director
+nabla_theta,ai_research,independent,ML researcher
+jd_pressman,ai_research,independent,Language model researcher
+deliprao,ai_research,independent,Founder Timeseer AI
+rasbt,ai_content,independent,ML educator & author
+jeremyphoward,ml_platform,fastai_team,fast.ai founder
+weights_biases,ml_platform,wandb_team,Weights & Biases official
+huggingface,ml_platform,hf_team,HuggingFace official account
+GoogleAI,ai_research,google_team,Google AI official
+AnthropicAI,ai_research,anthropic_team,Anthropic official account
+OpenAI,ai_research,openai_team,OpenAI official account
+MetaAI,ai_research,meta_team,Meta AI official
+DeepMind,ai_research,deepmind_team,DeepMind official
+StabilityAI,ai_research,stability_team,Stability AI official
+MistralAI,ai_research,mistral_team,Mistral AI official
+CohereAI,ai_research,cohere_team,Cohere AI official
+MosaicML,ml_platform,databricks_team,MosaicML (now Databricks)
