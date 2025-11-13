@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "timestamp": "2025-11-13T04:36:22.123751+00:00",
-  "count": 66,
-  "sha256": "1b0da31d894ee3dc4ccab3f690020c223ca5fc11566c309cdf82ce2ea38a9c7c",
-  "source_file": ".cccc/work/m01/cleaned_authors.jsonl",
+  "timestamp": "2025-11-13T04:53:01.835440+00:00",
+  "count": 121,
+  "sha256": "20d22c1fbf0b4d86d49a1703fbaea271f42586f6a41f13004ead1d2d62a7c99c",
+  "source_file": ".cccc/work/m02/complete_scored.jsonl",
   "sort_order": "score desc, followers_count desc, handle asc",
   "score_version": "v0_proxy_no_metrics",
   "score_formula": "20*log10(followers/1000) + verified_boost, clipped [0,100]",

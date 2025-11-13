@@ -1,0 +1,34 @@
+handle,category,source,note
+GaryMarcus,ai_research,independent,AI researcher & critic
+\_Tim\_Dettmers,ml_engineering,independent,ML systems researcher
+AndrewYNg,ai_research,landing_ai,Andrew Ng (likely already present)
+goodfellow_ian,ai_research,deepmind_team,Ian Goodfellow (GANs)
+OpenAIResearch,ai_research,openai_team,OpenAI Research (official)
+GoogleDeepMind,ai_research,deepmind_team,Google DeepMind (official)
+GeoffreyHinton,ai_research,independent,Geoffrey Hinton
+yoshuabengio,ai_research,mila_team,Yoshua Bengio
+MelMitchell1,ai_research,santa_fe_team,Melanie Mitchell
+AnimaAnandkumar,ai_research,caltech_team,Anima Anandkumar
+jeremyphoward,ml_platform,fastai_team,Jeremy Howard (fastai)
+math_rachel,ai_research,usfca_team,Rachel Thomas (fast.ai)
+rasbt,ml_content,independent,Sebastian Raschka
+lexfridman,ai_content,independent,Lex Fridman
+twostraws,tech_content,independent,Paul Hudson (Hacking with Swift)
+ThePrimeagen,tech_content,independent,ThePrimeagen (dev content)
+t3dotgg,tech_content,independent,Theo (t3.gg)
+acdlite,tech_content,meta_team,Andrew Clark (React core)
+dan_abramov,tech_content,independent,Dan Abramov (React)
+sebmarkbage,tech_content,meta_team,Sebastian Markbåge (React core)
+sophiebits,tech_content,meta_team,Sophie Alpert (React)
+youyuxi,tech_content,independent,Evan You (Vue.js creator)
+Rich_Harris,tech_content,vercel_team,Rich Harris (Svelte creator)
+trashh_dev,tech_content,independent,Trash (dev memes)
+devn
+
+ull,tech_content,independent,DevNull (tech commentary)
+TheLarkInn,tech_content,independent,Sean Larkin (webpack)
+addyosmani,tech_content,google_team,Addy Osmani (Chrome/perf)
+ChromeDevTools,tech_content,google_team,Chrome DevTools (official)
+code,tech_content,microsoft_team,VS Code (official)
+github,tech_content,github_team,GitHub (official)
+vercel,tech_content,vercel_team,Vercel (official)
