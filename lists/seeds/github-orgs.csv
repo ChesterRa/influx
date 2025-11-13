@@ -1,0 +1,17 @@
+org_name,category,source_url,note
+openai,ai_research,https://github.com/orgs/openai/people,GPT/DALL-E research team
+anthropic,ai_research,https://github.com/orgs/anthropic/people,Claude research team
+huggingface,ml_platform,https://github.com/orgs/huggingface/people,Transformers/Datasets maintainers
+pytorch,ml_framework,https://github.com/orgs/pytorch/people,PyTorch core team
+meta,ai_research,https://github.com/orgs/meta/people,Meta FAIR researchers
+google-deepmind,ai_research,https://github.com/orgs/google-deepmind/people,DeepMind research team
+nvidia,gpu_ai,https://github.com/orgs/nvidia/people,NVIDIA DevRel and AI architects
+microsoft,ml_platform,https://github.com/orgs/microsoft/people,Azure ML and research teams
+vllm-project,ml_engineering,https://github.com/orgs/vllm-project/people,vLLM inference engine maintainers
+ggerganov,ml_engineering,https://github.com/orgs/ggerganov/people,llama.cpp author and contributors
+mistralai,ai_research,https://github.com/orgs/mistralai/people,Mistral AI research team
+cohere-ai,ai_research,https://github.com/orgs/cohere-ai/people,Cohere AI research team
+stability-ai,ai_research,https://github.com/orgs/stability-ai/people,Stable Diffusion research team
+langchain-ai,ml_platform,https://github.com/orgs/langchain-ai/people,LangChain framework maintainers
+modal-labs,ml_platform,https://github.com/orgs/modal-labs/people,Modal serverless compute team
+replicate,ml_platform,https://github.com/orgs/replicate/people,Replicate model deployment platform

@@ -39,7 +39,7 @@
 - 2025-11-13 11:19 | PIVOT: Collection strategy | Shift from keyword-heavy (60-70%) to GitHub-seed + following-graph (80-90%); TWITTER_RECENT_SEARCH requires paid API (Aux validation) | Eliminates M0 blocking risk, stays within free RUBE MCP, fully automatable | New proportions: 40-50% GitHub org twitter_username + 40-50% TWITTER_FOLLOWING + 10% curated Lists CSV
 
 ## Risk Radar & Mitigations (up/down/flat)
-- **R1**: Rate limits / quota exhaustion (up) → Strict page caps (2–3 max), exponential backoff, split by topic/lang batches
+- **R1**: Rate limits / quota exhaustion (up) → Pagination guardrails: TWITTER_FOLLOWING ≤2 pages per seed (~200 follows); batch execution by topic/lang (max 50 seeds/run); exponential backoff on 429 (2s→4s→8s→16s→stop); per-run cap: 150 API calls total
 - **R2**: Brand/official heuristic false negatives pollute pool (flat) → Weekly manual review of top-100 + random-50; iterative rule updates
 - **R3**: Score drift over time without recalc (flat) → Weekly full recalc; version score formula in manifest; log param changes
 - **R4**: xoperator integration breaks if schema changes (down) → Semver in manifest; ext field for custom; ≥90d deprecation notice
@@ -47,7 +47,7 @@
 ## Portfolio Health (in-progress / at-risk only)
 | ID | Title | Owner | Stage | Latest evidence (one line) | SUBPOR |
 |----|-------|-------|-------|----------------------------|--------|
-| (none yet) | | | | | |
+| T000001 | D1 — Schema validation + CI (M0) | peerB | in-progress | Commit daebf73: schema v1.0.0, state DB, heuristics; validator stub next | docs/por/T000001-d1-validate/SUBPOR.md |
 
 ## Operating Principles (short)
 - Falsify before expand; one decidable next step; stop with pride when wrong; Done = evidence.
