@@ -1,0 +1,114 @@
+# Brand and Official Account Heuristics
+# Used to filter out brand, media, official, and organizational accounts
+# from the influencer pool. Rules are evaluated as OR (any match triggers flag).
+
+version: "1.0.0"
+updated: "2025-11-13"
+
+# Keywords in name or username (case-insensitive, word boundary match)
+name_keywords:
+  official_indicators:
+    - "official"
+    - "team"
+    - "support"
+    - "help"
+    - "press"
+    - "pr"
+    - "media"
+    - "news"
+    - "newsroom"
+
+  corporate_indicators:
+    - "corp"
+    - "inc"
+    - "ltd"
+    - "llc"
+    - "gmbh"
+    - "company"
+    - "enterprises"
+
+  brand_commerce:
+    - "store"
+    - "shop"
+    - "shopping"
+    - "deals"
+    - "sales"
+    - "promo"
+    - "coupon"
+
+# Keywords in bio/description (case-insensitive, substring match)
+bio_keywords:
+  organizational:
+    - "official account"
+    - "official twitter"
+    - "official page"
+    - "managed by"
+    - "run by our team"
+    - "corporate account"
+    - "company news"
+    - "press releases"
+    - "media inquiries"
+    - "for support"
+    - "customer service"
+
+  media_publishers:
+    - "news outlet"
+    - "news organization"
+    - "media company"
+    - "news network"
+    - "publishing"
+    - "journalist at"
+    - "reporter for"
+    - "editor at"
+
+  aggregators_bots:
+    - "automated"
+    - "bot account"
+    - "news aggregator"
+    - "auto-tweet"
+    - "rss feed"
+
+# Domain patterns in profile URL or bio links (regex)
+domain_patterns:
+  - pattern: ".*\\.(gov|edu|org)$"
+    reason: "institutional_domain"
+    exceptions: ["github.org", "huggingface.co"]
+
+  - pattern: ".*(shop|store|deals|buy|cart|checkout).*"
+    reason: "ecommerce_domain"
+
+  - pattern: ".*(news|press|media|journal|times|post|tribune).*"
+    reason: "media_domain"
+
+# Verification status rules
+verification_rules:
+  # X Blue (verified=blue) is personal; keep unless other heuristics match
+  # Organization verification (verified=org) is always flagged
+  flag_org_verification: true
+
+  # Legacy verified (verified=legacy) before 2023: mixed (keep unless other heuristics match)
+  # Gold verified (not in current schema): future-proof placeholder
+
+# Follower/following ratio heuristics (optional, low weight)
+ratio_heuristics:
+  # If followers/following > 100 AND bio matches corporate, likely brand
+  high_ratio_threshold: 100
+  # If following = 0, likely automated/official (but not sufficient alone)
+  zero_following_flag: false
+
+# Exceptions (handles that match heuristics but are known individuals)
+# Format: handle (without @)
+exceptions:
+  - "example_personal_account"  # Placeholder
+  # Add known false positives here as they're discovered
+
+# Scoring adjustments (for fine-tuning, not hard filters)
+# These adjust the is_org / is_official confidence score
+confidence_weights:
+  name_keyword_match: 0.6
+  bio_keyword_match: 0.4
+  domain_match: 0.8
+  org_verification: 1.0
+
+  # Threshold for flagging (sum of weights)
+  flag_threshold: 0.7  # ≥0.7 → is_org or is_official = true

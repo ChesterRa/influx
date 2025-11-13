@@ -1,0 +1,26 @@
+# Ignore CCCC runtime domain (Ephemeral mode)
+/.cccc/**
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# State and data (keep in .gitignore, publish via Releases)
+state/
+data/latest/*.jsonl.gz
+data/snapshots/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
