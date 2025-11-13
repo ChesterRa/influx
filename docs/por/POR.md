@@ -49,6 +49,7 @@
 | ID | Title | Owner | Stage | Latest evidence (one line) | SUBPOR |
 |----|-------|-------|-------|----------------------------|--------|
 | T000001 | D1 — Schema validation + CI (M0) | peerB | completed | Commit 78efffe: validator (252L), fixtures (3 valid + 5 invalid), CI workflow, State DB fixes | docs/por/T000001-d1-validate/SUBPOR.md |
+| T000002 | D2 — Bootstrap github-seeds probe (M0) | peerB | completed | Commit eab982f: 48 profiles validated, manual CSV + Twitter verify, placeholder meta, 100% schema-compliant | docs/por/T000002-d2-bootstrap/SUBPOR.md |
 
 ## Operating Principles (short)
 - Falsify before expand; one decidable next step; stop with pride when wrong; Done = evidence.
