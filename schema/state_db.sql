@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS authors (
 
     -- Timestamps
     last_active_at TEXT,                    -- ISO 8601 timestamp of most recent tweet (NULL if unknown)
-    last_refresh_at TEXT NOT NULL,          -- ISO 8601 timestamp of last metrics update
-    first_seen_at TEXT NOT NULL,            -- ISO 8601 timestamp when author was first added
+    last_refresh_at TEXT NOT NULL DEFAULT (datetime('now')),  -- ISO 8601 timestamp of last metrics update
+    first_seen_at TEXT NOT NULL DEFAULT (datetime('now')),    -- ISO 8601 timestamp when author was first added
 
     -- Provenance
     provenance_hash TEXT CHECK(length(provenance_hash) = 64),  -- SHA-256 hex
