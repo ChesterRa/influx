@@ -1,6 +1,6 @@
 <!-- Generated on 2025-11-13T07:15:00+00:00 by manual SUBPOR creation per PeerA request -->
 
-# T000004 - M1 Manual Scale (151→1.5k-2k authors, 4-5 weeks) - Owner: peerB - Stage: proposed - Timebox: 4-5wk
+# T000004 - M1 Manual Scale (151→1.5k-2k authors, 4-5 weeks) - Owner: peerB - Stage: active - Timebox: 4-5wk
 
 - Goal/Scope (<=3 lines):
   - Scale influencer index from 151 (M0.1 baseline) to 1.5k-2k authors over 4-5 weeks via manual CSV curation + curated X Lists, maintaining M0's 100% precision bar and schema compliance
