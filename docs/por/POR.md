@@ -25,11 +25,12 @@
     - **Scoring**: Proxy formula v0 (log10(followers) + verified_boost, no 30d metrics); M1 will add full formula (activity 30% + quality 50% + relevance 20%)
     - **Release**: `data/latest/latest.jsonl.gz` (48 authors, proxy-scored, manifest notes "v0_proxy_no_metrics")
     - **Acceptance**: Schema validates; CI green; manifest sha256 matches; full pipeline validated (collect → score → export); consumable by xoperator for smoke tests
-  - **M0.1 (≤1 week)**: Manual scale to minimal validation threshold
-    - Manual CSV curation: T000002's 48 + curated X Lists (~50-70) + public team pages (~50-70) = **150-200 authors**
-    - Method: Manual CSV approach (PROJECT.md §4.3.2, 10% path scaled to 25-33%)
-    - Re-score with proxy formula v0 + re-export
-    - **Acceptance**: Sufficient diversity for xoperator validation (score distribution, AI/Tech/Creator domains, filter testing); state DB queryable
+  - **M0.1 (≤1 week)**: ✅ **ACHIEVED** - Manual scale to minimal validation threshold
+    - Delivered: **151 authors** (M0.0→48, M0.1→66, M0.2→121, M0.3→151)
+    - Method: Manual CSV curation across 4 milestones (team pages, curated lists, tech CEOs, blockchain/crypto leaders)
+    - Scoring: Proxy formula v0 (mean 52.3, range 0-100), 100% validation maintained
+    - Evidence: Commit 28a8381, SHA-256: 107af7d9..., manifest.count=151, CI green
+    - **Acceptance**: ✅ ≥150 target met, sufficient diversity (AI/ML/Tech/Blockchain/Security domains), 100% schema-compliant, proxy-scored, ready for xoperator validation
   - **Three-path bootstrap (BLOCKED, DEFERRED M1)**: GitHub-seed + following-graph blocked by auth issues (GitHub OAuth + Twitter v2 enrollment); automation paths move to M1 post-credential-fix
   - **Execution Guardrails** (per d2-pipeline-contract.md, POR R1): ✓ API total calls ≤150/run; ✓ Entry filters: (verified+30k) OR 50k; ✓ Brand/risk rules mandatory (lists/rules/); ✓ Every stage output includes meta placeholders (proxy_score, last_refresh_at, sources≥1, provenance_hash)
   - Heuristics: brand_heuristics.yml ✓, risk_terms.yml ✓
@@ -54,7 +55,7 @@
 
 ## Risk Radar & Mitigations (up/down/flat)
 - **R1**: Rate limits / quota exhaustion (flat) → Pagination guardrails: TWITTER_FOLLOWING ≤2 pages per seed (~200 follows); batch execution by topic/lang (max 50 seeds/run); exponential backoff on 429; per-run cap: 150 API calls total | Status: Deferred to M1 (following-graph blocked)
-- **R1a**: API auth blockers delay M0 evidence (ESCALATED → HIGH) → **Status**: 2 consecutive blockers in 24h - (1) GitHub OAuth (resolved via T000002 manual CSV pivot), (2) **Twitter v2 enrollment blocker (ACTIVE)** - TWITTER_FOLLOWING_BY_USER_ID fails "client-not-enrolled" (Composio credentials lack v2 Project attachment); following probe 0/5 API calls succeeded | **Mitigation (EXECUTED)**: Pivoted to manual CSV approach per Aux decision tree (">2 failed retries → pivot to alternative path"); M0.0 ships 48 authors (manual CSV), M0.1 scales to 150-200 (manual curation); automation paths (GitHub-seed + following-graph) deferred to M1 post-credential-fix | **Finding**: Bet 1 FALSIFIED for M0 - free-tier RUBE MCP has systematic auth/enrollment gating for advanced features
+- **R1a**: X paid/restricted API dependency & auth blockers (HIGH) → **Status**: 2 consecutive blockers in 24h - (1) GitHub OAuth (T000003 targets M1 day 1-2), (2) **Twitter v2 enrollment blocker (ACTIVE)** - TWITTER_FOLLOWING_BY_USER_ID fails "client-not-enrolled" (T000003 targets M1 day 1-3); TWITTER_RECENT_SEARCH requires paid API (unusable on free tier) | **Alternative Priorities**: (1) **GitHub-seed + Following-graph** (PRIMARY, unblocks 2k-3k M1 scale post-auth-fix via T000003), (2) **Manual CSV + X Lists** (PROVEN, M0 fallback, sustainable to ~500 authors), (3) **TWITTER_RECENT_SEARCH** (DOWNGRADED, requires paid tier, deprioritized for M1-M2) | **Mitigation**: M0.1 achieved via manual CSV (151 authors); M1 blocked on T000003 auth-unblock (≤3 days); if auth-unblock fails, M1 extends manual approach + x-lists with +2 week timeline
 - **R2**: Brand/official heuristic false negatives pollute pool (flat) → Weekly manual review of top-100 + random-50; iterative rule updates
 - **R3**: Score drift over time without recalc (flat) → Weekly full recalc; version score formula in manifest; log param changes
 - **R4**: xoperator integration breaks if schema changes (down) → Semver in manifest; ext field for custom; ≥90d deprecation notice
@@ -81,6 +82,7 @@
 - 2025-11-13 13:05 | PeerA | MAJOR PIVOT: Bet 1 FALSIFIED for M0 (Twitter v2 enrollment blocker + GitHub OAuth = 2 consecutive auth blockers); staged M0 into M0.0 (48 authors, manual CSV, proxy score v0, ≤3 days) + M0.1 (150-200 authors, manual curation, ≤1 week); chose Option S (proxy scoring) for M0 deliverable; automation paths (GitHub-seed + following-graph) deferred to M1 post-credential-fix; manual CSV now primary M0 path | evidence: PeerB following probe failure (0/5 API calls), Aux risk pivot decision tree at ">2 failed retries", POR.md updated (Bet 1, Roadmap, Risk Radar)
 - 2025-11-13 13:52 | PeerA | Added M1 auth-fix plan (GitHub OAuth + Twitter v2 enrollment resolution, week 1 blocking) + filter implementation plan (week 1, tools/influx-harvest); added R6 risk (pipeline filter enforcement gap, sev=med); verified PeerB schema blocker FALSE (meta fields always required); confirmed guardrails gap (influx-harvest L53/L80 TODO placeholders) | evidence: Foreman 000035 directive, PeerB 000036 schema verification, tools/influx-harvest:L53/L80 grep, POR.md updated (Next, Risk Radar, Maintenance Log)
 - 2025-11-13 14:05 | PeerA | Enhanced Auth-unblock section per Foreman 000038: expanded to 1-paragraph format with owners (PeerB + Composio team for GitHub OAuth, External admin for Twitter v2 enrollment), ETA (M1 day 1-2 for GitHub, day 1-3 for Twitter), validation method (following slice-1 probe retry), and inline risk statement (>3 days blocks M1 automation) | evidence: Foreman 000038 directive post-M0.2 completion (121 authors), POR.md:L37 updated Auth-unblock paragraph
+- 2025-11-13 14:15 | PeerA | M0.1 ACHIEVED milestone marked (151 authors, commit 28a8381); created T000003 Auth-unblock SUBPOR (docs/por/T000003-auth-unblock/SUBPOR.md) with resolution steps, dependencies, validation probe, owners/ETA/contacts; updated R1a risk to clarify X API dependency + alternative priorities (GitHub-seed+Following PRIMARY, Manual CSV+X Lists PROVEN fallback, TWITTER_RECENT_SEARCH DOWNGRADED) | evidence: Foreman 000042 directive (Chinese), POR.md:L28-33 M0.1 achieved, T000003 SUBPOR created, POR.md:L58 R1a updated with priorities
 
 ## Aux Delegations - Meta-Review/Revise (strategic)
 - [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19
