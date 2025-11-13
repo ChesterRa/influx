@@ -2,7 +2,7 @@
 
 # POR - Strategic Board
 
-- **North Star**: Build a 5k–10k high-signal X influencer index (AI/Tech/Creator/Ecosystem) with sustainable refresh & provenance, serving downstream prioritization (xoperator) and ecosystem intelligence.
+- **North Star**: Build a 5k–10k high-signal X influencer index across **12 vertical domains** (AI/Tech, Creator, Business, Finance, Science, Design, Media, Gaming, Policy, Web3, Lifestyle, Other) with sustainable refresh & provenance, serving downstream prioritization (xoperator) and ecosystem intelligence.
 - **Guardrails**: Quality (activity×relevance×safety) > quantity; no paid X API; no browser automation; all sources auditable; licensed CC BY 4.0; 100% RUBE MCP tooling.
 - **Non-Goals / Boundaries**: No "encyclopedia-scale" (>15k); no NSFW/political/controversy by default; no private data; no ToS violations; no black-box scoring.
 
@@ -46,6 +46,132 @@
   - Visualization dashboard (independent site)
   - Parquet export for analysis; weekly full recalc to prevent drift
   - ID-map cache optimization (Aux): Persistent GitHub login ↔ X handle cache + early dedupe/aliasing; cuts 30–60% redundant lookups under free tier
+
+## Domain Coverage Plan (Cross-Domain Expansion)
+
+**Strategy**: Phased bootstrap-then-expand approach to maintain quality gates while scaling across heterogeneous verticals.
+
+### M1 Bootstrap Domains (5-6 domains, 2k-3k authors, 2-3 weeks)
+**Target Domains** (confirmed via PeerB feasibility analysis):
+1. **AI & Technology** (1000-1500 authors, PROVEN M0)
+   - Discovery: GitHub org seeds, research papers, tech conferences
+   - Complexity: EASY (existing seeds + following-graph)
+2. **Creator Economy** (800-1200 authors, PROVEN M0)
+   - Discovery: YouTube/TikTok educators, platform observers
+   - Complexity: EASY (keyword search + lists)
+3. **Business & Entrepreneurship** (800-1200 authors)
+   - Discovery: Founders, VCs, product managers
+   - Complexity: MEDIUM (LinkedIn crossover, keyword overlap with Tech)
+4. **Finance & Markets** (600-1000 authors)
+   - Discovery: Traders, analysts, fintwit, macro commentators
+   - Complexity: MEDIUM (distinct keywords but overlaps with Tech VCs)
+5. **Science & Research** (400-800 authors)
+   - Discovery: Researchers, academics, science communicators
+   - Complexity: MEDIUM (arXiv links, conference hashtags)
+6. **Design & Creative** (400-600 authors)
+   - Discovery: Product designers, UX, visual artists
+   - Complexity: MEDIUM (portfolio links, Dribbble/Behance crossover)
+
+**M1 Quotas**: 2k-3k total, ~350-500 per domain (flexible allocation based on discovery yield)
+**API Budget**: ~30k calls/month (6% of RUBE MCP free tier 500k quota) – SAFE
+**Validation**: 100-author manual review per domain (600 total) for heuristic tuning
+**Timeline**: 2-3 weeks (Week 1: Business + Finance, Week 2: Science + Design, Week 3: Integration + release)
+
+### M2 Expansion Domains (6 additional domains, +3k-5k authors, Week 4-6)
+**Target Domains** (deferred due to complexity/risk):
+7. **Media & Journalism** (400-600 authors, DEFER M2)
+   - Challenge: Heavy overlap with brand/official accounts (high false-positive risk)
+   - Heuristic tuning: +40-60 lines to distinguish independent journalists from news orgs
+8. **Gaming & Esports** (300-500 authors, DEFER M2)
+   - Challenge: Niche community, Twitch/YouTube crossover
+   - Complexity: MEDIUM (distinct community but requires sub-domain mapping)
+9. **Policy & Society** (300-500 authors, DEFER M2, HIGH RISK)
+   - Challenge: High political/controversy risk; requires extensive manual review
+   - Heuristic tuning: "political" keyword currently auto-excludes; needs nuance for Policy domain
+10. **Web3 & Decentralization** (300-500 authors, DEFER M2)
+    - Challenge: High spam/scam risk; needs aggressive filtering
+    - Complexity: MEDIUM (distinct keywords but quality variance)
+11. **Lifestyle & Wellness** (200-400 authors, DEFER M2)
+    - Challenge: Fragmented sub-niches (fashion/food/travel/fitness); keyword noise
+    - Complexity: HARD (requires sub-domain strategy)
+12. **Other High-Quality** (200-400 authors, DEFER M2)
+    - Catch-all for cross-domain creators (books, history, philosophy)
+    - Complexity: UNDEFINED (cannot scope without sub-domain definition)
+
+**M2 Quotas**: 5k-8k total cumulative (M1 + M2 combined)
+**API Budget**: ~60k calls/month (12% quota after M2 expansion) – SAFE with margin
+**Validation**: 1200-author manual review total (M1: 600 + M2: 600)
+**Timeline**: Week 4-6 (3 domains/week, parallel validation)
+
+### Quality Thresholds (All Domains)
+- **Entry filters**: (verified + followers≥30k) OR followers≥50k; recent 30d posts≥5
+- **Brand/official exclusion**: Automatic filtering via `lists/rules/brand_heuristics.yml` + per-domain tuning
+- **Risk filtering**: `lists/rules/risk_terms.yml` + per-domain sensitivity adjustment
+- **Engagement baselines**: Vary by domain (Tech: median 50-200 likes; Gaming: median 200-1k likes)
+- **Precision target**: ≥90% per Bet 2 (measured via 100-sample manual review per domain)
+
+### Success Metrics
+- **M1 Bootstrap Success**: 2k-3k authors, ≥90% precision, <10% brand/official contamination, 100% schema-compliant
+- **M2 Expansion Success**: 5k-8k cumulative, maintain ≥90% precision across all domains, <20% churn/week
+
+## Fallback M1 (Twitter v2 Blocked >7 Days)
+
+**Trigger**: If Twitter v2 enrollment remains unresolved >7 days (T000003 blocked), M1 automation paths (GitHub-seed + following-graph) remain unavailable.
+
+**Fallback Strategy**: Extended manual CSV + X Lists approach (proven M0 method) scaled to M1 targets.
+
+### Fallback Path A: Manual CSV + Curated X Lists (PRIMARY)
+**Method**: Extend M0 manual curation approach with structured sourcing:
+1. **GitHub Organizations** (manual CSV extraction):
+   - Export twitter_username from public GitHub org member profiles
+   - Organizations: OpenAI, DeepMind, Anthropic, Meta AI, Google AI, NVIDIA, Hugging Face, etc.
+   - Target: 200-400 handles per domain (Tech/AI/Business)
+2. **Curated X Lists** (strategic imports):
+   - Identify high-quality public Lists per domain (AI/Tech/Creator/Finance/Design)
+   - Manual review of List quality (curator reputation, member count, last updated)
+   - Export List members as CSV, filter brand/official, validate
+   - Target: 150-300 handles per domain
+3. **Domain-Specific Seeds** (expert curation):
+   - Finance: Fintwit influencers, macro analysts (via Bloomberg/WSJ follows)
+   - Science: Academic Twitter, ArXiv authors, science communicators
+   - Design: Dribbble/Behance top creators, design thought leaders
+   - Target: 100-200 handles per domain
+
+**Scaling**:
+- Week 1-2: Collect 1k-1.5k seeds across 5-6 domains (200-300 per domain)
+- Week 3: Batch USER_LOOKUP validation (1.5k calls), brand/risk filtering, scoring
+- Week 4: M1 release with 1.5k-2k authors (reduced from 2k-3k automation target)
+
+**Trade-offs**:
+- ✅ **Pros**: Proven M0 method (151/151 success rate), no API dependency, high precision (manual curation)
+- ❌ **Cons**: Labor-intensive (50-80 hours curation), slower scale (1.5k-2k vs 2k-3k), limited network discovery (no following-graph expansion)
+
+**Timeline**: +2 weeks vs automation path (4-5 weeks total for M1 vs 2-3 weeks with automation)
+
+### Fallback Path B: Hybrid Automation (GitHub-Only, No Twitter Following)
+**Method**: If GitHub OAuth succeeds but Twitter v2 remains blocked, use GitHub-seed without following-graph expansion:
+1. **GitHub Org Discovery**: Automated via GITHUB_LIST_ORGANIZATION_MEMBERS + GITHUB_GET_A_USER
+2. **Twitter Handle Extraction**: twitter_username field from GitHub profiles
+3. **Batch Validation**: TWITTER_USER_LOOKUP (v1 API, no enrollment required) for profile enrichment
+4. **Manual Supplementation**: Fill gaps with curated X Lists (200-300 handles/domain)
+
+**Scaling**:
+- Week 1: GitHub discovery (500-800 handles, Tech/AI/Business domains)
+- Week 2: Batch validation + X Lists supplementation (+500-700 handles, remaining domains)
+- Week 3: Scoring + M1 release with 1.2k-1.5k authors
+
+**Trade-offs**:
+- ✅ **Pros**: Partially automated (GitHub discovery), faster than full manual (3 weeks vs 4-5)
+- ❌ **Cons**: Limited to GitHub-heavy domains (Tech/AI/Business), misses Creator/Finance/Design depth
+
+**Timeline**: +1 week vs full automation (3 weeks for M1 vs 2 weeks)
+
+### Fallback Decision Tree
+- **T+72h (3 days)**: Twitter v2 unresolved → Start Fallback Path B (GitHub-only) in parallel with continued auth-unblock efforts
+- **T+7d (1 week)**: Twitter v2 unresolved → Commit to Fallback Path A (manual CSV + Lists), notify user of +2 week timeline
+- **T+14d (2 weeks)**: Twitter v2 unresolved → M1 releases with 1.5k-2k authors via Fallback Path A; defer automation to M2
+
+**Risk Mitigation**: Fallback paths maintain M1 delivery (albeit slower/smaller) while preserving option to resume automation in M2 when auth unblocks.
 
 ## Decision & Pivot Log (recent 6)
 - 2025-11-13 11:16 | Bootstrap approach | Use 3-path synthesis (auto-discover + seeds + lists) vs single keyword crawl | Reduces cold-start risk, diversifies sources, auditable | default
