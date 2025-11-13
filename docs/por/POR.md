@@ -58,6 +58,7 @@
 ## Maintenance & Change Log (append-only, one line each)
 - 2025-11-13 11:16 | PeerA | Initialized POR from PROJECT.md; defined M0 roadmap (400–600 authors, 3-path bootstrap) | evidence: POR.md created
 - 2025-11-13 11:19 | PeerA | Pivoted collection strategy from keyword-heavy to GitHub-seed + following-graph; added state DB (SQLite); simplified schema | evidence: Aux validation of API tiers, PeerB network expansion alignment
+- 2025-11-13 12:14 | PeerA | Added acceptance criteria + intermediate artifact compliance strategy (Option A: meta placeholders) to D2 pipeline contract; confirmed ≤150 API calls feasible for M0 | evidence: docs/por/d2-pipeline-contract.md updated, Foreman directive 000016
 
 ## Aux Delegations - Meta-Review/Revise (strategic)
 - [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19

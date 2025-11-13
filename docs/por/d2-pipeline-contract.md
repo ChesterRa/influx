@@ -144,6 +144,24 @@ python3 tools/influx-validate -s schema/bigv.schema.json <input.jsonl>
 
 Exit code 0 = valid; non-zero = schema violation (CI blocks merge).
 
+### Intermediate Artifact Compliance Strategy
+
+**Problem**: Schema requires `meta` object with `score`, `last_refresh_at`, `sources`, `provenance_hash` (all required per schema/bigv.schema.json:L220-225), but intermediate outputs from `influx-harvest` lack scores (scoring occurs in `influx-score`).
+
+**Solution (Option A)**: `influx-harvest` writes **minimal compliant meta placeholders**:
+- `meta.score`: `0` (placeholder; actual score computed by influx-score)
+- `meta.last_refresh_at`: Current timestamp (ISO 8601)
+- `meta.sources`: Array of source objects with `method`, `fetched_at`, `evidence` (already collected during harvest)
+- `meta.provenance_hash`: SHA-256 of canonical JSON fields (`id`+`handle`+`followers_count`+`verified`+`sources`)
+
+**Rationale**:
+- Enables end-to-end validation at every pipeline stage (harvest → score → export)
+- Prevents "validate later" technical debt
+- `score=0` is semantically correct for unscored records
+- `provenance_hash` based on harvest-time fields is stable and reproducible
+
+**Alternative (Option B - REJECTED)**: Define separate intermediate schema and only validate final artifacts. Rejected because it creates schema drift risk and dual-contract maintenance burden.
+
 ---
 
 ## Evidence Requirements (M0)
@@ -162,6 +180,57 @@ Each author record MUST include:
 ```
 
 Provenance enables audit trail and reproducibility.
+
+---
+
+## Acceptance Criteria (M0)
+
+### T000002 github-seeds Probe (Minimal Validation)
+**Scope**: Implement `influx-harvest github-seeds` with 4 orgs (openai, anthropic, pytorch, huggingface)
+
+**Output**: `.cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl`
+
+**Acceptance**:
+1. **File exists** with ≥5 author records (one JSONL object per line)
+2. **Schema validation passes**: `python3 tools/influx-validate -s schema/bigv.schema.json github_seeds.sample.jsonl` exits with code 0
+3. **Required fields present** in each record:
+   - Core: `id`, `handle`, `name`, `verified`, `followers_count`, `lang_primary`, `topic_tags`
+   - Meta placeholders: `meta.score=0`, `meta.last_refresh_at`, `meta.sources` (≥1 item with `method="github_seed"`, `fetched_at`, `evidence`), `meta.provenance_hash`
+4. **Dedup/filter logic**: Code includes placeholder functions for deduplication (by `id` or `handle`) and brand/risk filtering (may be no-op for probe)
+5. **One-shot command documented**: README at `.cccc/work/foreman/probe-20251113/README.md` includes exact command to reproduce, output path, and timestamp
+
+**Evidence**: Commit with probe output file + README; validation passes in CI
+
+### Full M0 Pipeline (End-to-End)
+**Scope**: Complete collection pipeline producing 400-600 scored authors
+
+**Acceptance**:
+1. **Data flow completes**: GitHub seeds (160-200) → following expansion (160-200) → merge+dedupe (~320-400) → [optional: x-lists +40-80] → score → export
+2. **Final output**: `data/latest/latest.jsonl.gz` + `manifest.json`
+   - Count: 400-600 authors
+   - Sorting: score desc → followers desc → handle lex
+   - Manifest: schema_version, timestamp, count, sha256 match file
+3. **Schema validation**: All intermediate and final outputs pass `influx-validate`
+4. **Rate limits respected**: Execution logs show ≤150 API calls per run; no 429 errors with retry-after >60s
+5. **Provenance complete**: Each author has ≥1 source with method/fetched_at/evidence
+6. **CI green**: All workflows pass (.github/workflows/validate.yml)
+
+**Evidence**: Release tag YYYYMMDD with data/ artifact; POR Portfolio Health updated; xoperator ingests without error
+
+### Rate Limit Feasibility Confirmation
+
+**≤150 API calls per run** is feasible for M0:
+- **GitHub org members** (4 orgs × ~10-15 members): ~50-60 calls (GITHUB_SEARCH_USERS + GITHUB_GET_A_USER per member to extract `twitter_username`)
+- **Twitter user lookup** (~40-50 unique handles): ~1-2 calls (TWITTER_USER_LOOKUP_BY_USERNAMES batches 100 usernames per call)
+- **Following expansion** (40-50 seeds × 2 pages): ~80-100 calls (TWITTER_FOLLOWING_BY_USER_ID)
+- **Total**: ~131-162 calls (probe with 4 orgs is within budget; scale to 16 orgs requires batching into 3-4 runs)
+
+**≤2 pages per seed** trade-off:
+- **Pros**: Stays within free-tier rate limits; ~200 follows per seed is sufficient for high-signal diversity
+- **Cons**: Misses long-tail follows (seeds with >200 follows get truncated)
+- **Mitigation**: Prioritize high-centrality seeds (verified accounts with >100k followers likely follow other high-signal accounts in top 200)
+
+**Acceptance**: M0 execution completes without rate limit blocks; adjust batch size if needed (split 16 orgs into smaller runs)
 
 ---
 
