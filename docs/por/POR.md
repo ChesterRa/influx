@@ -34,6 +34,8 @@
   - **Execution Guardrails** (per d2-pipeline-contract.md, POR R1): ✓ API total calls ≤150/run; ✓ Entry filters: (verified+30k) OR 50k; ✓ Brand/risk rules mandatory (lists/rules/); ✓ Every stage output includes meta placeholders (proxy_score, last_refresh_at, sources≥1, provenance_hash)
   - Heuristics: brand_heuristics.yml ✓, risk_terms.yml ✓
 - **Next (M1, ≤6 weeks)**:
+  - **Auth-fix (week 1, blocking automation)**: Resolve GitHub OAuth + Twitter v2 enrollment blockers; validate with following slice-1 probe retry (5 seeds × 1 page); unblocks automated collection paths (GitHub-seed + following-graph)
+  - **Filter implementation (week 1)**: Implement entry filters ((verified+30k) OR 50k) + brand/risk rules in tools/influx-harvest; replaces M0 manual CSV pre-filtering with automated pipeline enforcement
   - Scale to 2k–3k via incremental refresh (6–12h cadence)
   - Refine heuristics based on manual review (sample 100/week)
   - Snapshot automation: daily Release w/ tag YYYYMMDD
@@ -57,6 +59,7 @@
 - **R3**: Score drift over time without recalc (flat) → Weekly full recalc; version score formula in manifest; log param changes
 - **R4**: xoperator integration breaks if schema changes (down) → Semver in manifest; ext field for custom; ≥90d deprecation notice
 - **R5**: Domain skew in M0.1 manual curation (new, sev=med) → Manual CSV approach may over-sample certain domains/orgs (e.g., OpenAI/Anthropic/HuggingFace heavy due to curators' network bias) affecting diversity/representativeness | **Mitigation**: Per-domain quotas (≤30% from single org, ≤50% from AI-core domain); document source distribution in manifest/SUBPOR; M1 automation (following-graph + x-lists) will rebalance via algorithmic diversity | **Acceptance**: M0.1 manifest includes source_distribution field showing org/domain breakdown
+- **R6**: Pipeline filter enforcement gap (new, sev=med) → tools/influx-harvest has TODO placeholders for entry filters + brand/risk rules (L53, L80); M0.0/M0.1 succeeded via manual CSV pre-filtering, bypassing pipeline automation | **Impact**: Scaling without implemented filters risks quality degradation; pipeline doesn't enforce POR guardrails ((verified+30k) OR 50k, brand/risk rules from lists/rules/*) | **Mitigation**: M0 continues manual pre-filtering (proven approach); M1 week 1 implements filters in influx-harvest to enable full automation; document M0 limitation in d2-pipeline-contract.md | **Acceptance**: M1 filter implementation tested with ≥50 handle batch, 100% compliance with entry filters + brand/risk rules
 
 ## Portfolio Health (in-progress / at-risk only)
 | ID | Title | Owner | Stage | Latest evidence (one line) | SUBPOR |
@@ -76,6 +79,7 @@
 - 2025-11-13 12:20 | PeerA | Integrated Aux strategic review: M0 target refined to 600; Bet1 success criteria added (coverage≥65%, precision≥95%, active≥70%, Gini≥0.6, org affiliation≥30%, duplicate≤5%); risk pivot thresholds (>90m/2h/4h); parallelization strategy (following+x-lists concurrent); T000002 completion (48 profiles, 83% hit rate, 100% schema-compliant) calibrates expectations | evidence: Aux review output, T000002 SUBPOR, POR updated
 - 2025-11-13 12:28 | PeerA | Added explicit Execution Guardrails to M0 Now section per Foreman directive: API≤150/run, TWITTER_FOLLOWING≤2 pages/seed, entry filters (verified+30k OR 50k), brand/risk rules mandatory, Option A meta placeholders at every stage; cross-references d2-pipeline-contract.md | evidence: Foreman 000019, POR.md:L25
 - 2025-11-13 13:05 | PeerA | MAJOR PIVOT: Bet 1 FALSIFIED for M0 (Twitter v2 enrollment blocker + GitHub OAuth = 2 consecutive auth blockers); staged M0 into M0.0 (48 authors, manual CSV, proxy score v0, ≤3 days) + M0.1 (150-200 authors, manual curation, ≤1 week); chose Option S (proxy scoring) for M0 deliverable; automation paths (GitHub-seed + following-graph) deferred to M1 post-credential-fix; manual CSV now primary M0 path | evidence: PeerB following probe failure (0/5 API calls), Aux risk pivot decision tree at ">2 failed retries", POR.md updated (Bet 1, Roadmap, Risk Radar)
+- 2025-11-13 13:52 | PeerA | Added M1 auth-fix plan (GitHub OAuth + Twitter v2 enrollment resolution, week 1 blocking) + filter implementation plan (week 1, tools/influx-harvest); added R6 risk (pipeline filter enforcement gap, sev=med); verified PeerB schema blocker FALSE (meta fields always required); confirmed guardrails gap (influx-harvest L53/L80 TODO placeholders) | evidence: Foreman 000035 directive, PeerB 000036 schema verification, tools/influx-harvest:L53/L80 grep, POR.md updated (Next, Risk Radar, Maintenance Log)
 
 ## Aux Delegations - Meta-Review/Revise (strategic)
 - [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19
