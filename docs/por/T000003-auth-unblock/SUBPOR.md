@@ -22,6 +22,7 @@ Unblock automated data collection by resolving API authentication and authorizat
 - [ ] **AC3**: GitHub OAuth completed OR support ticket filed with ticket number
 - [ ] **AC4**: Twitter v2 access enabled OR support ticket filed with ticket number
 - [ ] **AC5**: Validation probe (5 seeds × 1 page following) executes successfully with ≥1 filtered result
+- [ ] **AC6**: GitHub and Twitter ticket numbers and ETAs recorded in Deliverables section (per Foreman #000070)
 
 ## Current State
 
@@ -75,9 +76,15 @@ Unblock automated data collection by resolving API authentication and authorizat
 
 ## Deliverables
 
-1. Support Tickets:
-   - GitHub OAuth: TBD (pending user timing decision)
-   - Twitter v2 access: TBD (needs filing)
+1. Support Tickets & Timeline:
+   - **GitHub OAuth**:
+     * Ticket: User completed OAuth (User #000069, 2025-11-13T06:23)
+     * Status: Validation in progress (PeerB testing)
+     * ETA: ≤24h validation + confirmation
+   - **Twitter v2 Access**:
+     * Ticket: TBD (needs filing per Foreman #000070)
+     * Status: Awaiting ticket submission
+     * ETA: TBD (dependent on Composio/Twitter support response, est. 3-7d)
 
 2. Validation Probe:
    - Execution window: Post-unblock

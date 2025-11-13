@@ -31,6 +31,7 @@
     - Scoring: Proxy formula v0 (mean 52.3, range 0-100), 100% validation maintained
     - Evidence: Commit 28a8381, SHA-256: 107af7d9..., manifest.count=151, CI green
     - **Acceptance**: ✅ ≥150 target met, sufficient diversity (AI/ML/Tech/Blockchain/Security domains), 100% schema-compliant, proxy-scored, ready for xoperator validation
+    - **M0 Fallback** (per Foreman #000070): If T000003 auth-unblock not resolved within 72h from first blocker (T+72h), manually expand M0 dataset from 151 to ≥200 authors via continued CSV curation + maintain daily snapshots; ensures progress continuity while awaiting external auth dependencies
   - **Three-path bootstrap (BLOCKED, DEFERRED M1)**: GitHub-seed + following-graph blocked by auth issues (GitHub OAuth + Twitter v2 enrollment); automation paths move to M1 post-credential-fix
   - **Execution Guardrails** (per d2-pipeline-contract.md, POR R1): ✓ API total calls ≤150/run; ✓ Entry filters: (verified+30k) OR 50k; ✓ Brand/risk rules mandatory (lists/rules/); ✓ Every stage output includes meta placeholders (proxy_score, last_refresh_at, sources≥1, provenance_hash)
   - Heuristics: brand_heuristics.yml ✓, risk_terms.yml ✓
