@@ -9,7 +9,7 @@ updated: "2025-11-13"
 name_keywords:
   official_indicators:
     - "official"
-    - "team"
+    - "team"  # NOTE: May FP on gaming/esports teams ("Team Liquid player"). Recommend context check (gaming domain indicators).
     - "support"
     - "help"
     - "press"
@@ -20,7 +20,7 @@ name_keywords:
 
   corporate_indicators:
     - "corp"
-    - "inc"
+    - "inc"  # NOTE: "Inc" as personal nickname (e.g., "John Doe Inc") may cause FP; use context/verified status to override
     - "ltd"
     - "llc"
     - "gmbh"
@@ -29,7 +29,7 @@ name_keywords:
 
   brand_commerce:
     - "store"
-    - "shop"
+    - "shop"  # NOTE: May FP on job descriptions ("at Shopify"). Recommend word-boundary match in implementation.
     - "shopping"
     - "deals"
     - "sales"

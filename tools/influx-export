@@ -50,17 +50,23 @@ def export_latest(args):
     # Create output directory
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Write gzipped JSONL + compute sha256
-    output_path = out_dir / "latest.jsonl.gz"
+    # Write both uncompressed and gzipped JSONL + compute sha256
+    output_path_gz = out_dir / "latest.jsonl.gz"
+    output_path_plain = out_dir / "latest.jsonl"
     sha256_hash = hashlib.sha256()
 
-    print(f"Writing {output_path}")
-    with gzip.open(output_path, "wt", encoding="utf-8") as gz:
+    print(f"Writing {output_path_plain}")
+    print(f"Writing {output_path_gz}")
+    with open(output_path_plain, "w", encoding="utf-8") as plain, \
+         gzip.open(output_path_gz, "wt", encoding="utf-8") as gz:
         for author in authors:
             line = json.dumps(author, ensure_ascii=False, separators=(',', ':'))
-            gz.write(line + "\n")
-            # Hash the line as it would appear in uncompressed form
-            sha256_hash.update((line + "\n").encode("utf-8"))
+            line_with_newline = line + "\n"
+            # Write to both files
+            plain.write(line_with_newline)
+            gz.write(line_with_newline)
+            # Hash the line
+            sha256_hash.update(line_with_newline.encode("utf-8"))
 
     sha256_digest = sha256_hash.hexdigest()
     print(f"SHA-256: {sha256_digest}")
@@ -125,20 +131,27 @@ def export_snapshot(args):
     # Create output directory
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Write gzipped JSONL + compute sha256
+    # Write both uncompressed and gzipped JSONL + compute sha256
     # Filename format: bigv-YYYYMMDD.jsonl.gz (no dashes in date)
     date_compact = args.date.replace("-", "")
-    output_filename = f"bigv-{date_compact}.jsonl.gz"
-    output_path = out_dir / output_filename
+    output_filename_gz = f"bigv-{date_compact}.jsonl.gz"
+    output_filename_plain = f"bigv-{date_compact}.jsonl"
+    output_path_gz = out_dir / output_filename_gz
+    output_path_plain = out_dir / output_filename_plain
     sha256_hash = hashlib.sha256()
 
-    print(f"Writing {output_path}")
-    with gzip.open(output_path, "wt", encoding="utf-8") as gz:
+    print(f"Writing {output_path_plain}")
+    print(f"Writing {output_path_gz}")
+    with open(output_path_plain, "w", encoding="utf-8") as plain, \
+         gzip.open(output_path_gz, "wt", encoding="utf-8") as gz:
         for author in authors:
             line = json.dumps(author, ensure_ascii=False, separators=(',', ':'))
-            gz.write(line + "\n")
-            # Hash the line as it would appear in uncompressed form
-            sha256_hash.update((line + "\n").encode("utf-8"))
+            line_with_newline = line + "\n"
+            # Write to both files
+            plain.write(line_with_newline)
+            gz.write(line_with_newline)
+            # Hash the line
+            sha256_hash.update(line_with_newline.encode("utf-8"))
 
     sha256_digest = sha256_hash.hexdigest()
     print(f"SHA-256: {sha256_digest}")
@@ -150,7 +163,7 @@ def export_snapshot(args):
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "count": len(authors),
         "sha256": sha256_digest,
-        "filename": output_filename,
+        "filename": output_filename_gz,
         "source_file": str(input_path),
         "sort_order": "score desc, followers_count desc, handle asc",
         "score_version": "v0_proxy_no_metrics",

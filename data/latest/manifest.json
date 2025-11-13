@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "timestamp": "2025-11-13T05:05:39.766898+00:00",
-  "count": 151,
-  "sha256": "107af7d9e86a45f48561b26e5f93a5bc1a825dda1c8a7ff948f469689bdf70ab",
-  "source_file": ".cccc/work/m03/complete_scored.jsonl",
+  "timestamp": "2025-11-14T17:10:00.695227+00:00",
+  "count": 324,
+  "sha256": "4a0fe421c03d2949b3f5ce1e34dbb31b65dcb7dafc05744eb514597302d64752",
+  "source_file": "data/latest/latest.jsonl",
   "sort_order": "score desc, followers_count desc, handle asc",
   "score_version": "v0_proxy_no_metrics",
   "score_formula": "20*log10(followers/1000) + verified_boost, clipped [0,100]",

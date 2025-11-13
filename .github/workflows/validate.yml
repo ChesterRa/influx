@@ -50,6 +50,15 @@ jobs:
 
       - name: Validate latest data (if exists)
         run: |
+          # Validate plain JSONL
+          if [ -f data/latest/latest.jsonl ]; then
+            echo "=== Validating data/latest/latest.jsonl ==="
+            python3 tools/influx-validate -s schema/bigv.schema.json data/latest/latest.jsonl
+          else
+            echo "⚠ data/latest/latest.jsonl not found (OK for initial commits)"
+          fi
+
+          # Validate compressed JSONL
           if [ -f data/latest/latest.jsonl.gz ]; then
             echo "=== Validating data/latest/latest.jsonl.gz ==="
             python3 tools/influx-validate -s schema/bigv.schema.json data/latest/latest.jsonl.gz

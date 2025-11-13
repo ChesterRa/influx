@@ -149,6 +149,22 @@ Manual CSV curation (GitHub org pages, X Lists, domain seeds)
 - Keywords: `nsfw`, `political`, `controversy`, `spam`, `hate_speech`
 - Action: Set `risk_flags=[...]`; exclude from M0 pool by default
 
+### Boundary Terms (FP-Prone Keywords) - M1 Tuning Guide
+
+**Context**: Certain brand/risk keywords require context-sensitive matching to avoid false positives. NOTEs added to `brand_heuristics.yml` (2025-11-13) based on `.cccc/work/review/brand_fp.sample.csv` analysis (20 test cases).
+
+**FP-Prone Terms & Mitigation**:
+- **"inc"** (corporate_indicators): May match personal nicknames (e.g., "John Doe Inc"). Mitigation: Check verified status (blue) + personal bio context ("personal views", "tweets my own").
+- **"shop"** (brand_commerce): May match job descriptions (e.g., "engineer at Shopify"). Mitigation: Recommend word-boundary match in implementation (not substring); exempt if combined with "at [CompanyName]" pattern.
+- **"team"** (official_indicators): May match gaming/esports teams (e.g., "Team Liquid player"). Mitigation: Exempt if bio contains gaming indicators (esports, streaming, competitive, tournament); check domain context.
+
+**Implementation Notes**:
+- Current YAMLs use substring matching for speed; boundary-aware matching may be added in M2.
+- Manual QA samples (N=30 per batch) catch remaining edge cases; add to `brand_heuristics.yml:exceptions` list as discovered.
+- Trade-off: Loose matching (current) = faster, ≤5% FP rate (acceptable for manual QC); strict matching = slower, higher implementation complexity.
+
+**Evidence**: FP analysis documented in `.cccc/work/review/brand_fp.validation.txt` (141 lines, generated 2025-11-13).
+
 ### ✅ Filter Implementation Specification (M1 Week 1) - NORMATIVE
 
 **Status**: ACTIVE for M1 - PeerB implementation complete (commit 6fd9487)
