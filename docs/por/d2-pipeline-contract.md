@@ -201,6 +201,38 @@ Provenance enables audit trail and reproducibility.
 
 **Evidence**: Commit with probe output file + README; validation passes in CI
 
+### Following Slice-1 Probe (Minimal Graph Expansion Validation)
+**Scope**: Implement `influx-harvest following` with 5 seed authors (first 5 records from `github_seeds.sample.jsonl`) × 1 page per seed
+
+**Input**: `.cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl` (first 5 records only, prioritize those with X user IDs already resolved)
+
+**Output**: `.cccc/work/foreman/probe-20251113/following.sample.jsonl`
+
+**Acceptance**:
+1. **Strict entry filters applied**: `(verified == true AND followers_count >= 30000) OR followers_count >= 50000`
+2. **Brand/risk rules enforced**: Brand heuristics (`lists/rules/brand_heuristics.yml`) and risk terms (`lists/rules/risk_terms.yml`) applied; branded/risky accounts excluded
+3. **Pagination locked**: Exactly 1 page per seed (`--pages=1`), no automatic expansion
+4. **Output threshold**: ≥50 author records after filters
+5. **Schema validation passes**: `python3 tools/influx-validate -s schema/bigv.schema.json following.sample.jsonl` exits with code 0
+6. **Meta placeholders present**: Each record includes Option A meta fields (`score=0`, `last_refresh_at`, `sources` with `method="following_expansion"`, `provenance_hash`)
+7. **API call tracking**: Execution logs record actual API call count (expected: 5-10 calls for 5 seeds × 1 page)
+8. **Boundary enforcement**: If output count <50, log reason (insufficient follows passing filters, seed accounts suspended, etc.) and **STOP** - do NOT increase pages or seed count without explicit approval
+
+**Command**:
+```bash
+influx-harvest following \
+  --seeds .cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl \
+  --limit-seeds 5 \
+  --pages 1 \
+  --out .cccc/work/foreman/probe-20251113/following.sample.jsonl
+```
+
+**Evidence**: Commit with probe output file + command/results in T000002 SUBPOR REV section; validation passes
+
+**Risk Mitigation**: Locks slice boundaries (5 seeds × 1 page) to prevent scope creep during probing; if ≥50 output demonstrates following-graph viability, proceed to full M0; if <50, diagnose bottleneck (filter too strict? seed quality?) before expanding
+
+**Cross-reference**: POR.md:L25 execution guardrails (API≤150/run, TWITTER_FOLLOWING≤2 pages/seed, entry filters, brand/risk rules mandatory, Option A meta placeholders)
+
 ### Full M0 Pipeline (End-to-End)
 **Scope**: Complete collection pipeline producing 400-600 scored authors
 
