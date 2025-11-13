@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "timestamp": "2025-11-13T03:28:34.162960+00:00",
+  "count": 48,
+  "sha256": "78cd9f7e955e6ebf42179904c81a2367c9f36b41ffc20af41474c51069bff173",
+  "source_file": ".cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl",
+  "sort_order": "score desc, followers_count desc, handle asc"
+}

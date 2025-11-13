@@ -103,3 +103,4 @@ $ python3 tools/influx-validate -s schema/bigv.schema.json \
 ## REV
 
 - **2025-11-13T03:16:00Z**: COMPLETE - All 5 acceptance criteria met, 48/48 records validated
+- **2025-11-13T03:28:34Z**: EXPORT - Implemented influx-export; exported 48 records to data/latest/latest.jsonl.gz (SHA-256: 78cd9f7e...), manifest.json generated, validation passed 48/48
