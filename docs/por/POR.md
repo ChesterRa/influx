@@ -22,6 +22,7 @@
   - Repo skeleton: schema v1.0.0 (simplified: core+metrics_30d+meta+ext), state/influx.db (SQLite), tools/ stubs, CI (lint+validate)
   - Three-path bootstrap (REVISED): (1) Manual CSV seeds (T000002: 48 profiles) + following-graph expansion (TWITTER_FOLLOWING) → 200–250, (2) [optional] curated X Lists CSV → 40–80 | **Strategy (Aux)**: Parallelize following-graph + x-lists for 30-50% faster time-to-evidence; merge+dedupe at end
   - D2 collection pipeline: [Contract: docs/por/d2-pipeline-contract.md] influx-harvest (github-seeds/following/x-lists) → influx-score (30d metrics) → influx-export (latest.jsonl.gz + manifest)
+  - **Execution Guardrails** (per d2-pipeline-contract.md, POR R1): ✓ API total calls ≤150/run; ✓ TWITTER_FOLLOWING ≤2 pages/seed; ✓ Entry filters: (verified+30k) OR 50k; ✓ Brand/risk rules mandatory (lists/rules/); ✓ Every stage output includes Option A meta placeholders (score=0, last_refresh_at, sources≥1, provenance_hash)
   - Heuristics: brand_heuristics.yml, risk_terms.yml; scoring formula v1 (activity 30% + quality 50% + relevance 20%)
   - First release: `data/latest/latest.jsonl.gz` (**target: 600 per Aux ROI analysis**, scored, manifest.json); state DB persists history
   - Acceptance: Schema validates; CI green; manifest sha256 matches; xoperator ingests without error; state DB queryable
@@ -64,6 +65,7 @@
 - 2025-11-13 11:19 | PeerA | Pivoted collection strategy from keyword-heavy to GitHub-seed + following-graph; added state DB (SQLite); simplified schema | evidence: Aux validation of API tiers, PeerB network expansion alignment
 - 2025-11-13 12:14 | PeerA | Added acceptance criteria + intermediate artifact compliance strategy (Option A: meta placeholders) to D2 pipeline contract; confirmed ≤150 API calls feasible for M0 | evidence: docs/por/d2-pipeline-contract.md updated, Foreman directive 000016
 - 2025-11-13 12:20 | PeerA | Integrated Aux strategic review: M0 target refined to 600; Bet1 success criteria added (coverage≥65%, precision≥95%, active≥70%, Gini≥0.6, org affiliation≥30%, duplicate≤5%); risk pivot thresholds (>90m/2h/4h); parallelization strategy (following+x-lists concurrent); T000002 completion (48 profiles, 83% hit rate, 100% schema-compliant) calibrates expectations | evidence: Aux review output, T000002 SUBPOR, POR updated
+- 2025-11-13 12:28 | PeerA | Added explicit Execution Guardrails to M0 Now section per Foreman directive: API≤150/run, TWITTER_FOLLOWING≤2 pages/seed, entry filters (verified+30k OR 50k), brand/risk rules mandatory, Option A meta placeholders at every stage; cross-references d2-pipeline-contract.md | evidence: Foreman 000019, POR.md:L25
 
 ## Aux Delegations - Meta-Review/Revise (strategic)
 - [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19
