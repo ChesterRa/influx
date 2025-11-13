@@ -11,15 +11,66 @@ M0 approach: GitHub org members (twitter_username) + TWITTER_FOLLOWING expansion
 """
 import argparse
 import sys
+import json
+import os
+from datetime import datetime
+from pathlib import Path
 
 
 def github_seeds(args):
-    """Fetch GitHub org members with twitter_username field"""
-    print(f"[TODO] Fetch members from orgs: {args.orgs}")
-    print(f"[TODO] Filter to users with twitter_username")
-    print(f"[TODO] Call TWITTER_USER_LOOKUP_BY_USERNAMES for verification")
-    print(f"[TODO] Output to {args.out}")
-    return 1  # Not implemented
+    """Fetch GitHub org members with twitter_username field via RUBE MCP"""
+    try:
+        # Import RUBE MCP tools
+        from anthropic import Anthropic
+
+        client = Anthropic()
+        session_id = "influx-harvest-github-seeds"
+
+        print(f"[INFO] Fetching GitHub org members from: {args.orgs}", file=sys.stderr)
+        org_list = [org.strip() for org in args.orgs.split(',')]
+
+        # Step 1: Search for GitHub org members with twitter_username
+        print(f"[INFO] Searching {len(org_list)} orgs for members with twitter_username...", file=sys.stderr)
+
+        twitter_usernames = {}  # {username: {github_login, name, ...}}
+
+        for org in org_list:
+            print(f"[INFO] Processing org: {org}", file=sys.stderr)
+
+            # RUBE GITHUB_SEARCH_USERS: org:openai type:user
+            # Then for each user: GITHUB_GET_A_USER to get twitter_username field
+            # This would be called via RUBE_MULTI_EXECUTE_TOOL
+
+            # For now, return placeholder message since GitHub auth is blocking
+            print(f"[BLOCKED] GitHub connection not authorized", file=sys.stderr)
+            print(f"[BLOCKED] Cannot execute GITHUB_SEARCH_USERS", file=sys.stderr)
+            print(f"[BLOCKED] Authorize GitHub at: https://connect.composio.dev/link/lk_gaA1JjyCCAmW", file=sys.stderr)
+            return 1
+
+        # Step 2: Batch verify Twitter usernames via TWITTER_USER_LOOKUP_BY_USERNAMES
+        # (This would happen after GitHub data collection)
+
+        # Step 3: Apply brand/risk filters (placeholder for now)
+
+        # Step 4: Output JSONL with required schema fields
+        output_path = Path(args.out)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            # Write JSONL records
+            pass
+
+        print(f"[INFO] Wrote {len(twitter_usernames)} authors to {args.out}", file=sys.stderr)
+        return 0
+
+    except ImportError:
+        print("[ERROR] anthropic library not installed. Install with: pip install anthropic", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"[ERROR] {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        return 1
 
 
 def following_expansion(args):
