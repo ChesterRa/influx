@@ -18,6 +18,7 @@ import re
 import csv
 import hashlib
 import yaml
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Set, Tuple, Any
@@ -352,17 +353,63 @@ def x_lists(args):
             print("[ERROR] No handles found in CSV", file=sys.stderr)
             return 1
 
-        # Batch lookup via Twitter API (RUBE MCP)
-        # For M1 smoke test, we need to call TWITTER_USER_LOOKUP_BY_USERNAMES
-        # This requires RUBE MCP integration - placeholder for now
+        # Phase 2: Prefer prefetched users, else call bridge to instruct RUBE MCP workflow
+        users = []  # type: List[Dict[str, Any]]
+        if getattr(args, 'prefetched_users', None):
+            src = args.prefetched_users
+            print(f"[INFO] Loading prefetched users from {src}", file=sys.stderr)
+            count = 0
+            with open(src, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        obj = json.loads(line)
+                        # Accept either full user object or wrapped {"data": {...}}
+                        if isinstance(obj, dict) and 'data' in obj and isinstance(obj['data'], dict):
+                            obj = obj['data']
+                        if isinstance(obj, dict):
+                            users.append(obj)
+                            count += 1
+                    except json.JSONDecodeError:
+                        continue
+            print(f"[INFO] Loaded {count} user objects", file=sys.stderr)
+        else:
+            # Attempt to call the bridge which outputs instructions and exits 2
+            bridge_path = str(Path(__file__).with_name('influx-rube-bridge'))
+            cmd = [bridge_path, "--handles", ",".join(handles)]
+            print(f"[INFO] Looking up Twitter users via bridge (n={len(handles)})", file=sys.stderr)
+            try:
+                result = subprocess.run(
+                    cmd,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+            except FileNotFoundError:
+                print(f"[ERROR] Bridge not found at {bridge_path}", file=sys.stderr)
+                return 1
 
-        print(f"[INFO] Looking up Twitter users (batch size: {len(handles)})", file=sys.stderr)
-        print(f"[INFO] This requires TWITTER_USER_LOOKUP_BY_USERNAMES via RUBE MCP", file=sys.stderr)
-        print(f"[WARN] RUBE MCP integration not implemented - would lookup {len(handles)} users", file=sys.stderr)
-
-        # For smoke test, simulate with empty result
-        # In production, this would call RUBE_MULTI_EXECUTE_TOOL with TWITTER_USER_LOOKUP_BY_USERNAMES
-        users = []  # Would contain API responses
+            if result.returncode == 0:
+                # Not expected for the bridge; proceed if any output provided
+                if result.stdout.strip():
+                    print(result.stdout, file=sys.stderr)
+                print("[ERROR] Bridge returned 0 unexpectedly; no users loaded", file=sys.stderr)
+                return 1
+            elif result.returncode == 2:
+                # Friendly workflow instructions
+                if result.stdout.strip():
+                    print(result.stdout, file=sys.stderr)
+                print("[INFO] Re-run x-lists with --prefetched-users once you have JSONL", file=sys.stderr)
+                return 2
+            else:
+                if result.stdout.strip():
+                    print(result.stdout, file=sys.stderr)
+                if result.stderr.strip():
+                    print(result.stderr, file=sys.stderr)
+                print(f"[ERROR] Bridge failed with exit code {result.returncode}", file=sys.stderr)
+                return result.returncode
 
         # Apply filters
         print(f"[INFO] Applying filters...", file=sys.stderr)
@@ -499,6 +546,10 @@ def main():
     lists_parser.add_argument(
         "--allow-risk", default="",
         help="Comma-separated risk flags to allow (default: none)"
+    )
+    lists_parser.add_argument(
+        "--prefetched-users",
+        help="JSONL file with Twitter user objects (one per line) from RUBE MCP TWITTER_USER_LOOKUP_BY_USERNAMES"
     )
 
     args = parser.parse_args()
