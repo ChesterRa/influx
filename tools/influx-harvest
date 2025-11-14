@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """
-influx-harvest: Author discovery via GitHub seeds and following-graph expansion
+influx-harvest: Author discovery via curated X Lists.
 
 Usage:
-    influx-harvest github-seeds --orgs openai,anthropic,pytorch --out authors.jsonl
-    influx-harvest following --seeds authors.jsonl --pages 2 --out expanded.jsonl
     influx-harvest x-lists --list-urls lists.txt --out curated.jsonl
 
-M0 approach: GitHub org members (twitter_username) + TWITTER_FOLLOWING expansion
 M1 approach: Manual CSV + X Lists with brand/risk filtering
 """
 import argparse
@@ -284,6 +281,37 @@ def transform_to_schema(user: Dict, method: str, category: str = '', brand_rules
             for keyword in ['official', 'team', 'support', 'admin', 'security']))
     )
 
+    # M2: Capture free Twitter API activity metrics
+    activity_metrics = {}
+    if 'created_at' in user:
+        # Account creation date from Twitter API
+        activity_metrics['account_created_at'] = user['created_at']
+
+    # Tweet count is available in public_metrics for free tier
+    if 'tweet_count' in public_metrics:
+        activity_metrics['tweet_count'] = public_metrics['tweet_count']
+
+    # Additional M2 activity metrics from free API
+    if 'like_count' in public_metrics:
+        activity_metrics['total_like_count'] = public_metrics['like_count']
+
+    if 'media_count' in public_metrics:
+        activity_metrics['media_count'] = public_metrics['media_count']
+
+    if 'listed_count' in public_metrics:
+        activity_metrics['listed_count'] = public_metrics['listed_count']
+
+    if 'following_count' in public_metrics:
+        activity_metrics['following_count'] = public_metrics['following_count']
+
+    # Pinned tweet ID for recent activity signal
+    if 'pinned_tweet_id' in user:
+        activity_metrics['pinned_tweet_id'] = user['pinned_tweet_id']
+
+    # Calculate days since last tweet (placeholder - will be updated in M2 scoring)
+    # For now, capture current timestamp for recency calculations
+    activity_metrics['last_captured_at'] = now
+
     record = {
         'id': user.get('id', ''),
         'handle': user.get('username', ''),
@@ -302,221 +330,17 @@ def transform_to_schema(user: Dict, method: str, category: str = '', brand_rules
                 'fetched_at': now,
                 'evidence': f"@{user.get('username', '')}"
             }],
-            'provenance_hash': compute_provenance_hash(user)
+            'provenance_hash': compute_provenance_hash(user),
+            # M2: Store activity metrics for scoring
+            'activity_metrics': activity_metrics
         }
     }
 
     return record
 
 
-def github_seeds(args):
-    """Fetch GitHub org members with twitter_username field via RUBE MCP"""
-    try:
-        # Import RUBE MCP tools
-        from anthropic import Anthropic
-
-        client = Anthropic()
-        session_id = "influx-harvest-github-seeds"
-
-        print(f"[INFO] Fetching GitHub org members from: {args.orgs}", file=sys.stderr)
-        org_list = [org.strip() for org in args.orgs.split(',')]
-
-        # Step 1: Search for GitHub org members with twitter_username
-        print(f"[INFO] Searching {len(org_list)} orgs for members with twitter_username...", file=sys.stderr)
-
-        twitter_usernames = {}  # {username: {github_login, name, ...}}
-
-        for org in org_list:
-            print(f"[INFO] Processing org: {org}", file=sys.stderr)
-
-            # RUBE GITHUB_SEARCH_USERS: org:openai type:user
-            # Then for each user: GITHUB_GET_A_USER to get twitter_username field
-            # This would be called via RUBE_MULTI_EXECUTE_TOOL
-
-            # For now, return placeholder message since GitHub auth is blocking
-            print(f"[BLOCKED] GitHub connection not authorized", file=sys.stderr)
-            print(f"[BLOCKED] Cannot execute GITHUB_SEARCH_USERS", file=sys.stderr)
-            print(f"[BLOCKED] Authorize GitHub at: https://connect.composio.dev/link/lk_gaA1JjyCCAmW", file=sys.stderr)
-            return 1
-
-        # Step 2: Batch verify Twitter usernames via TWITTER_USER_LOOKUP_BY_USERNAMES
-        # (This would happen after GitHub data collection)
-
-        # Step 3: Apply brand/risk filters with threshold checking
-        filtered_authors = []
-
-        for user_data in github_authors:
-            # Convert to standard format
-            user = {
-                'id': user_data.get('twitter_id', ''),
-                'username': user_data.get('twitter_username', ''),
-                'name': user_data.get('name', ''),
-                'description': user_data.get('bio', ''),
-                'followers_count': user_data.get('twitter_followers', 0),
-                'verified_type': user_data.get('verified', 'none')
-            }
-
-            # Apply entry threshold: (verified=true AND followers>=30k) OR followers>=50k
-            if not passes_entry_threshold(user):
-                continue
-
-            # Apply brand heuristics
-            is_org, confidence, matches = check_brand_heuristics(user, brand_rules, args.allow_brands)
-
-            # Implement official detection: government, verified org, or platform accounts
-            is_official = (
-                user.get('verified_type') == 'government' or
-                user.get('verified_type') == 'business' or
-                (user.get('verified_type') in ['blue', 'legacy'] and
-                 any(keyword in user.get('name', '').lower()
-                     for keyword in ['official', 'team', 'support', 'admin', 'security']))
-            )
-
-            # Skip org accounts unless explicitly allowed
-            if is_org and not args.allow_brands:
-                continue
-
-            # Create final record with all required fields
-            record = {
-                "id": user['id'],
-                "handle": user['username'],
-                "name": user['name'],
-                "verified": user['verified_type'],
-                "followers_count": user['followers_count'],
-                "is_org": is_org,
-                "is_official": is_official,
-                "lang_primary": "en",  # Default - could be detected from bio
-                "topic_tags": ["tech"],  # Basic topic detection for github seeds
-                "meta": {
-                    "score": 0,  # Will be calculated by influx-score
-                    "last_refresh_at": datetime.now(timezone.utc).isoformat(),
-                    "sources": [{
-                        "method": "github_seed",
-                        "fetched_at": datetime.now(timezone.utc).isoformat(),
-                        "evidence": f"github_org:{args.orgs}"
-                    }],
-                    "provenance_hash": calculate_provenance_hash(user)
-                }
-            }
-
-            filtered_authors.append(record)
-
-        # Step 4: Output JSONL with required schema fields
-        output_path = Path(args.out)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(output_path, 'w', encoding='utf-8') as f:
-            for record in filtered_authors:
-                f.write(json.dumps(record, separators=(',', ':')) + '\n')
-
-        print(f"[INFO] Wrote {len(filtered_authors)} filtered authors to {args.out}", file=sys.stderr)
-        print(f"[INFO] Applied entry threshold and brand heuristics filtering", file=sys.stderr)
-        return 0
-
-    except ImportError:
-        print("[ERROR] anthropic library not installed. Install with: pip install anthropic", file=sys.stderr)
-        return 1
-    except Exception as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
-        import traceback
-        traceback.print_exc(file=sys.stderr)
-        return 1
 
 
-def following_expansion(args):
-    """Expand via TWITTER_FOLLOWING_BY_USER_ID (who seeds follow)"""
-    try:
-        # Load filter rules
-        brand_rules = load_yaml_rules(args.brand_rules)
-        risk_rules = load_yaml_rules(args.risk_rules)
-        allow_risk = set(args.allow_risk.split(',')) if args.allow_risk else set()
-
-        print(f"[INFO] Reading seeds from {args.seeds}", file=sys.stderr)
-
-        # Load seed authors
-        seed_authors = []
-        with open(args.seeds, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip():
-                    seed_authors.append(json.loads(line))
-
-        print(f"[INFO] Loaded {len(seed_authors)} seed authors", file=sys.stderr)
-        print(f"[INFO] For each seed: TWITTER_FOLLOWING_BY_USER_ID, {args.pages} pages max", file=sys.stderr)
-
-        all_authors = {}
-        processed_seeds = 0
-
-        # This would need actual TWITTER_FOLLOWING_BY_USER_ID calls via RUBE MCP
-        # For now, implement the filtering logic structure
-        print(f"[TODO] Execute TWITTER_FOLLOWING_BY_USER_ID calls via RUBE MCP", file=sys.stderr)
-        print(f"[TODO] Process {args.pages} pages per seed author", file=sys.stderr)
-
-        # Apply filters: verified + 30k OR 50k followers
-        print(f"[INFO] Applying entry threshold and brand/risk filters", file=sys.stderr)
-
-        filtered_authors = []
-        for author_id, author_data in all_authors.items():
-            # Apply entry threshold
-            if not passes_entry_threshold(author_data):
-                continue
-
-            # Apply brand heuristics
-            is_org, confidence, matches = check_brand_heuristics(author_data, brand_rules, args.allow_brands)
-
-            # Implement official detection: government, verified org, or platform accounts
-            is_official = (
-                author_data.get('verified_type') == 'government' or
-                author_data.get('verified_type') == 'business' or
-                (author_data.get('verified_type') in ['blue', 'legacy'] and
-                 any(keyword in author_data.get('name', '').lower()
-                     for keyword in ['official', 'team', 'support', 'admin', 'security']))
-            )
-
-            # Skip org accounts unless explicitly allowed
-            if is_org and not args.allow_brands:
-                continue
-
-            # Create final record with required fields
-            record = {
-                "id": author_data['id'],
-                "handle": author_data['username'],
-                "name": author_data['name'],
-                "verified": author_data['verified_type'],
-                "followers_count": author_data['followers_count'],
-                "is_org": is_org,
-                "is_official": is_official,
-                "lang_primary": "en",
-                "topic_tags": [],
-                "meta": {
-                    "score": 0,
-                    "last_refresh_at": datetime.now(timezone.utc).isoformat(),
-                    "sources": [{
-                        "method": "following_expansion",
-                        "fetched_at": datetime.now(timezone.utc).isoformat(),
-                        "evidence": f"following_pages:{args.pages}"
-                    }],
-                    "provenance_hash": calculate_provenance_hash(author_data)
-                }
-            }
-            filtered_authors.append(record)
-
-        # Dedupe and output
-        print(f"[INFO] Deduping {len(filtered_authors)} authors", file=sys.stderr)
-
-        # Write to output
-        output_path = Path(args.out)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(output_path, 'w', encoding='utf-8') as f:
-            for record in filtered_authors:
-                f.write(json.dumps(record, separators=(',', ':')) + '\n')
-
-        print(f"[INFO] Wrote {len(filtered_authors)} filtered authors to {args.out}", file=sys.stderr)
-        return 0
-
-    except Exception as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
-        return 1
 
 
 def x_lists(args):
@@ -683,32 +507,9 @@ def x_lists(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="influx-harvest: Discover authors via GitHub seeds + following-graph"
+        description="influx-harvest: Discover authors via curated X Lists."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-
-    # github-seeds subcommand
-    github_parser = subparsers.add_parser(
-        "github-seeds", help="Fetch GitHub org members with twitter_username"
-    )
-    github_parser.add_argument(
-        "--orgs", required=True, help="Comma-separated GitHub org names"
-    )
-    github_parser.add_argument(
-        "--out", required=True, help="Output JSONL file (authors)"
-    )
-
-    # following subcommand
-    following_parser = subparsers.add_parser(
-        "following", help="Expand via TWITTER_FOLLOWING (who seeds follow)"
-    )
-    following_parser.add_argument("--seeds", required=True, help="Seed authors JSONL")
-    following_parser.add_argument(
-        "--pages", type=int, default=2, help="Pages per seed (default: 2)"
-    )
-    following_parser.add_argument(
-        "--out", required=True, help="Output JSONL file (expanded authors)"
-    )
 
     # x-lists subcommand
     lists_parser = subparsers.add_parser(
@@ -750,11 +551,7 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "github-seeds":
-        return github_seeds(args)
-    elif args.command == "following":
-        return following_expansion(args)
-    elif args.command == "x-lists":
+    if args.command == "x-lists":
         return x_lists(args)
 
 

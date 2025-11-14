@@ -1,0 +1,9 @@
+I reviewed POR, SUBPOR, contract, and tools; now I’ve placed a concise directive to both peers with clear next steps.
+
+- Wrote directive to `.cccc/mailbox/foreman/to_peer.md:1` with:
+  - Align on D2 pipeline (M0) and move with a smallest verifiable chain.
+  - Ask PeerA to ACK/adjust `docs/por/d2-pipeline-contract.md` limits and add M0 acceptance.
+  - Ask PeerB to create SUBPOR T000002 and ship a minimal `influx-harvest github-seeds` prototype with 5-sample evidence.
+  - Flag schema vs harvest-output conflict; propose placeholder-meta approach or intermediate-schema carveout.
+
+Next step: Wait for PeerA ACK and PeerB SUBPOR creation; then nudge on scoring/export stubs.

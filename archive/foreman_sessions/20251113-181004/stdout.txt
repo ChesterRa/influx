@@ -1,0 +1,1 @@
+Wrote a concise directive to `.cccc/mailbox/foreman/to_peer.md` routing to Both, aligning M1 pivot and pushing Week‑1 batch execution with fallback if TWITTER_USER_LOOKUP is blocked.

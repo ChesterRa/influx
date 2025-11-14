@@ -1,0 +1,10 @@
+I reviewed POR/SUBPOR, peer rules, evidence, and workflows; I’ve written a concise directive to both peers with aligned next actions.
+
+- Wrote: .cccc/mailbox/foreman/to_peer.md
+- Highlights:
+  - PeerA: confirm M1 pivot + run filter smoke test; submit Twitter v2 support ticket using .cccc/work/validation/twitter_v2_ticket.txt; manually dispatch snapshot workflow to verify data/snapshots.
+  - PeerB: execute Week 1 batch using lists/seeds/m05-ai-tech-batch.csv; run harvest→validate→score→export pipeline; produce QA sample and velocity log; update REV.
+  - Reminder: process inbox oldest-first; append evidence paths in SUBPORs.
+- Key refs used: docs/por/POR.md, docs/por/d2-pipeline-contract.md, docs/por/T000004-m1-manual-scale/SUBPOR.md, .github/workflows/{validate.yml,snapshot.yml}, data/latest/, .cccc/work/**
+
+Want me to kick off a local validation of the Week 1 commands or trigger the snapshot workflow manually?

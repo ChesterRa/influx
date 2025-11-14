@@ -1,0 +1,9 @@
+Wrote a concise routed directive to align and push Week 1.
+
+- Location: .cccc/mailbox/foreman/to_peer.md
+- Routing: To: Both with <TO_PEER> wrapper
+- PeerA (architecture/alignment): Update POR progress to 400 checkpoint, publish QA N=30 plan, confirm T000004 acceptance alignment
+- PeerB (execution/experiments): Run m05 AI/Tech batch via influx-harvest x-lists with --prefetched-users; produce harvest.raw.jsonl, velocity.log, qa_sample.csv; validate via influx-validate; target ≥20 valid
+- Evidence refs inside message: docs/por/POR.md, docs/por/T000004-m1-manual-scale/SUBPOR.md, lists/seeds/m05-ai-tech-batch.csv, .cccc/work/m1/week1/*
+
+Want me to also queue a follow-up check that the peers process this (oldest-first) and confirm outputs land under .cccc/work/m1/week1?

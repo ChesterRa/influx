@@ -1,0 +1,1 @@
+I drafted and sent a Foreman directive to both peers, routing following-expansion implementation to PeerB and slice-1 acceptance alignment to PeerA. See .cccc/mailbox/foreman/to_peer.md.

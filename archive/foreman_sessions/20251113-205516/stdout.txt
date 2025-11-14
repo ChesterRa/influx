@@ -1,0 +1,1 @@
+I drafted a concise directive to both peers and saved it to .cccc/mailbox/foreman/to_peer.md, covering: confirm plain JSONL paths for the user, pause at Week 1 (~400) checkpoint, PeerA reply and POR note, PeerB CI validation for plain JSONL and Week 1 minimal batch artifacts.

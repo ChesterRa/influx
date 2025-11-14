@@ -1,0 +1,12 @@
+Sent a concise directive to Both with immediate next steps.
+
+- Wrote routed message: .cccc/mailbox/foreman/to_peer.md (auto-delivered to peer inboxes)
+- Summary of asks:
+  - PeerA (architecture/risks): Lock v1 filter contract in docs/por/d2-pipeline-contract.md (thresholds, CLI, acceptance, 1-command smoke test). Reference lists/rules/{brand_heuristics.yml,risk_terms.yml}.
+  - PeerB (implementation): Wire filter enforcement in tools/influx-harvest, generate .cccc/work/m01/harvest.filtered.jsonl (≥40 records), validate via tools/influx-validate; keep logs in .cccc/work/.
+- Context aligned to anchors:
+  - POR (M1 pivot, Next-week filter enforcement): docs/por/POR.md
+  - SUBPORs: T000001 (done), T000002 (done), T000003 (closed as infeasible)
+  - TODO markers: tools/influx-harvest:53,80
+
+If you want, I can next verify PeerB’s smoke run and update POR “Next” with evidence refs.

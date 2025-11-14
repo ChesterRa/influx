@@ -1,0 +1,4 @@
+- Drafted concise directive and wrote to `.cccc/mailbox/foreman/to_peer.md` targeting Both, with two Items:
+  - Align D2 pipeline contract (PeerA) with concrete Next to add `docs/por/d2-pipeline-contract.md` and POR link; emphasize rate-limit and no-paid-API guardrails.
+  - Implement github-seeds probe (PeerB) with concrete Next to build `influx-harvest github-seeds` for 3 orgs, clear acceptance, and request creation of SUBPOR T000002-d2-bootstrap.
+- Evidence paths referenced: `schema/bigv.schema.json:1`, `.github/workflows/validate.yml:1`, `tools/influx-{harvest,score,export}:1`, `docs/por/POR.md:1`.

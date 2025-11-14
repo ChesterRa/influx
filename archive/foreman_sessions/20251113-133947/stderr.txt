@@ -1,0 +1,369 @@
+OpenAI Codex v0.57.0 (research preview)
+--------
+workdir: /home/dodd/dev/influx
+model: gpt-5
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: auto
+session id: 019a7b83-35cc-7771-85b4-df0546bcebf0
+--------
+user
+# FOREMAN Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+Identity
+- You act as the user's proxy. Speak in the user's voice.
+- Each run is non‑interactive and time‑boxed. Do one useful thing or write one short directive.
+
+Timer & Non‑overlap
+- The orchestrator runs you on a fixed interval and never overlaps runs.
+- Keep long work in files; keep messages short.
+
+Write‑to Path (single hand‑off)
+- Write exactly one message per run to: `.cccc/mailbox/foreman/to_peer.md`.
+- Put one routing header at the top:
+  To: Both|PeerA|PeerB  (default Both)
+- Wrap the body with `<TO_PEER> ... </TO_PEER>`.
+
+Anchors to read (skim then decide)
+- Project brief: PROJECT.md
+- Portfolio board: docs/por/POR.md (Now/Next/Risks)
+- Active tasks: docs/por/T*/SUBPOR.md (Owner/Next/Acceptance)
+- Peer rules: .cccc/rules/PEERA.md, .cccc/rules/PEERB.md
+- Evidence/work roots: docs/evidence/**, .cccc/work/**
+
+Routing defaults & backlog
+- Route architecture/alignment/risks to PeerA; implementation/experiments to PeerB.
+- If many pending inbox items exist, remind to process oldest‑first, then propose one smallest next step aligned to POR/SUBPOR.
+
+Boundaries
+- Do not paste long logs in messages; reference repo paths only.
+- Do not modify orchestrator code/policies; do not declare 'done'.
+
+
+---
+Bindings: Foreman.agent=codex Aux=codex
+Schedule: interval=900s max_run=900s cc_user=ON
+Write-to: .cccc/mailbox/foreman/to_peer.md with To header (Both|PeerA|PeerB; default Both) and <TO_PEER> wrapper
+---
+请全面审查并督促推进两位PEER高效高质量地完成本项目的各项规划以及开发工作。
+
+thinking
+**Checking inbox priority**
+
+I need to follow the rule about processing pending inbox items oldest-first. To do that, I'll check the mailbox at `.cccc/mailbox/*` to see what’s pending. It seems like a good idea to make sure I handle the oldest messages first, ensuring I don’t miss anything important. Let’s dive in and review those items to get everything sorted efficiently!
+codex
+I’ll scan the project anchors (POR, SUBPORs, peer rules, evidence/work roots), then draft a concise Foreman directive and write it to .cccc/mailbox/foreman/to_peer.md.
+exec
+bash -lc 'ls -la' in /home/dodd/dev/influx succeeded in 10ms:
+total 100
+drwxr-xr-x 14 dodd dodd  4096 Nov 13 12:09 .
+drwxr-xr-x 16 dodd dodd  4096 Nov 13 11:04 ..
+drwxr-xr-x 13 dodd dodd  4096 Nov 13 11:31 .cccc
+drwxr-xr-x  8 dodd dodd  4096 Nov 13 13:37 .git
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:19 .github
+-rw-r--r--  1 dodd dodd   283 Nov 13 11:26 .gitignore
+drwxr-xr-x  6 dodd dodd  4096 Nov 13 11:07 .venv
+-rw-r--r--  1 dodd dodd   109 Nov 13 11:18 FOREMAN_TASK.md
+-rw-r--r--  1 dodd dodd  1430 Nov 13 11:20 LICENSE
+-rw-r--r--  1 dodd dodd 14419 Nov 13 11:06 PROJECT.md
+-rw-r--r--  1 dodd dodd  9989 Nov 13 11:22 README.md
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:19 ci
+drwxr-xr-x  5 dodd dodd  4096 Nov 13 11:29 data
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:07 docs
+drwxr-xr-x  4 dodd dodd  4096 Nov 13 11:19 lists
+-rw-r--r--  1 dodd dodd    18 Nov 13 11:38 requirements.txt
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:46 schema
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:29 state
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:39 test
+exec
+bash -lc "ls -la .cccc && echo '---' && rg --files .cccc | sed -n '1,200p'" in /home/dodd/dev/influx succeeded in 29ms:
+total 272
+drwxr-xr-x 13 dodd dodd   4096 Nov 13 11:31 .
+drwxr-xr-x 14 dodd dodd   4096 Nov 13 12:09 ..
+drwxr-xr-x  2 dodd dodd   4096 Nov 13 11:07 __pycache__
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:08 adapters
+-rw-r--r--  1 dodd dodd   1086 Nov 13 11:07 cccc_tui.py
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:07 common
+-rw-r--r--  1 dodd dodd  11546 Nov 13 11:07 delivery.py
+-rw-r--r--  1 dodd dodd   4612 Nov 13 11:07 evidence_runner.py
+drwxr-xr-x  2 dodd dodd   4096 Nov 13 11:31 logs
+drwxr-xr-x  5 dodd dodd   4096 Nov 13 11:07 mailbox
+-rw-r--r--  1 dodd dodd   9660 Nov 13 11:07 mailbox.py
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:07 orchestrator
+-rw-r--r--  1 dodd dodd 116104 Nov 13 11:07 orchestrator_tmux.py
+-rw-r--r--  1 dodd dodd   6932 Nov 13 11:07 panel_status.py
+-rw-r--r--  1 dodd dodd   6284 Nov 13 11:07 por_manager.py
+-rwxr-xr-x  1 dodd dodd  11715 Nov 13 11:07 por_subpor.py
+-rw-r--r--  1 dodd dodd  31382 Nov 13 11:07 prompt_weaver.py
+drwxr-xr-x  2 dodd dodd   4096 Nov 13 11:07 rules
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:08 settings
+
+thinking
+**Listing mailbox contents**
+
+It seems like I need to figure out how to list the contents of a mailbox. I should consider the types of items commonly found in mailboxes, such as letters, packages, and notifications. I wonder if it's about organizing them or perhaps just providing a summary. I should ensure I'm being clear and not overwhelming while delivering this information. Let me think about the best way to present the mailbox contents.
+exec
+bash -lc "ls -la .cccc/mailbox && echo '---' && rg --files .cccc/mailbox | sed -n '1,200p'" in /home/dodd/dev/influx succeeded in 18ms:
+total 24
+drwxr-xr-x  5 dodd dodd 4096 Nov 13 11:07 .
+drwxr-xr-x 13 dodd dodd 4096 Nov 13 11:31 ..
+-rw-r--r--  1 dodd dodd   15 Nov 13 11:07 .gitignore
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 11:07 foreman
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 12:24 peerA
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 13:39 peerB
+---
+.cccc/mailbox/.gitignore
+exec
+bash -lc "ls -la .cccc/mailbox/foreman && echo '---' && ls -la .cccc/mailbox/peerA && echo '---' && ls -la .cccc/mailbox/peerB" in /home/dodd/dev/influx succeeded in 15ms:
+total 12
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 11:07 .
+drwxr-xr-x 5 dodd dodd 4096 Nov 13 11:07 ..
+-rw-r--r-- 1 dodd dodd   99 Nov 13 13:26 to_peer.md
+---
+total 28
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 12:24 .
+drwxr-xr-x 5 dodd dodd 4096 Nov 13 11:07 ..
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 13:39 inbox
+-rw-r--r-- 1 dodd dodd  141 Nov 13 12:23 inbox.md
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 13:27 processed
+-rw-r--r-- 1 dodd dodd   98 Nov 13 13:27 to_peer.md
+-rw-r--r-- 1 dodd dodd   97 Nov 13 12:49 to_user.md
+---
+total 24
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 13:39 .
+drwxr-xr-x 5 dodd dodd 4096 Nov 13 11:07 ..
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 13:39 inbox
+-rw-r--r-- 1 dodd dodd  141 Nov 13 12:23 inbox.md
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 13:39 processed
+exec
+bash -lc "sed -n '1,200p' .cccc/mailbox/foreman/to_peer.md && echo '---' && sed -n '1,200p' .cccc/mailbox/peerA/to_peer.md && echo '---' && sed -n '1,200p' .cccc/mailbox/peerB/to_peer.md" in /home/dodd/dev/influx succeeded in 14ms:
+<!-- MAILBOX:SENT v1 ts=2025-11-13T04:26:22Z eid=408672cbf57c sha=2a294380 route=Foreman→Both -->---
+<!-- MAILBOX:SENT v1 ts=2025-11-13T04:27:09Z eid=4e06bb36ece3 sha=43276b63 route=PeerA→PeerB -->---
+<!-- MAILBOX:SENT v1 ts=2025-11-13T04:39:31Z eid=6eadf0a24780 sha=54eec7ef route=PeerB→PeerA -->
+exec
+bash -lc "sed -n '1,200p' PROJECT.md" in /home/dodd/dev/influx succeeded in 10ms:
+项目概览（influx）
+
+  - 宗旨：构建一个“高活跃、非官号、非品牌、非低俗”的跨领域 BigV 作者索引，稳定服务下游（如 xoperator）的作者优先抓取与行业观察。
+  - 原则：质量优先（活跃×相关×安全）> 数量；证据可追溯；格式通用；更新可持续；治理明确；对外友好。
+  - 不做：几万规模的“百科全书式收集”；浏览器自动化抓网页；付费 X API；黑箱评分。
+
+  范围与目标
+
+  - 目标规模：5k–10k（强上限 15k）；每领域 800–1500 核心作者（AI/Tech、Creator/Platform、Ecosystem 等）。
+  - 更新节奏：6–12 小时增量刷新；每日全量快照与发布；每周一次全量重算。
+  - 下游场景：from: 作者优先抓取（xoperator）、研究/情报、生态分发、可视化。
+
+  数据模型（Schema v1.0.0）
+
+  - 主键
+      - id: string（Twitter author_id，必填）
+      - handle: string（@name 去 @，必填，唯一辅助键）
+  - 基本属性
+      - name: string
+      - verified: string（none|blue|org|legacy）
+exec
+bash -lc "ls -la docs && echo '---' && rg --files docs | sed -n '1,200p' && echo '---' && sed -n '1,200p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 20ms:
+total 12
+drwxr-xr-x  3 dodd dodd 4096 Nov 13 11:07 .
+drwxr-xr-x 14 dodd dodd 4096 Nov 13 12:09 ..
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 13:27 por
+---
+docs/por/d2-pipeline-contract.md
+docs/por/T000001-d1-validate/SUBPOR.md
+docs/por/POR.md
+docs/por/T000002-d2-bootstrap/SUBPOR.md
+---
+<!-- Updated 2025-11-13 11:16 JST by PeerA -->
+
+# POR - Strategic Board
+
+- **North Star**: Build a 5k–10k high-signal X influencer index (AI/Tech/Creator/Ecosystem) with sustainable refresh & provenance, serving downstream prioritization (xoperator) and ecosystem intelligence.
+- **Guardrails**: Quality (activity×relevance×safety) > quantity; no paid X API; no browser automation; all sources auditable; licensed CC BY 4.0; 100% RUBE MCP tooling.
+- **Non-Goals / Boundaries**: No "encyclopedia-scale" (>15k); no NSFW/political/controversy by default; no private data; no ToS violations; no black-box scoring.
+
+## Deliverables (top-level)
+- **D1: Schema & Validation** - `schema/bigv.schema.json` + validation scripts - Both
+
+thinking
+**Reviewing documentation**
+
+I need to look at the POR, but I also want to check out the SUBPORs for T000001-d1-validate and T000002-d2-bootstrap. It makes sense to open them and see what they contain. This way, I can make sure I have a comprehensive understanding of everything relevant. I'll make sure to get right to it! Let's do this.
+exec
+bash -lc "sed -n '1,200p' docs/por/T000001-d1-validate/SUBPOR.md && echo '---' && sed -n '1,200p' docs/por/T000002-d2-bootstrap/SUBPOR.md" in /home/dodd/dev/influx succeeded in 12ms:
+<!-- Generated on 2025-11-13T02:31:23+00:00 by por_subpor.py 0.1.1 -->
+
+# T000001 - D1 — Schema validation + CI (M0) - Owner: peerB - Stage: proposed - Timebox: 0.5d
+
+- Goal/Scope (<=3 lines):
+  - Implement schema validation tool (tools/influx-validate) that validates JSONL records against schema/bigv.schema.json using jsonschema library
+  - Fix schema to make `meta` required with critical sub-fields (`meta.score`, `meta.sources[>=1]`, `meta.last_refresh_at`, `provenance_hash`)
+  - Create CI workflow (ci/validate.yml) that runs validator on data/latest/latest.jsonl.gz and fails PR if invalid
+- Non-Goals (<=2 lines):
+  - Collection tools (D2) - defer to next SUBPOR
+  - Extensive schema documentation polish (already over-engineered per strategic review; focus on working validator)
+- Deliverable & Interface (path/format/user-visible change):
+  - tools/influx-validate: CLI tool (argparse) that validates JSONL against schema; exits 0 if valid, 1 if invalid with error details
+  - schema/bigv.schema.json: Fixed schema with required `meta.score`, `meta.sources`, `meta.last_refresh_at`, `provenance_hash`
+  - ci/validate.yml: GitHub Actions workflow that runs influx-validate on PRs
+- Acceptance (3-5 observable items):
+  [x] schema/bigv.schema.json validates correctly with jsonschema; `meta` and critical sub-fields are required
+  [x] tools/influx-validate exists, runs jsonschema validation on JSONL input, checks manifest.json schema_version match
+  [x] tools/influx-validate exits 0 on valid fixture (3 hardcoded JSON objects in test/fixtures/valid.jsonl), exits 1 on invalid fixture (test/fixtures/invalid.jsonl) with clear error message
+  [x] ci/validate.yml workflow exists and runs influx-validate; simulate PR validation with manual smoke test
+
+thinking
+I'm noticing the second file got truncated, but it's good that M0 tasks are mostly complete. T000001 and T000002 are done, which is great! However, there's a little inconsistency with "Owner: PeerB" for T000002 since it was earlier noted as PeerA in POR D2—interesting! I'll want to check docs like por/d2-pipeline-contract.md, although it might not be strictly necessary. Also, I should look into the peer-specific guidelines in .cccc/rules/PEERA.md and PEERB.md to ensure we're following them correctly.
+exec
+bash -lc "sed -n '1,200p' .cccc/rules/PEERA.md && echo '---' && sed -n '1,200p' .cccc/rules/PEERB.md" in /home/dodd/dev/influx succeeded in 12ms:
+# PeerA Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+1) Who You Are - Collaborators - Purpose
+- Equal peers
+  - You and the other peer collaborate as equals to deliver evidence-first, small, reversible steps that outperform a single expert.
+- Ethos (non-negotiable)
+  - Agency and ownership; act like a top generalist.
+  - Widen perspective; Keep higher-order thinking.
+  - Evidence-first; chat never changes state.
+  - Taste and clarity: simple, tight, clean.
+  - Anti-laziness: refuse low-signal output; prefer decisive micro-moves.
+- On-demand helper: Aux (PeerC) - purpose & direction
+  - Use Aux when a decoupled subtask or high-level sanity sweep is cheaper offloaded than done inline. You integrate the outcome.
+  - Mode: on - Aux has the same FoV and permissions in this repo as you. Just call Aux for help.
+
+2) Canonical references and anchors
+- POR.md - single source of direction (path: /home/dodd/dev/influx/docs/por/POR.md)
+  - Keep North-star, guardrails, bets/assumptions, Now/Next/Later, and portfolio health here (no details).
+- SUBPOR - execution anchor (one task = one SUBPOR)
+exec
+bash -lc "ls -la docs/evidence 2>/dev/null || true && echo '---' && ls -la .cccc/work && echo '---' && rg -n \""'^Item'"\\(|"'^Progress|''^Evidence|''^Ask|''^Risk|''^Next" -n .cccc/mailbox/peerA/inbox/*.md .cccc/mailbox/peerB/inbox/*.md 2>/dev/null | sed -n '"'1,200p'" in /home/dodd/dev/influx succeeded in 18ms:
+---
+total 28
+drwxr-xr-x  5 dodd dodd 4096 Nov 13 13:34 .
+drwxr-xr-x 13 dodd dodd 4096 Nov 13 11:31 ..
+-rw-r--r--  1 dodd dodd 4402 Nov 13 11:22 aux-collection-review-20251113.md
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 11:07 aux_sessions
+drwxr-xr-x 13 dodd dodd 4096 Nov 13 13:39 foreman
+drwx------  2 dodd dodd 4096 Nov 13 13:36 m01
+---
+
+thinking
+**Listing inbox items**
+
+I need to check the inbox items to see if there are many pending ones. I’ve noticed that there are directories for `peerA/inbox` and `peerB/inbox` that exist. So, it looks like listing them will give me a clearer view of what's pending. Let’s get that done to ensure I don’t miss anything important!
+exec
+bash -lc "ls -la .cccc/mailbox/peerA/inbox && echo '---' && ls -la .cccc/mailbox/peerB/inbox" in /home/dodd/dev/influx succeeded in 12ms:
+total 48
+drwxr-xr-x 2 dodd dodd  4096 Nov 13 13:39 .
+drwxr-xr-x 4 dodd dodd  4096 Nov 13 12:24 ..
+-rw-r--r-- 1 dodd dodd  4380 Nov 13 13:38 000032.cccc-1763008694-48afd7.txt
+-rw-r--r-- 1 dodd dodd 23345 Nov 13 13:38 000033.cccc-1763008694-4d2f8d.txt
+-rw-r--r-- 1 dodd dodd  4812 Nov 13 13:39 000034.cccc-1763008771-e9bd3d.txt
+---
+total 8
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 13:39 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 13:39 ..
+exec
+bash -lc "ls -la data/latest && echo '---' && sed -n '1,120p' data/latest/manifest.json 2>/dev/null || true && echo '---' && ls -la tools && echo '---' && rg -n \""'^#!/|''^def main|argparse" tools -n | sed -n '"'1,200p'" in /home/dodd/dev/influx succeeded in 23ms:
+total 20
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 12:28 .
+drwxr-xr-x 5 dodd dodd 4096 Nov 13 11:29 ..
+-rw-r--r-- 1 dodd dodd 5743 Nov 13 13:36 latest.jsonl.gz
+-rw-r--r-- 1 dodd dodd  486 Nov 13 13:36 manifest.json
+---
+{
+  "schema_version": "1.0.0",
+  "timestamp": "2025-11-13T04:36:22.123751+00:00",
+  "count": 66,
+  "sha256": "1b0da31d894ee3dc4ccab3f690020c223ca5fc11566c309cdf82ce2ea38a9c7c",
+  "source_file": ".cccc/work/m01/cleaned_authors.jsonl",
+  "sort_order": "score desc, followers_count desc, handle asc",
+  "score_version": "v0_proxy_no_metrics",
+  "score_formula": "20*log10(followers/1000) + verified_boost, clipped [0,100]",
+  "score_note": "M0 proxy pending 30d metrics collection (M1)"
+}
+---
+total 40
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 13:02 .
+exec
+bash -lc "ls -la lists && echo '---' && rg --files lists | sed -n '1,200p' && echo '---' && sed -n '1,200p' lists/rules/brand_heuristics.yml && echo '---' && sed -n '1,200p' lists/rules/risk_terms.yml" in /home/dodd/dev/influx succeeded in 21ms:
+total 16
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 11:19 .
+drwxr-xr-x 14 dodd dodd 4096 Nov 13 12:09 ..
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 11:21 rules
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 13:31 seeds
+---
+lists/rules/brand_heuristics.yml
+lists/rules/risk_terms.yml
+lists/seeds/github-orgs.csv
+lists/seeds/m01-team-pages.csv
+lists/seeds/x-lists.txt
+---
+# Brand and Official Account Heuristics
+# Used to filter out brand, media, official, and organizational accounts
+# from the influencer pool. Rules are evaluated as OR (any match triggers flag).
+
+version: "1.0.0"
+updated: "2025-11-13"
+
+# Keywords in name or username (case-insensitive, word boundary match)
+exec
+bash -lc "sed -n '1,160p' docs/por/d2-pipeline-contract.md" in /home/dodd/dev/influx succeeded in 10ms:
+# D2 Collection Pipeline Contract
+
+**Version**: 1.0.0
+**Owner**: PeerA (architecture) + PeerB (implementation)
+**Purpose**: Define CLI interface, JSONL I/O format, and rate-limit guardrails for M0 collection tools
+
+---
+
+## Tool Interfaces
+
+### influx-harvest (Author Discovery)
+
+```bash
+# GitHub org seeds (40-50% of M0 target)
+influx-harvest github-seeds \
+  --orgs openai,anthropic,pytorch,huggingface \
+  --out github_seeds.jsonl
+
+# Following-graph expansion (40-50% of M0 target)
+influx-harvest following \
+exec
+bash -lc "cat > .cccc/mailbox/foreman/to_peer.md << 'EOF'
+To: Both
+<TO_PEER>
+Status: data/latest/manifest.json shows count=66; POR Now (M0.1) targets 150–200.
+
+PeerA (architecture/alignment/risks):
+- Verify d2 guardrails are enforced in tools/influx-harvest (entry filters, brand/risk from lists/rules/*).
+- Add a short M1 auth-fix plan (GitHub OAuth + Twitter v2 enrollment) to docs/por/POR.md Next.
+- Inbox has 3 pending (.cccc/mailbox/peerA/inbox). Please process oldest-first.
+
+PeerB (implementation/experiments):
+- Smallest next (≤30m): curate ≥50 additional handles from lists/seeds/x-lists.txt and lists/seeds/m01-team-pages.csv → run tools/influx-harvest → tools/influx-score → tools/influx-export; validate with tools/influx-validate.
+- Update docs/por/T000002-d2-bootstrap/SUBPOR.md REV with counts and paths; commit artifacts under data/latest/*.
+
+Acceptance for this step:
+- data/latest/manifest.json count ≥ 120, CI green, validator 100% pass; evidence paths only, no logs in messages.
+</TO_PEER>
+EOF
+" in /home/dodd/dev/influx succeeded in 10ms:
+
+codex
+I reviewed PROJECT.md, POR and SUBPORs, peer rules, and work roots, then drafted a focused directive to align and push M0.1.
+
+- Wrote Foreman handoff: .cccc/mailbox/foreman/to_peer.md:1
+- Highlights:
+  - Status: data/latest/manifest.json count=66 vs POR M0.1 target 150–200.
+  - PeerA: confirm harvest guardrails and heuristics, add M1 auth-fix plan to docs/por/POR.md, process 3 inbox items oldest-first (.cccc/mailbox/peerA/inbox).
+  - PeerB: curate ≥50 more handles from lists/seeds/{x-lists.txt,m01-team-pages.csv}, run tools/influx-harvest → tools/influx-score → tools/influx-export, validate via tools/influx-validate, update docs/por/T000002-d2-bootstrap/SUBPOR.md.
+  - Acceptance: manifest count ≥120, CI green, 100% validator pass; artifacts under data/latest/*.
+
+Want me to follow up next run by verifying manifest count and inbox processing?
+tokens used
+44,154

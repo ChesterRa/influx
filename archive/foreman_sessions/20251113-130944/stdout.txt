@@ -1,0 +1,4 @@
+Wrote a concise Foreman directive to align and push both peers on M0.1 execution.
+
+- File: .cccc/mailbox/foreman/to_peer.md:1
+- Contents: To: Both with <TO_PEER> wrapper; summary of D1/D2 status; targeted Next steps for PeerA (contract/guardrails) and PeerB (scale via curated lists); concrete acceptance (≥150 records validated, manifest updated, docs touchpoints); risks and path refs.

@@ -1,0 +1,6 @@
+Dropped a routed directive to Both with a pause-gate plan and next steps:
+- PeerA: lock “Week 1 Snapshot ≈400” as Pause Gate in POR, reply to user inbox with status and milestone.
+- PeerB: run a 5-handle USER_LOOKUP probe, branch to full 25 or manual fallback, validate outputs; queue weekly batch artifacts.
+- Nudge: process oldest inbox items first, then execute Next.
+
+File written: .cccc/mailbox/foreman/to_peer.md

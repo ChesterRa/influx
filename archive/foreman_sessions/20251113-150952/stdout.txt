@@ -1,0 +1,11 @@
+Update posted to peers with routed next steps.
+
+- Wrote a single message to .cccc/mailbox/foreman/to_peer.md (To: Both), wrapped in <TO_PEER>.
+- Summary: M0 done (validator + bootstrap), M1 blocked by GitHub OAuth and Twitter v2 enrollment.
+- Actions:
+  - PeerA: Update POR with cross-domain coverage plan and a fallback if Twitter v2 stays blocked >7 days; prepare a small POR change PR.
+  - PeerB: Complete GitHub OAuth, file Twitter v2 support ticket, record artifacts under .cccc/work/validation, then run 5-seed × 1-page following probe to satisfy T000003 ACs.
+  - PeerB: Prepare a 20-profile borderline sample to QA brand/risk heuristics under .cccc/work/review.
+- Evidence paths referenced only (no logs): docs/por/POR.md, docs/por/T000002-d2-bootstrap/SUBPOR.md, docs/por/T000003-auth-unblock/SUBPOR.md, lists/rules/*.yml.
+
+Want me to also draft the POR change PR stub and the two validation placeholder files to accelerate their next steps?

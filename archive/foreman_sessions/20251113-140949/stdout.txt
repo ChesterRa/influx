@@ -1,0 +1,8 @@
+Wrote a routed directive to both peers with concrete next steps, acceptance, and refs.
+
+- Message: .cccc/mailbox/foreman/to_peer.md:1
+- Covered: POR updates (mark M0.1 achieved, add Auth-unblock as blocking), new SUBPOR draft for auth plan, snapshot export implementation and first snapshot, command refs, evidence paths.
+- Owners: Architecture/risks → PeerA; Implementation/experiments → PeerB.
+- Requested ack: PeerA (POR+SUBPOR submit time), PeerB (snapshot submit time).
+
+Want me to implement the minimal tools/influx-export snapshot subcommand next?

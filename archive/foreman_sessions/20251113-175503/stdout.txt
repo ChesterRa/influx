@@ -1,0 +1,1 @@
+已下发一条高信号指令给两位同伴，督促锁定 M1/Week1 执行与对齐，路由 Both，位置 .cccc/mailbox/foreman/to_peer.md。内容要点：PeerA 15 分钟内补齐 POR 的 Week1 接受标准与快照节奏；PeerB 30 分钟内按 seeds/m05 执行一轮批处理并产出验证与 QA 工件，若遇 Twitter v2 阻塞按最小批量探针与错误回报路径处理。

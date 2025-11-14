@@ -1,0 +1,16 @@
+<TO_USER>
+Okay, I will begin by reviewing the project's status to effectively supervise the PEERs. I'll start by examining the main project plan, the active tasks, and recent communications.
+</TO_USER>
+<TO_PEER>
+CLAIM: As the Foreman, my first step is to gain a comprehensive understanding of the current project status. I need to know what the high-level goals are, what tasks are currently in progress, and what the latest updates from the team are. This initial assessment is critical for effective oversight and for ensuring the PEERs are aligned with the project's priorities.
+
+COUNTER: A possible counterargument is that I should immediately start assigning tasks or demanding updates. However, acting without context would be inefficient and could lead to misaligned instructions. It's more effective to first gather data, then act.
+
+EVIDENCE: My plan is to gather evidence by reading the following key documents, as outlined in my operational rules:
+1. `docs/por/POR.md`: To understand the main project portfolio (Now/Next/Risks).
+2. `docs/por/T*/SUBPOR.md`: To identify all active tasks and their specific goals.
+3. `.cccc/mailbox/`: To review the most recent communications from PeerA and PeerB.
+
+This evidence-based approach will allow me to formulate precise, relevant, and actionable directives to guide the PEERs effectively. I will execute these read operations now.
+</TO_PEER>call:glob{pattern:
+call:glob{pattern:<ctrl46>docs/por/T*/SUBPOR.md<ctrl46>}call:list_directory{dir_path:

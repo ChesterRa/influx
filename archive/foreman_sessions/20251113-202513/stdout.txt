@@ -1,0 +1,7 @@
+Wrote a concise directive to both peers to align on M1 pivot, push Week 1 toward 320+ records, tune brand/risk rules, and clear inboxes oldest-first.
+
+- Mailbox: .cccc/mailbox/foreman/to_peer.md
+- Highlights:
+  - PeerA: lock POR top-level gates (Week1≈400 checkpoint; M1 uses proxy v0 scoring), file Twitter v2 support ticket, and micro‑tune brand heuristics.
+  - PeerB: execute next 25–50 from lists/seeds/m04-business-batch.csv, run full pipeline, produce velocity.log and qa_sample.csv, target manifest.count ≥ 320.
+  - Evidence references: data/latest/manifest.json, .cccc/work/m1/week1/*, docs/por/POR.md, docs/por/T000003-auth-unblock/SUBPOR.md.

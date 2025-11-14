@@ -1,0 +1,13 @@
+YOLO mode is enabled. All tool calls will be automatically approved.
+Loaded cached credentials.
+Found stored OAuth token for server 'rube'
+Loading extension: chrome-devtools-mcp
+Skipping MCP config for server with name "chrome-devtools" from extension "chrome-devtools-mcp" as it already exists.
+Loading extension: nanobanana
+Error executing tool read_file: File path '/home/dodd/dev/influx/.cccc/work/m1/github_orgs_blocker_report.md' is ignored by configured ignore patterns.
+Error executing tool read_file: File path '/home/dodd/dev/influx/.cccc/work/m1/github_orgs_blocker_report.md' is ignored by configured ignore patterns.
+Error executing tool read_file: File path '/home/dodd/dev/influx/.cccc/work/phase2_completion_report.md' is ignored by configured ignore patterns.
+Error executing tool read_file: File path '/home/dodd/dev/influx/.cccc/work/phase2_completion_report.md' is ignored by configured ignore patterns.
+Error executing tool RUBE_CREATE_UPDATE_RECIPE: params/input_schema must NOT have additional properties
+Error executing tool RUBE_CREATE_UPDATE_RECIPE: params/input_schema must NOT have additional properties
+Error executing tool RUBE_CREATE_UPDATE_RECIPE: params/input_schema must NOT have additional properties

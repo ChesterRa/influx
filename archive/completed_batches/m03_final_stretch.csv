@@ -1,0 +1,25 @@
+handle,category,source_url,note
+VitalikButerin,blockchain,https://twitter.com/VitalikButerin,Ethereum co-founder
+neerajka,tech_leadership,https://twitter.com/neerajka,Google VP Engineering AI/ML
+TivadarDanka,ml_content,https://twitter.com/TivadarDanka,Math/ML educator
+cwodtke,tech_leadership,https://twitter.com/cwodtke,Christina Wodtke product/design
+kelseyhightower,devops,https://twitter.com/kelseyhightower,Kubernetes expert
+jessfraz,devops,https://twitter.com/jessfraz,Containers expert
+QuinnyPig,devops,https://twitter.com/QuinnyPig,AWS/cloud expert
+gvela,devops,https://twitter.com/gvela,DevOps/SRE expert
+b0rk,devops,https://twitter.com/b0rk,Julia Evans (already processed, will dedupe)
+craigkerstiens,devops,https://twitter.com/craigkerstiens,Postgres/Cloud expert
+cyber,ai_research,https://twitter.com/cyber,ML researcher
+ylecun,ai_research,https://twitter.com/ylecun,Yann LeCun (already processed)
+hardmaru,ai_research,https://twitter.com/hardmaru,Google Brain researcher
+juliuso,ai_research,https://twitter.com/juliuso,ML researcher
+sir_deprecation,devops,https://twitter.com/sir_deprecation,Software engineering
+mitchellh,devops,https://twitter.com/mitchellh,Mitchell Hashimoto (already processed)
+progrium,devops,https://twitter.com/progrium,DevOps pioneer
+bfirsh,devops,https://twitter.com/bfirsh,DevOps tools
+kelseyhightower,devops,https://twitter.com/kelseyhightower,Kubernetes (duplicate)
+jessfraz,devops,https://twitter.com/jessfraz,Containers (duplicate)
+QuinnyPig,devops,https://twitter.com/QuinnyPig,AWS/cloud (duplicate)
+ericholscher,devops,https://twitter.com/ericholscher,Developer tools
+jacobian,devops,https://twitter.com/jacobian,Cloud infrastructure
+adrianco,devops,https://twitter.com/adrianco,AWS/cloud architecture

@@ -1,0 +1,10 @@
+YOLO mode is enabled. All tool calls will be automatically approved.
+Loaded cached credentials.
+Found stored OAuth token for server 'rube'
+Loading extension: chrome-devtools-mcp
+Skipping MCP config for server with name "chrome-devtools" from extension "chrome-devtools-mcp" as it already exists.
+Loading extension: nanobanana
+Error when talking to Gemini API Full report available at: /tmp/gemini-client-error-Turn.run-sendMessageStream-2025-11-14T02-46-33-342Z.json
+[API Error: You have exhausted your capacity on this model. Your quota will reset after 13h14m10s.]
+An unexpected critical error occurred:
+[object Object]

@@ -1,0 +1,626 @@
+OpenAI Codex v0.57.0 (research preview)
+--------
+workdir: /home/dodd/dev/influx
+model: gpt-5
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: auto
+session id: 019a7bfe-efcc-7e73-862d-08040c12e959
+--------
+user
+# FOREMAN Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+Identity
+- You act as the user's proxy. Speak in the user's voice.
+- Each run is non‑interactive and time‑boxed. Do one useful thing or write one short directive.
+
+Timer & Non‑overlap
+- The orchestrator runs you on a fixed interval and never overlaps runs.
+- Keep long work in files; keep messages short.
+
+Write‑to Path (single hand‑off)
+- Write exactly one message per run to: `.cccc/mailbox/foreman/to_peer.md`.
+- Put one routing header at the top:
+  To: Both|PeerA|PeerB  (default Both)
+- Wrap the body with `<TO_PEER> ... </TO_PEER>`.
+
+Anchors to read (skim then decide)
+- Project brief: PROJECT.md
+- Portfolio board: docs/por/POR.md (Now/Next/Risks)
+- Active tasks: docs/por/T*/SUBPOR.md (Owner/Next/Acceptance)
+- Peer rules: .cccc/rules/PEERA.md, .cccc/rules/PEERB.md
+- Evidence/work roots: docs/evidence/**, .cccc/work/**
+
+Routing defaults & backlog
+- Route architecture/alignment/risks to PeerA; implementation/experiments to PeerB.
+- If many pending inbox items exist, remind to process oldest‑first, then propose one smallest next step aligned to POR/SUBPOR.
+
+Boundaries
+- Do not paste long logs in messages; reference repo paths only.
+- Do not modify orchestrator code/policies; do not declare 'done'.
+
+
+---
+Bindings: Foreman.agent=codex Aux=codex
+Schedule: interval=900s max_run=900s cc_user=ON
+Write-to: .cccc/mailbox/foreman/to_peer.md with To header (Both|PeerA|PeerB; default Both) and <TO_PEER> wrapper
+---
+请全面审查并督促推进两位PEER高效高质量地完成本项目的各项规划以及开发工作。
+
+
+
+thinking
+**Planning directives and commands**
+
+I want to send a quick message saying, "I'll scan project anchors and create a routed directive for both peers in to_peer.md." I'll run some shell commands to read anchor files and produce that file. The plan tool should be used, even for a single run, as it includes both reading and writing. I’m considering a mini plan with steps like "Review anchors," "Draft directive," and "Write mailbox." I've also noted that we'll keep messages short and push the file.
+thinking
+**Drafting tasks for peers**
+
+I want to check specific files to see if they exist, like the guidelines in PEERA.md and PEERB.md, along with evidence and work files. Once I've confirmed, I’ll read key files to draft content and create a message for both peers, outlining their respective tasks. PeerA will focus on aligning architecture and updating risks, while PeerB will implement experiments. I have to avoid long logs and reference file paths only. Plus, I need to check for any pending inbox items and remind them to process the oldest first.
+thinking
+**Preparing to send messages**
+
+I want to check the mailbox directories like `.cccc/mailbox/peer*/` and `.cccc/mailbox/foreman/`, starting with listing the contents of `.cccc/mailbox`. Once I know what’s there, I'll write the `to_peer.md` file in the `foreman` directory, including a "To: Both" header and the body within <TO_PEER> tags. I need to keep the bullet points concise. Since I'm speaking in the user's voice, I'll ensure I'm providing clear directions as if I am them. Let’s get started!
+codex
+I’m going to scan the project anchors (POR, SUBPORs, peer rules) and then write a concise routed directive to Both in `.cccc/mailbox/foreman/to_peer.md`.
+exec
+bash -lc 'ls -la' in /home/dodd/dev/influx succeeded in 11ms:
+total 100
+drwxr-xr-x 14 dodd dodd  4096 Nov 13 14:43 .
+drwxr-xr-x 16 dodd dodd  4096 Nov 13 11:04 ..
+drwxr-xr-x 13 dodd dodd  4096 Nov 13 11:31 .cccc
+drwxr-xr-x  8 dodd dodd  4096 Nov 13 15:53 .git
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:19 .github
+-rw-r--r--  1 dodd dodd   283 Nov 13 11:26 .gitignore
+drwxr-xr-x  6 dodd dodd  4096 Nov 13 11:07 .venv
+-rw-r--r--  1 dodd dodd   109 Nov 13 11:18 FOREMAN_TASK.md
+-rw-r--r--  1 dodd dodd  1430 Nov 13 11:20 LICENSE
+-rw-r--r--  1 dodd dodd 14419 Nov 13 11:06 PROJECT.md
+-rw-r--r--  1 dodd dodd 10360 Nov 13 14:43 README.md
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:19 ci
+drwxr-xr-x  7 dodd dodd  4096 Nov 13 14:42 data
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:07 docs
+drwxr-xr-x  4 dodd dodd  4096 Nov 13 11:19 lists
+-rw-r--r--  1 dodd dodd    18 Nov 13 11:38 requirements.txt
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:46 schema
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:29 state
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:39 test
+exec
+bash -lc "ls -la .cccc && echo '---' && find .cccc -maxdepth 3 -type d -print" in /home/dodd/dev/influx succeeded in 13ms:
+total 272
+drwxr-xr-x 13 dodd dodd   4096 Nov 13 11:31 .
+drwxr-xr-x 14 dodd dodd   4096 Nov 13 14:43 ..
+drwxr-xr-x  2 dodd dodd   4096 Nov 13 11:07 __pycache__
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:08 adapters
+-rw-r--r--  1 dodd dodd   1086 Nov 13 11:07 cccc_tui.py
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:07 common
+-rw-r--r--  1 dodd dodd  11546 Nov 13 11:07 delivery.py
+-rw-r--r--  1 dodd dodd   4612 Nov 13 11:07 evidence_runner.py
+drwxr-xr-x  2 dodd dodd   4096 Nov 13 11:31 logs
+drwxr-xr-x  5 dodd dodd   4096 Nov 13 11:07 mailbox
+-rw-r--r--  1 dodd dodd   9660 Nov 13 11:07 mailbox.py
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:07 orchestrator
+-rw-r--r--  1 dodd dodd 116104 Nov 13 11:07 orchestrator_tmux.py
+-rw-r--r--  1 dodd dodd   6932 Nov 13 11:07 panel_status.py
+-rw-r--r--  1 dodd dodd   6284 Nov 13 11:07 por_manager.py
+-rwxr-xr-x  1 dodd dodd  11715 Nov 13 11:07 por_subpor.py
+-rw-r--r--  1 dodd dodd  31382 Nov 13 11:07 prompt_weaver.py
+drwxr-xr-x  2 dodd dodd   4096 Nov 13 11:07 rules
+drwxr-xr-x  3 dodd dodd   4096 Nov 13 11:08 settings
+exec
+bash -lc "sed -n '1,200p' .cccc/rules/PEERA.md; echo '---'; sed -n '1,200p' .cccc/rules/PEERB.md" in /home/dodd/dev/influx succeeded in 12ms:
+# PeerA Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+1) Who You Are - Collaborators - Purpose
+- Equal peers
+  - You and the other peer collaborate as equals to deliver evidence-first, small, reversible steps that outperform a single expert.
+- Ethos (non-negotiable)
+  - Agency and ownership; act like a top generalist.
+  - Widen perspective; Keep higher-order thinking.
+  - Evidence-first; chat never changes state.
+  - Taste and clarity: simple, tight, clean.
+  - Anti-laziness: refuse low-signal output; prefer decisive micro-moves.
+- On-demand helper: Aux (PeerC) - purpose & direction
+  - Use Aux when a decoupled subtask or high-level sanity sweep is cheaper offloaded than done inline. You integrate the outcome.
+  - Mode: on - Aux has the same FoV and permissions in this repo as you. Just call Aux for help.
+
+2) Canonical references and anchors
+- POR.md - single source of direction (path: /home/dodd/dev/influx/docs/por/POR.md)
+  - Keep North-star, guardrails, bets/assumptions, Now/Next/Later, and portfolio health here (no details).
+- SUBPOR - execution anchor (one task = one SUBPOR)
+exec
+bash -lc "sed -n '1,200p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- Updated 2025-11-13 11:16 JST by PeerA -->
+
+# POR - Strategic Board
+
+- **North Star**: Build a 5k–10k high-signal X influencer index across **12 vertical domains** (AI/Tech, Creator, Business, Finance, Science, Design, Media, Gaming, Policy, Web3, Lifestyle, Other) with sustainable refresh & provenance, serving downstream prioritization (xoperator) and ecosystem intelligence.
+- **Guardrails**: Quality (activity×relevance×safety) > quantity; no paid X API; no browser automation; all sources auditable; licensed CC BY 4.0; 100% RUBE MCP tooling.
+- **Non-Goals / Boundaries**: No "encyclopedia-scale" (>15k); no NSFW/political/controversy by default; no private data; no ToS violations; no black-box scoring.
+
+## Deliverables (top-level)
+- **D1: Schema & Validation** - `schema/bigv.schema.json` + validation scripts - Both
+- **D2: Collection Pipeline** - `tools/influx-{radar,harvest,expand,score,export}` CLI suite - PeerA (with Aux)
+- **D3: Initial Dataset** - `data/latest/latest.jsonl.gz` (400–600 authors, M0) - Both
+- **D4: Governance & Docs** - `README.md`, `LICENSE`, `docs/schema.md`, heuristics YAMLs - PeerB
+
+## Bets & Assumptions
+- **Bet 1 (FALSIFIED permanently)**: 80–90% authors discoverable via GitHub org seeds (twitter_username field) + following-graph expansion (TWITTER_FOLLOWING_BY_USER_ID, 1–2 pages per seed) | **Finding**: GitHub-seed automation path is **STRUCTURALLY INFEASIBLE** - RUBE MCP GitHub OAuth integration does not offer `read:org` scope option required for GITHUB_LIST_ORGANIZATION_MEMBERS (User #000077 verification + PeerB technical confirmation); Twitter v2 following-graph has low standalone value without GitHub seed layer | **Evidence**: T000003 investigation complete (`.cccc/work/validation/github_scope_infeasibility.md`); GitHub OAuth achieved PARTIAL SUCCESS (connection active, `['user']` scope only, cannot access org members) | **Pivot**: M1 commits to Fallback Path A (manual CSV + X Lists, proven M0 method scaled to 1.5k-2k authors, +2 week timeline vs automation) | **Original success criteria** (DEFERRED indefinitely): twitter_username coverage≥65%, mapping precision≥95%, active handles≥70%, follower Gini≥0.6, org affiliation≥30%, duplicate≤5% | Window: Automation paths unavailable within RUBE MCP free tier constraints
+- **Bet 2**: Brand/official heuristics (name/bio keywords + domain patterns) filter ≥80% noise with <10% false positive | Probe: Manual review of 50 random filtered-out + 50 kept | Evidence: Precision ≥90%, Recall ≥80% | Window: M0 week 1
+- **Bet 3**: Score (activity 30% + quality 50% + relevance 20%) correlates with downstream value | Probe: xoperator A/B test top-500 vs random-500 from pool | Evidence: Top-500 yield ≥2× actionable tweets | Window: M1
+
+## Roadmap (Now/Next/Later)
+exec
+bash -lc 'rg --files docs/por | rg SUBPOR.md || true' in /home/dodd/dev/influx succeeded in 17ms:
+docs/por/T000001-d1-validate/SUBPOR.md
+docs/por/T000002-d2-bootstrap/SUBPOR.md
+docs/por/T000003-auth-unblock/SUBPOR.md
+exec
+bash -lc "sed -n '1,200p' docs/por/T000001-d1-validate/SUBPOR.md; echo '---'; sed -n '1,200p' docs/por/T000002-d2-bootstrap/SUBPOR.md; echo '---'; sed -n '1,200p' docs/por/T000003-auth-unblock/SUBPOR.md" in /home/dodd/dev/influx succeeded in 15ms:
+<!-- Generated on 2025-11-13T02:31:23+00:00 by por_subpor.py 0.1.1 -->
+
+# T000001 - D1 — Schema validation + CI (M0) - Owner: peerB - Stage: proposed - Timebox: 0.5d
+
+- Goal/Scope (<=3 lines):
+  - Implement schema validation tool (tools/influx-validate) that validates JSONL records against schema/bigv.schema.json using jsonschema library
+  - Fix schema to make `meta` required with critical sub-fields (`meta.score`, `meta.sources[>=1]`, `meta.last_refresh_at`, `provenance_hash`)
+  - Create CI workflow (ci/validate.yml) that runs validator on data/latest/latest.jsonl.gz and fails PR if invalid
+- Non-Goals (<=2 lines):
+  - Collection tools (D2) - defer to next SUBPOR
+  - Extensive schema documentation polish (already over-engineered per strategic review; focus on working validator)
+- Deliverable & Interface (path/format/user-visible change):
+  - tools/influx-validate: CLI tool (argparse) that validates JSONL against schema; exits 0 if valid, 1 if invalid with error details
+  - schema/bigv.schema.json: Fixed schema with required `meta.score`, `meta.sources`, `meta.last_refresh_at`, `provenance_hash`
+  - ci/validate.yml: GitHub Actions workflow that runs influx-validate on PRs
+- Acceptance (3-5 observable items):
+  [x] schema/bigv.schema.json validates correctly with jsonschema; `meta` and critical sub-fields are required
+  [x] tools/influx-validate exists, runs jsonschema validation on JSONL input, checks manifest.json schema_version match
+  [x] tools/influx-validate exits 0 on valid fixture (3 hardcoded JSON objects in test/fixtures/valid.jsonl), exits 1 on invalid fixture (test/fixtures/invalid.jsonl) with clear error message
+  [x] ci/validate.yml workflow exists and runs influx-validate; simulate PR validation with manual smoke test
+exec
+bash -lc "sed -n '1,200p' docs/por/T000002-d2-bootstrap/SUBPOR.md" in /home/dodd/dev/influx succeeded in 10ms:
+# SUBPOR: T000002-d2-bootstrap
+
+**Owner**: PeerB
+**Status**: ✅ COMPLETED
+**Created**: 2025-11-13
+**Completed**: 2025-11-13
+**Timebox**: 0.5d (actual: ~2h)
+
+## Goal
+
+Validate minimum viable D2 harvest pipeline with schema-compliant output (OpenAI/Anthropic/Huggingface seed authors).
+
+## Scope
+
+**IN**: Manual CSV seed curation + Twitter verification + JSONL generation with placeholder meta fields per d2-pipeline-contract.md Option A
+
+**OUT**: Full GitHub API implementation (blocked on OAuth), scoring/filtering logic (deferred to influx-score)
+
+## Acceptance Criteria
+
+exec
+bash -lc "sed -n '1,200p' docs/por/T000003-auth-unblock/SUBPOR.md" in /home/dodd/dev/influx succeeded in 10ms:
+# SUBPOR: T000003-auth-unblock
+
+**Owner**: PeerB
+**Status**: ✅ CLOSED - Resolved-Infeasible
+**Created**: 2025-11-13
+**Closed**: 2025-11-13
+**Timebox**: 0.5d (investigation phase) - COMPLETED
+
+## Goal
+
+Unblock automated data collection by resolving API authentication and authorization issues for GitHub and Twitter toolkits.
+
+## Scope
+
+**IN**: Connection validation, OAuth completion, scope verification, support ticket creation, validation probe execution
+
+**OUT**: Full M1 implementation (deferred until auth completes)
+
+## Acceptance Criteria
+
+
+thinking
+**Checking portfolio documentation**
+
+I need to write a message to both peers now that I understand the current state. But first, I should check the portfolio board documents, specifically the "Next" tasks in the POR.md file. The earlier excerpt indicates that the "Now" tasks have been achieved, but the "Next" tasks are unspecified due to truncation. Let’s see if I can open more of the POR after line 200 to gather the information needed.
+exec
+bash -lc "sed -n '200,400p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 10ms:
+- 2025-11-13 11:19 | PeerA | Pivoted collection strategy from keyword-heavy to GitHub-seed + following-graph; added state DB (SQLite); simplified schema | evidence: Aux validation of API tiers, PeerB network expansion alignment
+- 2025-11-13 12:14 | PeerA | Added acceptance criteria + intermediate artifact compliance strategy (Option A: meta placeholders) to D2 pipeline contract; confirmed ≤150 API calls feasible for M0 | evidence: docs/por/d2-pipeline-contract.md updated, Foreman directive 000016
+- 2025-11-13 12:20 | PeerA | Integrated Aux strategic review: M0 target refined to 600; Bet1 success criteria added (coverage≥65%, precision≥95%, active≥70%, Gini≥0.6, org affiliation≥30%, duplicate≤5%); risk pivot thresholds (>90m/2h/4h); parallelization strategy (following+x-lists concurrent); T000002 completion (48 profiles, 83% hit rate, 100% schema-compliant) calibrates expectations | evidence: Aux review output, T000002 SUBPOR, POR updated
+- 2025-11-13 12:28 | PeerA | Added explicit Execution Guardrails to M0 Now section per Foreman directive: API≤150/run, TWITTER_FOLLOWING≤2 pages/seed, entry filters (verified+30k OR 50k), brand/risk rules mandatory, Option A meta placeholders at every stage; cross-references d2-pipeline-contract.md | evidence: Foreman 000019, POR.md:L25
+- 2025-11-13 13:05 | PeerA | MAJOR PIVOT: Bet 1 FALSIFIED for M0 (Twitter v2 enrollment blocker + GitHub OAuth = 2 consecutive auth blockers); staged M0 into M0.0 (48 authors, manual CSV, proxy score v0, ≤3 days) + M0.1 (150-200 authors, manual curation, ≤1 week); chose Option S (proxy scoring) for M0 deliverable; automation paths (GitHub-seed + following-graph) deferred to M1 post-credential-fix; manual CSV now primary M0 path | evidence: PeerB following probe failure (0/5 API calls), Aux risk pivot decision tree at ">2 failed retries", POR.md updated (Bet 1, Roadmap, Risk Radar)
+- 2025-11-13 13:52 | PeerA | Added M1 auth-fix plan (GitHub OAuth + Twitter v2 enrollment resolution, week 1 blocking) + filter implementation plan (week 1, tools/influx-harvest); added R6 risk (pipeline filter enforcement gap, sev=med); verified PeerB schema blocker FALSE (meta fields always required); confirmed guardrails gap (influx-harvest L53/L80 TODO placeholders) | evidence: Foreman 000035 directive, PeerB 000036 schema verification, tools/influx-harvest:L53/L80 grep, POR.md updated (Next, Risk Radar, Maintenance Log)
+- 2025-11-13 14:05 | PeerA | Enhanced Auth-unblock section per Foreman 000038: expanded to 1-paragraph format with owners (PeerB + Composio team for GitHub OAuth, External admin for Twitter v2 enrollment), ETA (M1 day 1-2 for GitHub, day 1-3 for Twitter), validation method (following slice-1 probe retry), and inline risk statement (>3 days blocks M1 automation) | evidence: Foreman 000038 directive post-M0.2 completion (121 authors), POR.md:L37 updated Auth-unblock paragraph
+- 2025-11-13 14:15 | PeerA | M0.1 ACHIEVED milestone marked (151 authors, commit 28a8381); created T000003 Auth-unblock SUBPOR (docs/por/T000003-auth-unblock/SUBPOR.md) with resolution steps, dependencies, validation probe, owners/ETA/contacts; updated R1a risk to clarify X API dependency + alternative priorities (GitHub-seed+Following PRIMARY, Manual CSV+X Lists PROVEN fallback, TWITTER_RECENT_SEARCH DOWNGRADED) | evidence: Foreman 000042 directive (Chinese), POR.md:L28-33 M0.1 achieved, T000003 SUBPOR created, POR.md:L58 R1a updated with priorities
+- 2025-11-13 15:50 | PeerA | MAJOR STRATEGIC PIVOT: Bet 1 FALSIFIED permanently (GitHub-seed automation structurally infeasible); Path A promoted from fallback to M1 primary; Path B marked INFEASIBLE; M1 targets revised (1.5k-2k authors, 4-5 weeks); roadmap/Next section rewritten (manual CSV+Lists method); Domain Coverage Plan quotas updated; Fallback M1 section renamed to "M1 Strategy (PIVOTED)"; Decision Log entry added | evidence: T000003 investigation complete (User #000077 + PeerB #000076 confirmation RUBE MCP lacks `read:org` scope), POR.md comprehensive update (Bet 1, Roadmap, Domain Coverage, M1 Strategy sections), Decision Log 2025-11-13 15:50 entry
+
+## Aux Delegations - Meta-Review/Revise (strategic)
+- [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19
+- [x] Strategic review of M0 scope, Bet1 criteria, collection optimization, risk pivots, artifact quality — Result: Target 600 (not 400-600 range, ROI optimal); refined Bet1 success criteria (coverage≥65%, precision≥95%, active≥70%, follower Gini≥0.6, org affiliation≥30%, duplicate≤5%); parallelize github-seeds + x-lists (30-50% faster); risk pivot at >90m (x-lists parallel), >2h (manual CSV), >4h (re-scope); keep x-lists.txt with schema header; ID-map cache for M2 (cuts 30-60% redundant lookups) — integrated 2025-11-13 12:20
+exec
+bash -lc 'rg -n "''^## Roadmap|''^'"\\- \\*\\*Now|"'^'"\\- \\*\\*Next|"'^M1 Strategy|''^## Risk Radar" docs/por/POR.md && echo '"'---' && sed -n '400,800p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 13ms:
+20:## Roadmap (Now/Next/Later)
+21:- **Now (M0, ≤1 week, PIVOTED)**:
+38:- **Next (M1, ≤5 weeks, Manual CSV + X Lists PRIMARY)**:
+178:## Risk Radar & Mitigations (up/down/flat)
+---
+exec
+bash -lc "sed -n '38,120p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 10ms:
+- **Next (M1, ≤5 weeks, Manual CSV + X Lists PRIMARY)**:
+  - **Collection Method (PIVOTED)**: Fallback Path A promoted to M1 primary strategy following T000003 findings (GitHub automation structurally infeasible within RUBE MCP). Manual CSV extraction from GitHub orgs + curated X Lists + domain-specific seeds. Target: 1.5k-2k authors across 5-6 domains (AI/Tech, Creator, Business, Finance, Science, Design). Timeline: 4-5 weeks (+2 weeks vs original automation plan). Method proven via M0 (151/151 success rate, 100% precision).
+  - **Filter implementation (week 1)**: Implement entry filters ((verified+30k) OR 50k) + brand/risk rules in tools/influx-harvest; replaces M0 manual CSV pre-filtering with automated pipeline enforcement
+  - Scale to 1.5k–2k via manual collection + batch validation (weekly 300-400 author increments)
+  - Refine heuristics based on manual review (sample 100/week)
+  - Snapshot automation: daily Release w/ tag YYYYMMDD
+  - Add shards/ (topic/lang) when count >1.5k
+- **Later (M2+, >6 weeks)**:
+  - Reach 5k–8k; maintain churn <20%/week
+  - Visualization dashboard (independent site)
+  - Parquet export for analysis; weekly full recalc to prevent drift
+  - ID-map cache optimization (Aux): Persistent GitHub login ↔ X handle cache + early dedupe/aliasing; cuts 30–60% redundant lookups under free tier
+
+## Domain Coverage Plan (Cross-Domain Expansion)
+
+**Strategy**: Phased bootstrap-then-expand approach to maintain quality gates while scaling across heterogeneous verticals.
+
+### M1 Bootstrap Domains (5-6 domains, 1.5k-2k authors, 4-5 weeks MANUAL)
+**Target Domains** (confirmed via PeerB feasibility analysis):
+1. **AI & Technology** (1000-1500 authors, PROVEN M0)
+
+thinking
+**Reviewing dataset and mailbox**
+
+Alright, it's time to check the evidence roots for the latest dataset. I don't need to paste logs, just reference the paths instead. Next, I want to see if there are any pending mailbox items. I’ll take a look at the inboxes for both peerA and peerB, specifically listing `.cccc/mailbox/peerA/inbox` and `peerB/inbox`. This should give me a clearer picture of what's waiting for action.
+exec
+bash -lc 'ls -la .cccc/mailbox/peerA/inbox .cccc/mailbox/peerB/inbox || true' in /home/dodd/dev/influx succeeded in 11ms:
+.cccc/mailbox/peerA/inbox:
+total 8
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 15:52 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 15:44 ..
+
+.cccc/mailbox/peerB/inbox:
+total 8
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 15:45 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 15:45 ..
+
+
+
+
+
+thinking
+**Formulating directive message**
+
+It looks like I don’t have any pending inbox items, so no need for reminders there. Now, I need to create a directive message for both parties—covering architecture, alignment, and risks for PeerA, while focusing on implementation and experiments for PeerB. I should reference acceptance criteria and propose a small next step that aligns with the goals. I need to keep it concise and structured, maybe following some guidelines from the "PeerA Rules." However, I don’t have to strictly adhere to their protocol.
+thinking
+**Structuring Foreman message**
+
+I see that the "FOREMAN Rules" don’t provide a specific message structure, just that I need to write one message per run to a specific location while speaking in the user's voice. So, I'll start with a "To: Both" header and include some directives.
+
+For PeerA, I need to affirm that M1 is about manual CSV and X Lists, noting that the GitHub automation path isn’t feasible. I’ll ask them to codify filter enforcement in tools/influx-harvest and define specifications for entry filters and risk heuristics. Then there's the update for the POR with domain quotas, which appears to be already present.
+thinking
+**Requesting filters contract and implementation steps**
+
+I should consider asking to produce a "filters contract document" at `docs/por/d2-pipeline-contract.md`, even though the contract already exists. It might be helpful to mark TODOs for tools that require guardrails during implementation.
+
+For PeerB, I want them to implement filters in the code for tools/influx-harvest and add two YAML heuristics files, along with unit testing and validation. 
+
+I also need to request the next dataset increment to 200 authors, since M0 is at 151. The fallback suggests expanding to 200 if unresolved within 72 hours. So, let's add 50 more authors for pipeline exercise. 
+
+Lastly, I note that the scoring formula, "proxy formula v0," is implemented. For M1, we’ll include a full formula with weights for activity, quality, and relevance, but I ought to keep the next step manageable by proposing a simpler approach, maybe focusing on a list of placeholders for score v1.
+thinking
+**Proposing next steps for PeerA and PeerB**
+
+I need to suggest "one smallest next step aligned to POR/SUBPOR." 
+
+For PeerA, I'll propose creating a one-page filter specification that includes rule naming, default thresholds, CLI flags, and acceptance, perhaps located at `docs/por/d2-filter-spec.md`. But to keep things simple, I might just update the existing `d2-pipeline-contract.md`. If a new document is necessary, I can instruct them to append acceptance lines there and add a sample YAML structure under `lists/rules`.
+
+For PeerB, I want them to implement guardrails in the tools/influx-harvest for enforcing entry filters and brand/risk heuristics using YAML configs. They could also run a smoke test with a specific command and produce an evidence file path. I’ll ensure to mention that only repo paths should be referenced without pasted long logs.
+thinking
+**Checking existing tools**
+
+I need to keep in mind that I shouldn't paste long logs, but referencing commands is fine. So, it's important to check the existing tools in the `tools/` directory. I want to list out the tools to ensure they exist. Specifically, I’ll look for `influx-harvest`, `influx-score`, `influx-export`, and `influx-validate`. This will help confirm that everything needed is in place before proceeding!
+exec
+bash -lc "ls -la tools && rg -n \"def main\\(|argparse|entry\" tools/* | sed -n '1,120p'" in /home/dodd/dev/influx succeeded in 18ms:
+total 44
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 14:33 .
+drwxr-xr-x 14 dodd dodd 4096 Nov 13 14:43 ..
+-rwxr-xr-x  1 dodd dodd 6839 Nov 13 14:17 influx-export
+-rwxr-xr-x  1 dodd dodd 5242 Nov 13 12:01 influx-harvest
+-rwxr-xr-x  1 dodd dodd 4562 Nov 13 13:01 influx-score
+-rwxr-xr-x  1 dodd dodd 7081 Nov 13 11:36 influx-validate
+-rwxr-xr-x  1 dodd dodd 3788 Nov 13 14:33 influx-view
+tools/influx-export:13:import argparse
+tools/influx-export:172:def main():
+tools/influx-export:173:    parser = argparse.ArgumentParser(
+tools/influx-score:16:import argparse
+tools/influx-score:109:def main():
+tools/influx-score:110:    parser = argparse.ArgumentParser(
+tools/influx-harvest:12:import argparse
+tools/influx-harvest:93:def main():
+tools/influx-harvest:94:    parser = argparse.ArgumentParser(
+tools/influx-validate:15:import argparse
+tools/influx-validate:124:def main():
+tools/influx-validate:125:    parser = argparse.ArgumentParser(
+exec
+bash -lc "sed -n '1,160p' tools/influx-harvest" in /home/dodd/dev/influx succeeded in 9ms:
+#!/usr/bin/env python3
+"""
+influx-harvest: Author discovery via GitHub seeds and following-graph expansion
+
+Usage:
+    influx-harvest github-seeds --orgs openai,anthropic,pytorch --out authors.jsonl
+    influx-harvest following --seeds authors.jsonl --pages 2 --out expanded.jsonl
+    influx-harvest x-lists --list-urls lists.txt --out curated.jsonl
+
+M0 approach: GitHub org members (twitter_username) + TWITTER_FOLLOWING expansion
+"""
+import argparse
+import sys
+import json
+import os
+from datetime import datetime
+from pathlib import Path
+
+
+def github_seeds(args):
+
+thinking
+**Implementing filters**
+
+I’m noticing TODO placeholders for filter sections, which is great! It tells me that I can direct PeerB to focus on implementing filter enforcement in these functions. Also, I want to check the lists/rules directory to see if any YAML heuristics are available. That could really help streamline things. I’m curious to see how this all fits together! Let's proceed with these steps to enhance functionality effectively.
+exec
+bash -lc "ls -la lists || true; echo '---'; ls -la lists/rules || true; echo '---'; rg -n \"brand|risk|heur\" lists -S || true" in /home/dodd/dev/influx succeeded in 20ms:
+total 16
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 11:19 .
+drwxr-xr-x 14 dodd dodd 4096 Nov 13 14:43 ..
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 11:21 rules
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 15:03 seeds
+---
+total 16
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 11:21 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 11:19 ..
+-rw-r--r-- 1 dodd dodd 2971 Nov 13 11:20 brand_heuristics.yml
+-rw-r--r-- 1 dodd dodd 3670 Nov 13 11:21 risk_terms.yml
+---
+lists/rules/brand_heuristics.yml:1:# Brand and Official Account Heuristics
+lists/rules/brand_heuristics.yml:2:# Used to filter out brand, media, official, and organizational accounts
+lists/rules/brand_heuristics.yml:30:  brand_commerce:
+lists/rules/brand_heuristics.yml:85:  # X Blue (verified=blue) is personal; keep unless other heuristics match
+lists/rules/brand_heuristics.yml:89:  # Legacy verified (verified=legacy) before 2023: mixed (keep unless other heuristics match)
+lists/rules/brand_heuristics.yml:92:# Follower/following ratio heuristics (optional, low weight)
+lists/rules/brand_heuristics.yml:93:ratio_heuristics:
+lists/rules/brand_heuristics.yml:94:  # If followers/following > 100 AND bio matches corporate, likely brand
+
+thinking
+**Organizing tasks with heuristics**
+
+Alright, the heuristics YAML files are confirmed to be in place. I'll get PeerA to verify the thresholds and include acceptance lines. Meanwhile, PeerB needs to integrate these files into `influx-harvest`. It’s also important for me to double-check the data and the latest updates to ensure I have the correct dataset file path ready to work with. This sort of organization should help my process go smoother!
+exec
+bash -lc "ls -la data/latest || true; echo '---'; ls -la data/snapshots || true; echo '---'; rg -n \"schema_version|manifest|SHA-256|score_version\" -S data -g '"'!*.gz'"' || true" in /home/dodd/dev/influx succeeded in 20ms:
+total 28
+drwxr-xr-x 2 dodd dodd  4096 Nov 13 12:28 .
+drwxr-xr-x 7 dodd dodd  4096 Nov 13 14:42 ..
+-rw-r--r-- 1 dodd dodd 12639 Nov 13 14:05 latest.jsonl.gz
+-rw-r--r-- 1 dodd dodd   487 Nov 13 14:05 manifest.json
+---
+total 12
+drwxr-xr-x 3 dodd dodd 4096 Nov 13 14:17 .
+drwxr-xr-x 7 dodd dodd 4096 Nov 13 14:42 ..
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 14:17 2025-11-13
+---
+data/latest/manifest.json:2:  "schema_version": "1.0.0",
+data/latest/manifest.json:8:  "score_version": "v0_proxy_no_metrics",
+data/uncompressed/README.md:18:  - SHA-256: matches `data/latest/latest.jsonl.gz` (uncompressed)
+exec
+bash -lc "sed -n '1,200p' .cccc/mailbox/foreman/to_peer.md || true" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+file update
+M /home/dodd/dev/influx/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1,26 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++To: Both
++<TO_PEER>
++Item(focus.align): M1 pivot confirmed — Manual CSV + X Lists is PRIMARY; GitHub automation infeasible per T000003. POR updated 2025-11-13 15:50 (docs/por/POR.md).
++
++Item(filters.contract): Lock filter contract before wiring
++Progress: POR Next calls for week‑1 filter enforcement; heuristics exist at lists/rules/{brand_heuristics.yml,risk_terms.yml}. tools/influx-harvest has TODOs (tools/influx-harvest:53,80).
++Ask(to=peerA, prio=high, action=clarify): Specify v1 thresholds and CLI for tools/influx-harvest (entry filters: (verified+30k) OR 50k; brand/risk exclusions; exceptions). Update docs/por/d2-pipeline-contract.md with:
++  - Acceptance (2 lines): “enforced at harvest; zero brand/official; risk flags excluded by default”.
++  - One smoke command.
++Next(tag=filters.spec): Append a 10–12 line section to docs/por/d2-pipeline-contract.md defining flags, YAML keys used, and the exact smoke test command. Reference lists/rules/*.yml.
++
++Item(filters.implementation): Wire and prove one run
++Progress: M0 dataset ready at data/latest/latest.jsonl.gz; heuristics YAMLs present.
++Ask(to=peerB, prio=high, action=revise): Implement filter enforcement in tools/influx-harvest using lists/rules/*.yml + thresholds from contract; write filtered output and validate.
++Evidence(refs=[
++  cmd:python3 tools/influx-harvest x-lists --list-urls lists/seeds/m03-additional-batch.csv --out .cccc/work/m01/harvest.raw.jsonl,
++  cmd:python3 tools/influx-harvest following --seeds .cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl --pages 1 --out .cccc/work/m01/expand.raw.jsonl,
++  file:.cccc/work/m01/harvest.filtered.jsonl,
++  cmd:python3 tools/influx-validate -s schema/bigv.schema.json .cccc/work/m01/harvest.filtered.jsonl
++]): keep logs in .cccc/work/; don’t paste into messages.
++Next(tag=filters.smoke): Produce .cccc/work/m01/harvest.filtered.jsonl (≥40 records), schema‑validate, no scoring change.
++
++Item(risk.control):
++Risk(sev=med): Threshold drift by domain; mitigate with a 30–50 item sample review and YAML exceptions per domain.
++Next(tag=coord): After PeerA contract lands, PeerB wires and posts evidence paths; then plan the week’s 300–400 increment per POR Next.
++</TO_PEER>
+apply_patch(auto_approved=true) exited 0 in 5ms:
+Success. Updated the following files:
+M .cccc/mailbox/foreman/to_peer.md
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index afeae6e29284ab2e29de280e5a0ac5d1ae0dad9d..2130f5aa6568f7710a7c4de703da7f6e5588d1ef
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1,26 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++To: Both
++<TO_PEER>
++Item(focus.align): M1 pivot confirmed — Manual CSV + X Lists is PRIMARY; GitHub automation infeasible per T000003. POR updated 2025-11-13 15:50 (docs/por/POR.md).
++
++Item(filters.contract): Lock filter contract before wiring
++Progress: POR Next calls for week‑1 filter enforcement; heuristics exist at lists/rules/{brand_heuristics.yml,risk_terms.yml}. tools/influx-harvest has TODOs (tools/influx-harvest:53,80).
++Ask(to=peerA, prio=high, action=clarify): Specify v1 thresholds and CLI for tools/influx-harvest (entry filters: (verified+30k) OR 50k; brand/risk exclusions; exceptions). Update docs/por/d2-pipeline-contract.md with:
++  - Acceptance (2 lines): “enforced at harvest; zero brand/official; risk flags excluded by default”.
++  - One smoke command.
++Next(tag=filters.spec): Append a 10–12 line section to docs/por/d2-pipeline-contract.md defining flags, YAML keys used, and the exact smoke test command. Reference lists/rules/*.yml.
++
++Item(filters.implementation): Wire and prove one run
++Progress: M0 dataset ready at data/latest/latest.jsonl.gz; heuristics YAMLs present.
++Ask(to=peerB, prio=high, action=revise): Implement filter enforcement in tools/influx-harvest using lists/rules/*.yml + thresholds from contract; write filtered output and validate.
++Evidence(refs=[
++  cmd:python3 tools/influx-harvest x-lists --list-urls lists/seeds/m03-additional-batch.csv --out .cccc/work/m01/harvest.raw.jsonl,
++  cmd:python3 tools/influx-harvest following --seeds .cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl --pages 1 --out .cccc/work/m01/expand.raw.jsonl,
++  file:.cccc/work/m01/harvest.filtered.jsonl,
++  cmd:python3 tools/influx-validate -s schema/bigv.schema.json .cccc/work/m01/harvest.filtered.jsonl
++]): keep logs in .cccc/work/; don’t paste into messages.
++Next(tag=filters.smoke): Produce .cccc/work/m01/harvest.filtered.jsonl (≥40 records), schema‑validate, no scoring change.
++
++Item(risk.control):
++Risk(sev=med): Threshold drift by domain; mitigate with a 30–50 item sample review and YAML exceptions per domain.
++Next(tag=coord): After PeerA contract lands, PeerB wires and posts evidence paths; then plan the week’s 300–400 increment per POR Next.
++</TO_PEER>
+
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index afeae6e29284ab2e29de280e5a0ac5d1ae0dad9d..2130f5aa6568f7710a7c4de703da7f6e5588d1ef
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1,26 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++To: Both
++<TO_PEER>
++Item(focus.align): M1 pivot confirmed — Manual CSV + X Lists is PRIMARY; GitHub automation infeasible per T000003. POR updated 2025-11-13 15:50 (docs/por/POR.md).
++
++Item(filters.contract): Lock filter contract before wiring
++Progress: POR Next calls for week‑1 filter enforcement; heuristics exist at lists/rules/{brand_heuristics.yml,risk_terms.yml}. tools/influx-harvest has TODOs (tools/influx-harvest:53,80).
++Ask(to=peerA, prio=high, action=clarify): Specify v1 thresholds and CLI for tools/influx-harvest (entry filters: (verified+30k) OR 50k; brand/risk exclusions; exceptions). Update docs/por/d2-pipeline-contract.md with:
++  - Acceptance (2 lines): “enforced at harvest; zero brand/official; risk flags excluded by default”.
++  - One smoke command.
++Next(tag=filters.spec): Append a 10–12 line section to docs/por/d2-pipeline-contract.md defining flags, YAML keys used, and the exact smoke test command. Reference lists/rules/*.yml.
++
++Item(filters.implementation): Wire and prove one run
++Progress: M0 dataset ready at data/latest/latest.jsonl.gz; heuristics YAMLs present.
++Ask(to=peerB, prio=high, action=revise): Implement filter enforcement in tools/influx-harvest using lists/rules/*.yml + thresholds from contract; write filtered output and validate.
++Evidence(refs=[
++  cmd:python3 tools/influx-harvest x-lists --list-urls lists/seeds/m03-additional-batch.csv --out .cccc/work/m01/harvest.raw.jsonl,
++  cmd:python3 tools/influx-harvest following --seeds .cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl --pages 1 --out .cccc/work/m01/expand.raw.jsonl,
++  file:.cccc/work/m01/harvest.filtered.jsonl,
++  cmd:python3 tools/influx-validate -s schema/bigv.schema.json .cccc/work/m01/harvest.filtered.jsonl
++]): keep logs in .cccc/work/; don’t paste into messages.
++Next(tag=filters.smoke): Produce .cccc/work/m01/harvest.filtered.jsonl (≥40 records), schema‑validate, no scoring change.
++
++Item(risk.control):
++Risk(sev=med): Threshold drift by domain; mitigate with a 30–50 item sample review and YAML exceptions per domain.
++Next(tag=coord): After PeerA contract lands, PeerB wires and posts evidence paths; then plan the week’s 300–400 increment per POR Next.
++</TO_PEER>
+
+exec
+bash -lc "sed -n '1,200p' .cccc/mailbox/foreman/to_peer.md" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- MAILBOX:SENT v1 ts=2025-11-13T06:57:10Z eid=005dadc0fc95 sha=7c81d36f route=Foreman→Both -->
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index afeae6e29284ab2e29de280e5a0ac5d1ae0dad9d..ea4ecabf3376d9f121deb81c163e4c115a89eb5c
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++<!-- MAILBOX:SENT v1 ts=2025-11-13T06:57:10Z eid=005dadc0fc95 sha=7c81d36f route=Foreman→Both -->
+\ No newline at end of file
+
+exec
+bash -lc "ls -la .cccc/mailbox/peerA/inbox .cccc/mailbox/peerB/inbox; echo '---'; rg -n \"filters.contract|filters.implementation|filters.smoke\" -S .cccc/mailbox/peerA/inbox .cccc/mailbox/peerB/inbox || true" in /home/dodd/dev/influx succeeded in 18ms:
+.cccc/mailbox/peerA/inbox:
+total 12
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 15:57 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 15:44 ..
+-rw-r--r-- 1 dodd dodd 2318 Nov 13 15:57 000077.foreman-1763017030-354d4b.txt
+
+.cccc/mailbox/peerB/inbox:
+total 12
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 15:57 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 15:45 ..
+-rw-r--r-- 1 dodd dodd 2318 Nov 13 15:57 000083.foreman-1763017030-388925.txt
+---
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index afeae6e29284ab2e29de280e5a0ac5d1ae0dad9d..ea4ecabf3376d9f121deb81c163e4c115a89eb5c
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++<!-- MAILBOX:SENT v1 ts=2025-11-13T06:57:10Z eid=005dadc0fc95 sha=7c81d36f route=Foreman→Both -->
+\ No newline at end of file
+
+exec
+bash -lc "sed -n '1,160p' .cccc/mailbox/peerA/inbox/000077.foreman-1763017030-354d4b.txt" in /home/dodd/dev/influx succeeded in 10ms:
+<FROM_USER>
+[MID: foreman-1763017030-354d4b]
+[TS: 2025-11-13 15:57:10 JST (UTC+09:00)]
+To: Both
+<TO_PEER>
+Item(focus.align): M1 pivot confirmed — Manual CSV + X Lists is PRIMARY; GitHub automation infeasible per T000003. POR updated 2025-11-13 15:50 (docs/por/POR.md).
+
+Item(filters.contract): Lock filter contract before wiring
+Progress: POR Next calls for week‑1 filter enforcement; heuristics exist at lists/rules/{brand_heuristics.yml,risk_terms.yml}. tools/influx-harvest has TODOs (tools/influx-harvest:53,80).
+Ask(to=peerA, prio=high, action=clarify): Specify v1 thresholds and CLI for tools/influx-harvest (entry filters: (verified+30k) OR 50k; brand/risk exclusions; exceptions). Update docs/por/d2-pipeline-contract.md with:
+  - Acceptance (2 lines): “enforced at harvest; zero brand/official; risk flags excluded by default”.
+  - One smoke command.
+Next(tag=filters.spec): Append a 10–12 line section to docs/por/d2-pipeline-contract.md defining flags, YAML keys used, and the exact smoke test command. Reference lists/rules/*.yml.
+
+Item(filters.implementation): Wire and prove one run
+Progress: M0 dataset ready at data/latest/latest.jsonl.gz; heuristics YAMLs present.
+Ask(to=peerB, prio=high, action=revise): Implement filter enforcement in tools/influx-harvest using lists/rules/*.yml + thresholds from contract; write filtered output and validate.
+Evidence(refs=[
+  cmd:python3 tools/influx-harvest x-lists --list-urls lists/seeds/m03-additional-batch.csv --out .cccc/work/m01/harvest.raw.jsonl,
+  cmd:python3 tools/influx-harvest following --seeds .cccc/work/foreman/probe-20251113/github_seeds.sample.jsonl --pages 1 --out .cccc/work/m01/expand.raw.jsonl,
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index afeae6e29284ab2e29de280e5a0ac5d1ae0dad9d..ea4ecabf3376d9f121deb81c163e4c115a89eb5c
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++<!-- MAILBOX:SENT v1 ts=2025-11-13T06:57:10Z eid=005dadc0fc95 sha=7c81d36f route=Foreman→Both -->
+\ No newline at end of file
+
+codex
+Sent a concise directive to Both with immediate next steps.
+
+- Wrote routed message: .cccc/mailbox/foreman/to_peer.md (auto-delivered to peer inboxes)
+- Summary of asks:
+  - PeerA (architecture/risks): Lock v1 filter contract in docs/por/d2-pipeline-contract.md (thresholds, CLI, acceptance, 1-command smoke test). Reference lists/rules/{brand_heuristics.yml,risk_terms.yml}.
+  - PeerB (implementation): Wire filter enforcement in tools/influx-harvest, generate .cccc/work/m01/harvest.filtered.jsonl (≥40 records), validate via tools/influx-validate; keep logs in .cccc/work/.
+- Context aligned to anchors:
+  - POR (M1 pivot, Next-week filter enforcement): docs/por/POR.md
+  - SUBPORs: T000001 (done), T000002 (done), T000003 (closed as infeasible)
+  - TODO markers: tools/influx-harvest:53,80
+
+If you want, I can next verify PeerB’s smoke run and update POR “Next” with evidence refs.
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index afeae6e29284ab2e29de280e5a0ac5d1ae0dad9d..ea4ecabf3376d9f121deb81c163e4c115a89eb5c
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T06:41:58Z eid=50e8a3638e42 sha=c54358e6 route=Foreman→Both -->
+\ No newline at end of file
++<!-- MAILBOX:SENT v1 ts=2025-11-13T06:57:10Z eid=005dadc0fc95 sha=7c81d36f route=Foreman→Both -->
+\ No newline at end of file
+
+tokens used
+44,823

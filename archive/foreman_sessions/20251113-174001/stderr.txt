@@ -1,0 +1,652 @@
+OpenAI Codex v0.57.0 (research preview)
+--------
+workdir: /home/dodd/dev/influx
+model: gpt-5
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: auto
+session id: 019a7c5f-268a-7990-bd5c-4bd2000ec685
+--------
+user
+# FOREMAN Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+Identity
+- You act as the user's proxy. Speak in the user's voice.
+- Each run is non‑interactive and time‑boxed. Do one useful thing or write one short directive.
+
+Timer & Non‑overlap
+- The orchestrator runs you on a fixed interval and never overlaps runs.
+- Keep long work in files; keep messages short.
+
+Write‑to Path (single hand‑off)
+- Write exactly one message per run to: `.cccc/mailbox/foreman/to_peer.md`.
+- Put one routing header at the top:
+  To: Both|PeerA|PeerB  (default Both)
+- Wrap the body with `<TO_PEER> ... </TO_PEER>`.
+
+Anchors to read (skim then decide)
+- Project brief: PROJECT.md
+- Portfolio board: docs/por/POR.md (Now/Next/Risks)
+- Active tasks: docs/por/T*/SUBPOR.md (Owner/Next/Acceptance)
+- Peer rules: .cccc/rules/PEERA.md, .cccc/rules/PEERB.md
+- Evidence/work roots: docs/evidence/**, .cccc/work/**
+
+Routing defaults & backlog
+- Route architecture/alignment/risks to PeerA; implementation/experiments to PeerB.
+- If many pending inbox items exist, remind to process oldest‑first, then propose one smallest next step aligned to POR/SUBPOR.
+
+Boundaries
+- Do not paste long logs in messages; reference repo paths only.
+- Do not modify orchestrator code/policies; do not declare 'done'.
+
+
+---
+Bindings: Foreman.agent=codex Aux=codex
+Schedule: interval=900s max_run=900s cc_user=ON
+Write-to: .cccc/mailbox/foreman/to_peer.md with To header (Both|PeerA|PeerB; default Both) and <TO_PEER> wrapper
+---
+请全面审查并督促推进两位PEER高效高质量地完成本项目的各项规划以及开发工作。
+
+thinking
+**Examining the repository**
+
+I’m thinking about checking the repository now. I’ll use ripgrep to find specific files in it — that seems like a straightforward approach. The shell commands guidelines suggest using `rg`, so I'll make sure to stick to that for this task. I’m feeling good about this process; let’s go ahead and see what we can find!
+codex
+I’m going to skim the project briefs and POR files, then draft a focused directive to both peers and write it to the mailbox file.
+exec
+bash -lc 'ls -la' in /home/dodd/dev/influx succeeded in 10ms:
+total 100
+drwxr-xr-x 14 dodd dodd  4096 Nov 13 14:43 .
+drwxr-xr-x 16 dodd dodd  4096 Nov 13 11:04 ..
+drwxr-xr-x 13 dodd dodd  4096 Nov 13 11:31 .cccc
+drwxr-xr-x  8 dodd dodd  4096 Nov 13 17:38 .git
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:19 .github
+-rw-r--r--  1 dodd dodd   283 Nov 13 11:26 .gitignore
+drwxr-xr-x  6 dodd dodd  4096 Nov 13 11:07 .venv
+-rw-r--r--  1 dodd dodd   109 Nov 13 11:18 FOREMAN_TASK.md
+-rw-r--r--  1 dodd dodd  1430 Nov 13 11:20 LICENSE
+-rw-r--r--  1 dodd dodd 14419 Nov 13 11:06 PROJECT.md
+-rw-r--r--  1 dodd dodd 10360 Nov 13 14:43 README.md
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:19 ci
+drwxr-xr-x  7 dodd dodd  4096 Nov 13 16:28 data
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:07 docs
+drwxr-xr-x  4 dodd dodd  4096 Nov 13 11:19 lists
+-rw-r--r--  1 dodd dodd    18 Nov 13 11:38 requirements.txt
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 11:46 schema
+drwxr-xr-x  2 dodd dodd  4096 Nov 13 16:28 state
+drwxr-xr-x  3 dodd dodd  4096 Nov 13 11:39 test
+exec
+bash -lc "rg --files docs | sed -n '1,200p'" in /home/dodd/dev/influx succeeded in 17ms:
+docs/por/T000001-d1-validate/SUBPOR.md
+docs/por/POR.md
+docs/por/d2-pipeline-contract.md
+docs/por/T000003-auth-unblock/SUBPOR.md
+docs/por/T000004-m1-manual-scale/SUBPOR.md
+docs/por/T000002-d2-bootstrap/SUBPOR.md
+exec
+bash -lc "sed -n '1,200p' PROJECT.md" in /home/dodd/dev/influx succeeded in 11ms:
+项目概览（influx）
+
+  - 宗旨：构建一个“高活跃、非官号、非品牌、非低俗”的跨领域 BigV 作者索引，稳定服务下游（如 xoperator）的作者优先抓取与行业观察。
+  - 原则：质量优先（活跃×相关×安全）> 数量；证据可追溯；格式通用；更新可持续；治理明确；对外友好。
+  - 不做：几万规模的“百科全书式收集”；浏览器自动化抓网页；付费 X API；黑箱评分。
+
+  范围与目标
+
+  - 目标规模：5k–10k（强上限 15k）；每领域 800–1500 核心作者（AI/Tech、Creator/Platform、Ecosystem 等）。
+  - 更新节奏：6–12 小时增量刷新；每日全量快照与发布；每周一次全量重算。
+  - 下游场景：from: 作者优先抓取（xoperator）、研究/情报、生态分发、可视化。
+
+  数据模型（Schema v1.0.0）
+
+  - 主键
+      - id: string（Twitter author_id，必填）
+      - handle: string（@name 去 @，必填，唯一辅助键）
+  - 基本属性
+      - name: string
+      - verified: string（none|blue|org|legacy）
+exec
+bash -lc "sed -n '201,400p' PROJECT.md" in /home/dodd/dev/influx succeeded in 10ms:
+
+  3. 为什么不靠“几万作者的大名单”
+
+  - 幂律决定“高频产出作者很少”。抓几万会占用配额、极大噪音、稀释信噪比与审计成本，工程价值低。
+  - 实战里，800–1500/域 + 动态维护足够覆盖 80% 的高价值讨论；全库 5k–10k 已经能服务绝大多数下游需求。
+  - 我们要的是“稳定拿到可用候选”，不是“百科全书”。
+
+  4. 具体落地（首拍）
+
+  - 第 0 周（3–5 天）：
+      - 跑 2–3 轮“自动发现”：8 组热词 × 12h × 每组 2–3 页 + mentions 扩展；
+      - 导入 seeds/*.csv：从可信团队/项目页（个人作者）与顶会/OSS 维护者集合导入 100–200；
+      - 精选 5–8 个高质量 X Lists（仅个人）导出 CSV（50–100）。
+      - 合并、去品牌/风险、打分，首版 latest.jsonl.gz 目标 400–600。
+  - 第 1 周：滚动增量，每 6–12h 运行一次；扩到 800–1500，发布第一周稳定版 release。
+  - 后续：维持每日 release、每周全量重算；控制 churn（新增/淘汰）与覆盖率。
+
+  5. 为什么这套方法“最高效稳定”
+
+  - 全程 RUBE MCP（recent search / counts / user lookup），不需要付费 X API、不做浏览器自动化；字段齐全、可审计、容错好。
+exec
+bash -lc "sed -n '1,200p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- Updated 2025-11-13 11:16 JST by PeerA -->
+
+# POR - Strategic Board
+
+- **North Star**: Build a 5k–10k high-signal X influencer index across **12 vertical domains** (AI/Tech, Creator, Business, Finance, Science, Design, Media, Gaming, Policy, Web3, Lifestyle, Other) with sustainable refresh & provenance, serving downstream prioritization (xoperator) and ecosystem intelligence.
+- **Guardrails**: Quality (activity×relevance×safety) > quantity; no paid X API; no browser automation; all sources auditable; licensed CC BY 4.0; 100% RUBE MCP tooling.
+- **Non-Goals / Boundaries**: No "encyclopedia-scale" (>15k); no NSFW/political/controversy by default; no private data; no ToS violations; no black-box scoring.
+
+## Deliverables (top-level)
+- **D1: Schema & Validation** - `schema/bigv.schema.json` + validation scripts - Both
+- **D2: Collection Pipeline** - `tools/influx-{radar,harvest,expand,score,export}` CLI suite - PeerA (with Aux)
+- **D3: Initial Dataset** - `data/latest/latest.jsonl.gz` (400–600 authors, M0) - Both
+- **D4: Governance & Docs** - `README.md`, `LICENSE`, `docs/schema.md`, heuristics YAMLs - PeerB
+
+## Bets & Assumptions
+- **Bet 1 (FALSIFIED permanently)**: 80–90% authors discoverable via GitHub org seeds (twitter_username field) + following-graph expansion (TWITTER_FOLLOWING_BY_USER_ID, 1–2 pages per seed) | **Finding**: GitHub-seed automation path is **STRUCTURALLY INFEASIBLE** - RUBE MCP GitHub OAuth integration does not offer `read:org` scope option required for GITHUB_LIST_ORGANIZATION_MEMBERS (User #000077 verification + PeerB technical confirmation); Twitter v2 following-graph has low standalone value without GitHub seed layer | **Evidence**: T000003 investigation complete (`.cccc/work/validation/github_scope_infeasibility.md`); GitHub OAuth achieved PARTIAL SUCCESS (connection active, `['user']` scope only, cannot access org members) | **Pivot**: M1 commits to Fallback Path A (manual CSV + X Lists, proven M0 method scaled to 1.5k-2k authors, +2 week timeline vs automation) | **Original success criteria** (DEFERRED indefinitely): twitter_username coverage≥65%, mapping precision≥95%, active handles≥70%, follower Gini≥0.6, org affiliation≥30%, duplicate≤5% | Window: Automation paths unavailable within RUBE MCP free tier constraints
+- **Bet 2**: Brand/official heuristics (name/bio keywords + domain patterns) filter ≥80% noise with <10% false positive | Probe: Manual review of 50 random filtered-out + 50 kept | Evidence: Precision ≥90%, Recall ≥80% | Window: M0 week 1
+- **Bet 3**: Score (activity 30% + quality 50% + relevance 20%) correlates with downstream value | Probe: xoperator A/B test top-500 vs random-500 from pool | Evidence: Top-500 yield ≥2× actionable tweets | Window: M1
+
+## Roadmap (Now/Next/Later)
+exec
+bash -lc "sed -n '201,400p' docs/por/POR.md" in /home/dodd/dev/influx succeeded in 10ms:
+- Automation-first: RUBE MCP only; no human large-scale collection; seeds are one-time bootstrap.
+
+## Maintenance & Change Log (append-only, one line each)
+- 2025-11-13 11:16 | PeerA | Initialized POR from PROJECT.md; defined M0 roadmap (400–600 authors, 3-path bootstrap) | evidence: POR.md created
+- 2025-11-13 11:19 | PeerA | Pivoted collection strategy from keyword-heavy to GitHub-seed + following-graph; added state DB (SQLite); simplified schema | evidence: Aux validation of API tiers, PeerB network expansion alignment
+- 2025-11-13 12:14 | PeerA | Added acceptance criteria + intermediate artifact compliance strategy (Option A: meta placeholders) to D2 pipeline contract; confirmed ≤150 API calls feasible for M0 | evidence: docs/por/d2-pipeline-contract.md updated, Foreman directive 000016
+- 2025-11-13 12:20 | PeerA | Integrated Aux strategic review: M0 target refined to 600; Bet1 success criteria added (coverage≥65%, precision≥95%, active≥70%, Gini≥0.6, org affiliation≥30%, duplicate≤5%); risk pivot thresholds (>90m/2h/4h); parallelization strategy (following+x-lists concurrent); T000002 completion (48 profiles, 83% hit rate, 100% schema-compliant) calibrates expectations | evidence: Aux review output, T000002 SUBPOR, POR updated
+- 2025-11-13 12:28 | PeerA | Added explicit Execution Guardrails to M0 Now section per Foreman directive: API≤150/run, TWITTER_FOLLOWING≤2 pages/seed, entry filters (verified+30k OR 50k), brand/risk rules mandatory, Option A meta placeholders at every stage; cross-references d2-pipeline-contract.md | evidence: Foreman 000019, POR.md:L25
+- 2025-11-13 13:05 | PeerA | MAJOR PIVOT: Bet 1 FALSIFIED for M0 (Twitter v2 enrollment blocker + GitHub OAuth = 2 consecutive auth blockers); staged M0 into M0.0 (48 authors, manual CSV, proxy score v0, ≤3 days) + M0.1 (150-200 authors, manual curation, ≤1 week); chose Option S (proxy scoring) for M0 deliverable; automation paths (GitHub-seed + following-graph) deferred to M1 post-credential-fix; manual CSV now primary M0 path | evidence: PeerB following probe failure (0/5 API calls), Aux risk pivot decision tree at ">2 failed retries", POR.md updated (Bet 1, Roadmap, Risk Radar)
+- 2025-11-13 13:52 | PeerA | Added M1 auth-fix plan (GitHub OAuth + Twitter v2 enrollment resolution, week 1 blocking) + filter implementation plan (week 1, tools/influx-harvest); added R6 risk (pipeline filter enforcement gap, sev=med); verified PeerB schema blocker FALSE (meta fields always required); confirmed guardrails gap (influx-harvest L53/L80 TODO placeholders) | evidence: Foreman 000035 directive, PeerB 000036 schema verification, tools/influx-harvest:L53/L80 grep, POR.md updated (Next, Risk Radar, Maintenance Log)
+- 2025-11-13 14:05 | PeerA | Enhanced Auth-unblock section per Foreman 000038: expanded to 1-paragraph format with owners (PeerB + Composio team for GitHub OAuth, External admin for Twitter v2 enrollment), ETA (M1 day 1-2 for GitHub, day 1-3 for Twitter), validation method (following slice-1 probe retry), and inline risk statement (>3 days blocks M1 automation) | evidence: Foreman 000038 directive post-M0.2 completion (121 authors), POR.md:L37 updated Auth-unblock paragraph
+- 2025-11-13 14:15 | PeerA | M0.1 ACHIEVED milestone marked (151 authors, commit 28a8381); created T000003 Auth-unblock SUBPOR (docs/por/T000003-auth-unblock/SUBPOR.md) with resolution steps, dependencies, validation probe, owners/ETA/contacts; updated R1a risk to clarify X API dependency + alternative priorities (GitHub-seed+Following PRIMARY, Manual CSV+X Lists PROVEN fallback, TWITTER_RECENT_SEARCH DOWNGRADED) | evidence: Foreman 000042 directive (Chinese), POR.md:L28-33 M0.1 achieved, T000003 SUBPOR created, POR.md:L58 R1a updated with priorities
+- 2025-11-13 15:50 | PeerA | MAJOR STRATEGIC PIVOT: Bet 1 FALSIFIED permanently (GitHub-seed automation structurally infeasible); Path A promoted from fallback to M1 primary; Path B marked INFEASIBLE; M1 targets revised (1.5k-2k authors, 4-5 weeks); roadmap/Next section rewritten (manual CSV+Lists method); Domain Coverage Plan quotas updated; Fallback M1 section renamed to "M1 Strategy (PIVOTED)"; Decision Log entry added | evidence: T000003 investigation complete (User #000077 + PeerB #000076 confirmation RUBE MCP lacks `read:org` scope), POR.md comprehensive update (Bet 1, Roadmap, Domain Coverage, M1 Strategy sections), Decision Log 2025-11-13 15:50 entry
+- 2025-11-13 16:45 | PeerA | Portfolio Health + Roadmap alignment per Foreman #000087: T000004 marked ACTIVE in Portfolio Health (batch 0.5 probe execution phase); Roadmap/Now updated with "M1 Batch 0.5 Gate" (empirical velocity validation, M1 commitment blocker); Quality Thresholds bound to M1 manual path (weekly ≥250, final 1.5k-2k, zero brand leakage N=30 spot-checks); R1a risk updated to PERMANENTLY RESOLVED (Pivot) - GitHub read:org unavailable (platform constraint), automation path B abandoned, Twitter v2 following deferred to M2, Bet 1 falsified permanently; Filter implementation + RUBE integration marked COMPLETE (commits 6fd9487, 20eda49) | evidence: Foreman #000087 directive, T000003 CLOSED status, T000004 ACTIVE status with commit 4759c2f velocity.log spec, PeerB #000086 RUBE integration smoke test 28/30 passed
+- 2025-11-13 17:00 | PeerA | M1 Batch 0.5 Gate PASSED (T000004 decision gate): PeerB #000091 delivered 47/50 records (94%), 18.6 records/hour sustained velocity (within "15-20 records/hour" decision bracket), zero brand false positives (0/47 PERFECT precision), 88.7% pass rate (47/53), 1 risk FP (1.9% nic__carter Substack acceptable) | **M1 COMMITMENT: PASS with adjusted timeline** - Proceed with 4-5 weeks, 1.5k-2k target; velocity extrapolates to 13.4-16.1 hours/week (2-3 hours/day, 5-6 days/week) = SUSTAINABLE; expectation management: weeks 1-3 may trend toward 250/week lower bound, buffer week 5 absorbs variance | Roadmap/Next updated: "M1 Batch 0.5 Gate" → "M1 Week 1 Execution"; R1a risk updated with Auth Path Rejection Protocol (≥2 failed validation attempts/7d triggers permanent DEFER); T000004 SUBPOR REV entry added with batch 0.5 findings | evidence: PeerB #000091 batch 0.5 completion report, .cccc/work/m1/batch05/velocity.log + harvest.raw.jsonl + qa_sample.csv (N=30 stratified), Foreman #000089 decision directive, T000004 SUBPOR:42 REV entry, POR.md Roadmap:39-40 + Risk Radar:182
+
+## Aux Delegations - Meta-Review/Revise (strategic)
+- [x] Review PROJECT.md three-path bootstrap approach for operational gaps or optimization opportunities — Result: Counter-proposal adopted (shift to GitHub-seed + following-graph to avoid paid API dependency) — integrated 2025-11-13 11:19
+- [x] Strategic review of M0 scope, Bet1 criteria, collection optimization, risk pivots, artifact quality — Result: Target 600 (not 400-600 range, ROI optimal); refined Bet1 success criteria (coverage≥65%, precision≥95%, active≥70%, follower Gini≥0.6, org affiliation≥30%, duplicate≤5%); parallelize github-seeds + x-lists (30-50% faster); risk pivot at >90m (x-lists parallel), >2h (manual CSV), >4h (re-scope); keep x-lists.txt with schema header; ID-map cache for M2 (cuts 30-60% redundant lookups) — integrated 2025-11-13 12:20
+
+thinking
+**Considering POR details**
+
+I’m noticing that the POR is quite detailed, capturing M0 achievements, the M1 pivot, and ongoing tasks. Now, the next step involves opening the SUBPOR files and reviewing peer rules. It feels essential to get that right. I want to be thorough with the information, ensuring that I understand all aspects before moving forward. Let's keep the focus on clarity and accuracy as I dive into those files and rules!
+exec
+bash -lc "sed -n '1,200p' docs/por/T000001-d1-validate/SUBPOR.md" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- Generated on 2025-11-13T02:31:23+00:00 by por_subpor.py 0.1.1 -->
+
+# T000001 - D1 — Schema validation + CI (M0) - Owner: peerB - Stage: proposed - Timebox: 0.5d
+
+- Goal/Scope (<=3 lines):
+  - Implement schema validation tool (tools/influx-validate) that validates JSONL records against schema/bigv.schema.json using jsonschema library
+  - Fix schema to make `meta` required with critical sub-fields (`meta.score`, `meta.sources[>=1]`, `meta.last_refresh_at`, `provenance_hash`)
+  - Create CI workflow (ci/validate.yml) that runs validator on data/latest/latest.jsonl.gz and fails PR if invalid
+- Non-Goals (<=2 lines):
+  - Collection tools (D2) - defer to next SUBPOR
+  - Extensive schema documentation polish (already over-engineered per strategic review; focus on working validator)
+- Deliverable & Interface (path/format/user-visible change):
+  - tools/influx-validate: CLI tool (argparse) that validates JSONL against schema; exits 0 if valid, 1 if invalid with error details
+  - schema/bigv.schema.json: Fixed schema with required `meta.score`, `meta.sources`, `meta.last_refresh_at`, `provenance_hash`
+  - ci/validate.yml: GitHub Actions workflow that runs influx-validate on PRs
+- Acceptance (3-5 observable items):
+  [x] schema/bigv.schema.json validates correctly with jsonschema; `meta` and critical sub-fields are required
+  [x] tools/influx-validate exists, runs jsonschema validation on JSONL input, checks manifest.json schema_version match
+  [x] tools/influx-validate exits 0 on valid fixture (3 hardcoded JSON objects in test/fixtures/valid.jsonl), exits 1 on invalid fixture (test/fixtures/invalid.jsonl) with clear error message
+  [x] ci/validate.yml workflow exists and runs influx-validate; simulate PR validation with manual smoke test
+exec
+bash -lc "sed -n '1,240p' docs/por/T000002-d2-bootstrap/SUBPOR.md" in /home/dodd/dev/influx succeeded in 10ms:
+# SUBPOR: T000002-d2-bootstrap
+
+**Owner**: PeerB
+**Status**: ✅ COMPLETED
+**Created**: 2025-11-13
+**Completed**: 2025-11-13
+**Timebox**: 0.5d (actual: ~2h)
+
+## Goal
+
+Validate minimum viable D2 harvest pipeline with schema-compliant output (OpenAI/Anthropic/Huggingface seed authors).
+
+## Scope
+
+**IN**: Manual CSV seed curation + Twitter verification + JSONL generation with placeholder meta fields per d2-pipeline-contract.md Option A
+
+**OUT**: Full GitHub API implementation (blocked on OAuth), scoring/filtering logic (deferred to influx-score)
+
+## Acceptance Criteria
+
+exec
+bash -lc "sed -n '1,240p' docs/por/T000003-auth-unblock/SUBPOR.md" in /home/dodd/dev/influx succeeded in 10ms:
+# SUBPOR: T000003-auth-unblock
+
+**Owner**: PeerB
+**Status**: ✅ CLOSED - Resolved-Infeasible
+**Created**: 2025-11-13
+**Closed**: 2025-11-13
+**Timebox**: 0.5d (investigation phase) - COMPLETED
+
+## Goal
+
+Unblock automated data collection by resolving API authentication and authorization issues for GitHub and Twitter toolkits.
+
+## Scope
+
+**IN**: Connection validation, OAuth completion, scope verification, support ticket creation, validation probe execution
+
+**OUT**: Full M1 implementation (deferred until auth completes)
+
+## Acceptance Criteria
+
+exec
+bash -lc "sed -n '1,220p' docs/por/T000004-m1-manual-scale/SUBPOR.md" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- Generated on 2025-11-13T07:15:00+00:00 by manual SUBPOR creation per PeerA request -->
+
+# T000004 - M1 Manual Scale (151→1.5k-2k authors, 4-5 weeks) - Owner: peerB - Stage: active - Timebox: 4-5wk
+
+- Goal/Scope (<=3 lines):
+  - Scale influencer index from 151 (M0.1 baseline) to 1.5k-2k authors over 4-5 weeks via manual CSV curation + curated X Lists, maintaining M0's 100% precision bar and schema compliance
+  - Target weekly increments of ~250-300 authors across 5-6 bootstrap domains (AI/Tech, Creator, Business, Finance, Science, Design) per Domain Coverage Plan (POR.md:55-79)
+  - Method: manual CSV extraction from GitHub org pages, curated X Lists, domain-specific expert seeds → batch TWITTER_USER_LOOKUP validation → filter enforcement (entry thresholds + brand/risk heuristics) → proxy scoring → daily snapshot export
+- Non-Goals (<=2 lines):
+  - API automation workflows (GitHub seed expansion, Twitter following-graph) - blocked by T000003 OAuth limitations; deferred to M2
+  - Advanced scoring models beyond proxy v0 (follower-based formula: 20*log10(followers/1000) + verified_boost) - defer to M2 adaptive features
+- Deliverable & Interface (path/format/user-visible change):
+  - data/latest/latest.jsonl.gz: Final M1 dataset with manifest.count ∈ [1500,2000], SHA-256 verified, 100% schema-compliant
+  - data/snapshots/YYYY-MM-DD/: Daily snapshots via .github/workflows/snapshot.yml (cron 02:00 UTC)
+  - lists/seeds/m04-*.csv through m08-*.csv: Weekly batch seed files (~250-300 handles each with source_url provenance)
+  - .cccc/work/m1/: Incremental batch artifacts (harvest.filtered.jsonl, velocity logs, QA samples per batch)
+- Acceptance (3-5 observable items):
+  [ ] Weekly batch releases (≥250 authors/week for weeks 1-4, ≥150/week for week 5 buffer) with cumulative CI green status
+  [ ] Final M1 deliverable: data/latest/latest.jsonl.gz with manifest.count ∈ [1500,2000], SHA-256 verified, score distribution reasonable (proxy v0: mean 40-60, range 0-100)
+  [ ] Zero brand/official contamination in spot-check samples (N=30 per batch via manual review using .cccc/work/review/brand_fp.sample.csv methodology)
+exec
+bash -lc "sed -n '1,200p' .cccc/rules/PEERA.md" in /home/dodd/dev/influx succeeded in 10ms:
+# PeerA Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+1) Who You Are - Collaborators - Purpose
+- Equal peers
+  - You and the other peer collaborate as equals to deliver evidence-first, small, reversible steps that outperform a single expert.
+- Ethos (non-negotiable)
+  - Agency and ownership; act like a top generalist.
+  - Widen perspective; Keep higher-order thinking.
+  - Evidence-first; chat never changes state.
+  - Taste and clarity: simple, tight, clean.
+  - Anti-laziness: refuse low-signal output; prefer decisive micro-moves.
+- On-demand helper: Aux (PeerC) - purpose & direction
+  - Use Aux when a decoupled subtask or high-level sanity sweep is cheaper offloaded than done inline. You integrate the outcome.
+  - Mode: on - Aux has the same FoV and permissions in this repo as you. Just call Aux for help.
+
+2) Canonical references and anchors
+- POR.md - single source of direction (path: /home/dodd/dev/influx/docs/por/POR.md)
+  - Keep North-star, guardrails, bets/assumptions, Now/Next/Later, and portfolio health here (no details).
+- SUBPOR - execution anchor (one task = one SUBPOR)
+exec
+bash -lc "sed -n '1,200p' .cccc/rules/PEERB.md" in /home/dodd/dev/influx succeeded in 10ms:
+# PeerB Rules (Generated)
+Generated on 2025-11-13 11:09:36 JST (UTC+09:00)
+
+1) Who You Are - Collaborators - Purpose
+- Equal peers
+  - You and the other peer collaborate as equals to deliver evidence-first, small, reversible steps that outperform a single expert.
+- Ethos (non-negotiable)
+  - Agency and ownership; act like a top generalist.
+  - Widen perspective; Keep higher-order thinking.
+  - Evidence-first; chat never changes state.
+  - Taste and clarity: simple, tight, clean.
+  - Anti-laziness: refuse low-signal output; prefer decisive micro-moves.
+- On-demand helper: Aux (PeerC) - purpose & direction
+  - Use Aux when a decoupled subtask or high-level sanity sweep is cheaper offloaded than done inline. You integrate the outcome.
+  - Mode: on - Aux has the same FoV and permissions in this repo as you. Just call Aux for help.
+- IO contract (strict)
+  - Outbound routes: to_peer only. Never send to USER. All user-facing messages are owned by PeerA or System.
+
+2) Canonical references and anchors
+- POR.md - single source of direction (path: /home/dodd/dev/influx/docs/por/POR.md)
+exec
+bash -lc "sed -n '1,200p' .cccc/mailbox/foreman/to_peer.md" in /home/dodd/dev/influx succeeded in 10ms:
+<!-- MAILBOX:SENT v1 ts=2025-11-13T08:27:11Z eid=834ffe1ece7b sha=4d0d0b63 route=Foreman→Both -->
+exec
+bash -lc "ls -la .cccc/mailbox || true; echo '---'; ls -la .cccc/mailbox/peerA || true; echo '---'; ls -la .cccc/mailbox/peerB || true; echo '---'; rg -n \""'^<!-- MAILBOX" .cccc/mailbox/** || true' in /home/dodd/dev/influx succeeded in 21ms:
+total 24
+drwxr-xr-x  5 dodd dodd 4096 Nov 13 11:07 .
+drwxr-xr-x 13 dodd dodd 4096 Nov 13 11:31 ..
+-rw-r--r--  1 dodd dodd   15 Nov 13 11:07 .gitignore
+drwxr-xr-x  2 dodd dodd 4096 Nov 13 11:07 foreman
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 17:28 peerA
+drwxr-xr-x  4 dodd dodd 4096 Nov 13 17:28 peerB
+---
+total 36
+drwxr-xr-x 4 dodd dodd  4096 Nov 13 17:28 .
+drwxr-xr-x 5 dodd dodd  4096 Nov 13 11:07 ..
+drwxr-xr-x 2 dodd dodd  4096 Nov 13 17:38 inbox
+-rw-r--r-- 1 dodd dodd   212 Nov 13 15:38 inbox.md
+drwxr-xr-x 2 dodd dodd 12288 Nov 13 17:28 processed
+-rw-r--r-- 1 dodd dodd    98 Nov 13 17:28 to_peer.md
+-rw-r--r-- 1 dodd dodd    97 Nov 13 15:40 to_user.md
+---
+total 36
+drwxr-xr-x 4 dodd dodd  4096 Nov 13 17:28 .
+drwxr-xr-x 5 dodd dodd  4096 Nov 13 11:07 ..
+exec
+bash -lc "sed -n '1,200p' .cccc/mailbox/peerA/to_peer.md; echo '---'; sed -n '1,200p' .cccc/mailbox/peerB/to_peer.md" in /home/dodd/dev/influx succeeded in 11ms:
+<!-- MAILBOX:SENT v1 ts=2025-11-13T08:28:39Z eid=c1411b468b07 sha=b09a2eac route=PeerA→PeerB -->---
+<!-- MAILBOX:SENT v1 ts=2025-11-13T08:38:28Z eid=8c8cd6dcacbe sha=ef6de050 route=PeerB→PeerA -->
+exec
+bash -lc "sed -n '1,200p' .cccc/mailbox/peerA/inbox.md; echo '---'; sed -n '1,200p' .cccc/mailbox/peerB/inbox.md" in /home/dodd/dev/influx succeeded in 12ms:
+<FROM_USER>
+[MID: tg-1763015936-012069]
+我查了一下，RUBE MCP的GitHub 连接里压根就没有`read:org` 这个选项可以设置，这个方案不一定可行，请考虑换其它策略吧。
+</FROM_USER>
+---
+<FROM_USER>
+[MID: tg-1763015936-012069]
+我查了一下，RUBE MCP的GitHub 连接里压根就没有`read:org` 这个选项可以设置，这个方案不一定可行，请考虑换其它策略吧。
+</FROM_USER>
+exec
+bash -lc "sed -n '1,220p' docs/por/d2-pipeline-contract.md" in /home/dodd/dev/influx succeeded in 11ms:
+# D2 Collection Pipeline Contract
+
+**Version**: 1.1.0 (M1 Manual CSV+Lists)
+**Owner**: PeerA (architecture) + PeerB (implementation)
+**Purpose**: Define CLI interface, JSONL I/O format, rate-limit guardrails, and filter specifications for M1 manual collection
+
+---
+
+## Changelog
+
+### v1.1.0 (2025-11-13) - M1 Manual CSV+Lists
+- **ADDED**: Filter Implementation Specification (CLI flags, YAML keys, smoke test) - NORMATIVE for M1 Week 1 (commit 9779756)
+- **SCOPE PIVOT**: GitHub automation endpoints (`github-seeds`, `following`) marked DEFERRED (RUBE MCP `read:org` scope unavailable per T000003)
+- **STATUS**: M1 primary method = manual CSV curation + curated X Lists + batch TWITTER_USER_LOOKUP validation
+- **PRESERVED**: Automation probe sections retained for M2 reference (clearly marked DEFERRED)
+
+### v1.0.0 (2025-11-13) - M0 Baseline
+- Initial contract with automation probe acceptance criteria
+- Proxy scoring formula v0, validation contract, evidence requirements
+
+
+thinking
+I'm looking into the consistency of the data and want to check the evidence for the roots' presence. I noticed the .cccc/work directories, so my next step is to explore .cccc/work/m1/batch05. I think this might give me the information I need to confirm what's going on. It feels like a good approach to ensure everything aligns as expected while being thorough in my investigation. Let's see what I uncover!
+exec
+bash -lc "find .cccc/work -maxdepth 3 -type d -printf '%p\\n' | sed -n '1,200p'" in /home/dodd/dev/influx succeeded in 12ms:
+.cccc/work
+.cccc/work/aux_sessions
+.cccc/work/review
+.cccc/work/validation
+.cccc/work/m04
+.cccc/work/foreman
+.cccc/work/foreman/probe-20251113
+.cccc/work/foreman/20251113-133947
+.cccc/work/foreman/20251113-163959
+.cccc/work/foreman/20251113-174001
+.cccc/work/foreman/20251113-152453
+.cccc/work/foreman/20251113-143950
+.cccc/work/foreman/20251113-122440
+.cccc/work/foreman/20251113-155456
+.cccc/work/foreman/20251113-115439
+.cccc/work/foreman/20251113-142450
+.cccc/work/foreman/20251113-112437
+.cccc/work/foreman/20251113-125443
+.cccc/work/foreman/20251113-145450
+.cccc/work/foreman/20251113-135448
+exec
+bash -lc "rg -n \"harvest|velocity|qa_sample|validation\" .cccc/work/m1/batch05 -S || true; echo '---'; rg -n \"harvest|velocity|qa_sample|validation\" .cccc/work/m1/week1 -S || true; echo '---'; ls -la .cccc/work/m1/week1 || true" in /home/dodd/dev/influx succeeded in 25ms:
+---
+---
+total 68
+drwxr-xr-x 2 dodd dodd  4096 Nov 13 17:37 .
+drwxr-xr-x 4 dodd dodd  4096 Nov 13 17:08 ..
+-rw-r--r-- 1 dodd dodd 12161 Nov 13 17:19 EXECUTION_PLAN.md
+-rw-r--r-- 1 dodd dodd 10365 Nov 13 17:37 harvest.batch05.jsonl
+-rw-r--r-- 1 dodd dodd  9767 Nov 13 17:37 harvest.scored.jsonl
+-rw-r--r-- 1 dodd dodd    71 Nov 13 17:15 qa_sample.csv
+-rw-r--r-- 1 dodd dodd 13185 Nov 13 17:37 users_fetched_m05.jsonl
+-rw-r--r-- 1 dodd dodd    70 Nov 13 17:15 velocity.log
+exec
+bash -lc "sed -n '1,120p' .cccc/work/m1/week1/velocity.log; echo '---'; sed -n '1,120p' .cccc/work/m1/week1/qa_sample.csv" in /home/dodd/dev/influx succeeded in 12ms:
+timestamp,author_handle,cumulative_records_hour,rejection_stage,notes
+---
+handle,name,followers_count,verified,brand_check,risk_check,source_url
+
+thinking
+**Opening harvest files**
+
+I'm looking to open harvest files to check reference counts. It's important to avoid pasting long logs directly—I'll just reference the path instead. I also need to open the lists or seeds for the m05 AI/Tech list. Keeping things organized is essential, so I'll make sure the information is easily accessible without cluttering up with unnecessary details. This way, I’ll streamline the process and keep everything tidy!
+exec
+bash -lc "ls -la lists/seeds | sed -n '1,200p'" in /home/dodd/dev/influx succeeded in 11ms:
+total 44
+drwxr-xr-x 2 dodd dodd 4096 Nov 13 17:08 .
+drwxr-xr-x 4 dodd dodd 4096 Nov 13 11:19 ..
+-rw-r--r-- 1 dodd dodd 1503 Nov 13 11:43 github-orgs.csv
+-rw-r--r-- 1 dodd dodd 1768 Nov 13 13:31 m01-team-pages.csv
+-rw-r--r-- 1 dodd dodd 4070 Nov 13 13:47 m02-extended-batch.csv
+-rw-r--r-- 1 dodd dodd 1843 Nov 13 13:51 m02-final-batch.csv
+-rw-r--r-- 1 dodd dodd 2530 Nov 13 14:00 m03-additional-batch.csv
+-rw-r--r-- 1 dodd dodd  837 Nov 13 14:03 m03-final-top-tier.csv
+-rw-r--r-- 1 dodd dodd 5867 Nov 13 16:51 m04-business-batch.csv
+-rw-r--r-- 1 dodd dodd 2461 Nov 13 17:08 m05-ai-tech-batch.csv
+exec
+bash -lc "sed -n '1,80p' lists/seeds/m05-ai-tech-batch.csv" in /home/dodd/dev/influx succeeded in 10ms:
+handle,category,source_url,note
+karpathy,ai_research,https://twitter.com/i/lists/m05-ai-tech,Former OpenAI/Tesla - AI educator
+ylecun,ai_research,https://twitter.com/i/lists/m05-ai-tech,Meta Chief AI Scientist - deep learning pioneer
+AndrewYNg,ai_research,https://twitter.com/i/lists/m05-ai-tech,Coursera co-founder - AI education leader
+goodfeli,ai_research,https://twitter.com/i/lists/m05-ai-tech,DeepMind - GANs inventor
+fchollet,ai_research,https://twitter.com/i/lists/m05-ai-tech,Keras creator - abstraction and reasoning
+hardmaru,ai_research,https://twitter.com/i/lists/m05-ai-tech,Google Brain - creative AI research
+_rockt,ai_research,https://twitter.com/i/lists/m05-ai-tech,Cohere research - NLP expert
+srush_nlp,ai_research,https://twitter.com/i/lists/m05-ai-tech,Cornell professor - NLP and ML tools
+giffmana,ai_research,https://twitter.com/i/lists/m05-ai-tech,Hugging Face researcher
+arankomatsuzaki,ai_research,https://twitter.com/i/lists/m05-ai-tech,Rinna Co. - Japanese LLMs
+sama,ai_tech_founder,https://twitter.com/i/lists/m05-ai-tech,OpenAI CEO - AGI vision
+gdb,ai_tech_founder,https://twitter.com/i/lists/m05-ai-tech,Anthropic co-founder
+danielgross,ai_tech_founder,https://twitter.com/i/lists/m05-ai-tech,AI investor - Pioneer.app founder
+skirano,ai_tech_founder,https://twitter.com/i/lists/m05-ai-tech,Stability AI - open source AI
+_buildspace,ai_tech_education,https://twitter.com/i/lists/m05-ai-tech,Web3/AI education community
+swyx,ai_tech_analysis,https://twitter.com/i/lists/m05-ai-tech,AI Engineer - latent space podcast
+bentossell,ai_tech_analysis,https://twitter.com/i/lists/m05-ai-tech,Ben's Bites newsletter - AI news
+levie,ai_tech_exec,https://twitter.com/i/lists/m05-ai-tech,Box CEO - enterprise AI adoption
+satyanadella,ai_tech_exec,https://twitter.com/i/lists/m05-ai-tech,Microsoft CEO - AI infrastructure
+exec
+bash -lc "ls -la data/latest || true; echo '---'; rg -n \"schema_version|count|sha256\" data/latest/manifest.json || true; echo '---'; python3 - << 'PY'
+import gzip,json
+import sys
+from pathlib import Path
+p=Path('data/latest/latest.jsonl.gz')
+if p.exists():
+    with gzip.open(p,'rt',encoding='utf-8') as f:
+        n=sum(1 for _ in f)
+    print('records',n)
+else:
+    print('missing latest')
+PY" in /home/dodd/dev/influx succeeded in 38ms:
+total 28
+drwxr-xr-x 2 dodd dodd  4096 Nov 13 12:28 .
+drwxr-xr-x 7 dodd dodd  4096 Nov 13 16:28 ..
+-rw-r--r-- 1 dodd dodd 12639 Nov 13 14:05 latest.jsonl.gz
+-rw-r--r-- 1 dodd dodd   487 Nov 13 14:05 manifest.json
+---
+2:  "schema_version": "1.0.0",
+4:  "count": 151,
+5:  "sha256": "107af7d9e86a45f48561b26e5f93a5bc1a825dda1c8a7ff948f469689bdf70ab",
+7:  "sort_order": "score desc, followers_count desc, handle asc",
+---
+records 151
+
+
+
+
+
+thinking
+**Considering Foreman directive**
+
+I’m thinking about the Foreman directive. The Chinese user request is saying something like, "please comprehensively review and urge the two peers to efficiently and high-quality complete planning and development." So, my directive should focus on ensuring that clear expectations are communicated to these peers about the project tasks and timelines. It's essential to encourage efficiency and quality throughout the planning and development stages. How should I phrase this directive effectively?
+thinking
+**Drafting the message**
+
+I need to craft a message that clearly outlines the actions for both peers. First, I’ll affirm the pivot and plan, directing immediate actions for PeerB and PeerA. For PeerB, they should complete the Week 1 batch, working on velocity.log instrumentation and QA samples. PeerA needs to update the POR and finalize Domain Coverage mappings.
+
+I should include evidence, path references, and ask for reviews while highlighting risks and proposing next steps. I'll make sure to structure the message clearly, perhaps even using a format that’s easy for machines to read.
+thinking
+**Formulating the message structure**
+
+I’m considering the Foreman-specific "FOREMAN Rules," which specify using a "routing header" and wrapper but not a skeleton. To keep things consistent, I think I'll adopt the skeleton from the Peer rules since they're the ones reading this. I should keep the message short yet informative, avoiding long logs.
+
+I need to include one message file, starting with the typical preamble, and then apply the patch tool. I'll send a preamble before the tool calls while keeping the plan updates straightforward. The plan has clear steps, so I'll use the update_plan tool to reflect that. I'll outline three steps: skim anchors, craft the directive, and write the mailbox message. After reading, I'll mark it ready to craft and then complete it.
+thinking
+**Creating the plan**
+
+I want to outline the plan clearly. First, I'll skim the POR, PROJECT, SUBPOR, and rules. Next, I'll decide on routing and directives. After that, I need to write the mailbox message for foreman/to_peer.md.
+
+I've completed step 1, and I'm in progress on step 2. Once I write the file, I’ll mark it as completed. I must include a "To: Both" header, then the <TO_PEER> content. 
+
+For the content: I'll summarize the roadmap's alignment with a two-liner. PeerB should execute actions instead of reviewing. I'll provide evidence with file paths and mention the risk concerning Twitter v2. Lastly, I’ll consider a single decidable step to complete in 30 minutes.
+thinking
+**Preparing directives for PeerB and PeerA**
+
+For PeerB, I need to direct them to run "influx-validate," update the velocity.log with the first 10 entries, and produce a qa_sample.csv with 30 items. I’ll mention that these tasks might take longer than 30 minutes. The next step should be small: populate the velocity.log and push the commit.
+
+For architecture, I should ask PeerA to verify the "Filter enforcement check" and provide evidence related to commit references. We should reference flags and ensure they're used properly.
+
+For the backlog items, there aren't many pending messages, so I can suggest processing the oldest first. I'll wrap up the message with file path references and a fenced insight block.
+
+I plan to craft two items summarizing Week 1 batch and POR alignment, including next steps for both peers and confirming if the Twitter user lookup via RUBE works. After solidifying this directive, I'll implement the writing to the file using apply_patch.
+Plan update
+Kick off Foreman directive: skimmed POR/PROJECT/SUBPORs and peer rules, now drafting actionable message to both peers, then will write to mailbox.
+  ✓ Skim POR/PROJECT/SUBPOR/rules
+  → Draft concise directive for peers
+  • Write message to mailbox file
+file update
+M /home/dodd/dev/influx/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1,23 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T08:27:11Z eid=834ffe1ece7b sha=4d0d0b63 route=Foreman→Both -->
+\ No newline at end of file
++To: Both
++<TO_PEER>
++Item(m1.week1): Execute Week 1 batch now (m05 AI/Tech)
++Outcome: Week 1 scaffolding is present; proceed to full batch execution today ; Why: Seed list and initial artifacts exist; pipeline and filters are defined and validated ; Opposite: Wait for automation/auth to unblock before scaling
++Progress(tag=week1.bootstrap): lists/seeds/m05-ai-tech-batch.csv prepared; users fetched + initial harvest files exist; filters/scoring wired per contract
++Evidence(refs=[path:lists/seeds/m05-ai-tech-batch.csv#L1, path:.cccc/work/m1/week1/users_fetched_m05.jsonl, path:.cccc/work/m1/week1/harvest.batch05.jsonl, path:.cccc/work/m1/week1/harvest.scored.jsonl, spec:docs/por/d2-pipeline-contract.md#L90]): seed list present; batch outputs exist; filter spec active
++Ask(to=peerB, action=review): Confirm filters applied with defaults (min_followers=50k, verified_min=30k, brand/risk YAMLs) and no brand leakage in a 30-record spot check (QA sample)
++Risk(sev=med): Velocity/QA instrumentation incomplete (velocity.log, qa_sample.csv headers only); ensure measurement before scaling to avoid silent quality drift
++Next(tag=week1.run): Run full Week 1 batch: enforce filters, update velocity.log with ≥10 rows and rejection breakdown, produce qa_sample.csv (N=30), validate via tools/influx-validate, and export an incremental latest; reference all artifacts under .cccc/work/m1/week1 and append a REV line to T000004
++
++Item(align.guardrails): Align POR and contract gates for M1
++Outcome: M1 strategy and gates are consistent across POR and contract ; Why: POR already marks M1 manual path PRIMARY and defines weekly quotas; we need explicit Week 1 acceptance and zero-brand QA gate ; Opposite: Proceed without explicit acceptance gates and post-hoc fixes
++Evidence(refs=[path:docs/por/POR.md#L39, path:docs/por/T000004-m1-manual-scale/SUBPOR.md#L20, spec:docs/por/d2-pipeline-contract.md#L120]): POR pivot recorded; SUBPOR acceptance defined; contract filter spec normative
++Ask(to=peerA, action=revise): Add a short “M1 Week 1 Execution” acceptance block in POR (weekly ≥250, zero brand leakage in N=30, provenance 100%, snapshot cron green) and link Week 1 artifacts directory
++Risk(sev=low): Snapshot cron drift or missing manifest checks could mask regressions
++Next(tag=por.sync): Verify .github/workflows/snapshot.yml is active; add a one-line maintenance-log entry in POR with Week 1 execution start and link to .cccc/work/m1/week1
++
++Files: docs/por/POR.md#L1, docs/por/T000004-m1-manual-scale/SUBPOR.md#L1, docs/por/d2-pipeline-contract.md#L1, lists/seeds/m05-ai-tech-batch.csv#L1, .cccc/work/m1/week1/users_fetched_m05.jsonl#L1
++</TO_PEER>
++```insight
++explore: If Twitter USER_LOOKUP throughput limits bite, shard Week 1 into two sub-batches (≤50 handles each) and parallelize validation while keeping total calls ≤150/run.
++reflect: Batch 0.5 passed with strong precision; the fastest risk is measurement gaps—lock in velocity/QA logs before scaling.
++```
+apply_patch(auto_approved=true) exited 0 in 6ms:
+Success. Updated the following files:
+M .cccc/mailbox/foreman/to_peer.md
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index ae37bc4455d3761fdb6c05bd33984ee0dbbe3b17..52c035a755664bff8f4cb3f188387874d3e16b75
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1,23 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T08:27:11Z eid=834ffe1ece7b sha=4d0d0b63 route=Foreman→Both -->
+\ No newline at end of file
++To: Both
++<TO_PEER>
++Item(m1.week1): Execute Week 1 batch now (m05 AI/Tech)
++Outcome: Week 1 scaffolding is present; proceed to full batch execution today ; Why: Seed list and initial artifacts exist; pipeline and filters are defined and validated ; Opposite: Wait for automation/auth to unblock before scaling
++Progress(tag=week1.bootstrap): lists/seeds/m05-ai-tech-batch.csv prepared; users fetched + initial harvest files exist; filters/scoring wired per contract
++Evidence(refs=[path:lists/seeds/m05-ai-tech-batch.csv#L1, path:.cccc/work/m1/week1/users_fetched_m05.jsonl, path:.cccc/work/m1/week1/harvest.batch05.jsonl, path:.cccc/work/m1/week1/harvest.scored.jsonl, spec:docs/por/d2-pipeline-contract.md#L90]): seed list present; batch outputs exist; filter spec active
++Ask(to=peerB, action=review): Confirm filters applied with defaults (min_followers=50k, verified_min=30k, brand/risk YAMLs) and no brand leakage in a 30-record spot check (QA sample)
++Risk(sev=med): Velocity/QA instrumentation incomplete (velocity.log, qa_sample.csv headers only); ensure measurement before scaling to avoid silent quality drift
++Next(tag=week1.run): Run full Week 1 batch: enforce filters, update velocity.log with ≥10 rows and rejection breakdown, produce qa_sample.csv (N=30), validate via tools/influx-validate, and export an incremental latest; reference all artifacts under .cccc/work/m1/week1 and append a REV line to T000004
++
++Item(align.guardrails): Align POR and contract gates for M1
++Outcome: M1 strategy and gates are consistent across POR and contract ; Why: POR already marks M1 manual path PRIMARY and defines weekly quotas; we need explicit Week 1 acceptance and zero-brand QA gate ; Opposite: Proceed without explicit acceptance gates and post-hoc fixes
++Evidence(refs=[path:docs/por/POR.md#L39, path:docs/por/T000004-m1-manual-scale/SUBPOR.md#L20, spec:docs/por/d2-pipeline-contract.md#L120]): POR pivot recorded; SUBPOR acceptance defined; contract filter spec normative
++Ask(to=peerA, action=revise): Add a short “M1 Week 1 Execution” acceptance block in POR (weekly ≥250, zero brand leakage in N=30, provenance 100%, snapshot cron green) and link Week 1 artifacts directory
++Risk(sev=low): Snapshot cron drift or missing manifest checks could mask regressions
++Next(tag=por.sync): Verify .github/workflows/snapshot.yml is active; add a one-line maintenance-log entry in POR with Week 1 execution start and link to .cccc/work/m1/week1
++
++Files: docs/por/POR.md#L1, docs/por/T000004-m1-manual-scale/SUBPOR.md#L1, docs/por/d2-pipeline-contract.md#L1, lists/seeds/m05-ai-tech-batch.csv#L1, .cccc/work/m1/week1/users_fetched_m05.jsonl#L1
++</TO_PEER>
++```insight
++explore: If Twitter USER_LOOKUP throughput limits bite, shard Week 1 into two sub-batches (≤50 handles each) and parallelize validation while keeping total calls ≤150/run.
++reflect: Batch 0.5 passed with strong precision; the fastest risk is measurement gaps—lock in velocity/QA logs before scaling.
++```
+
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index ae37bc4455d3761fdb6c05bd33984ee0dbbe3b17..52c035a755664bff8f4cb3f188387874d3e16b75
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1,23 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T08:27:11Z eid=834ffe1ece7b sha=4d0d0b63 route=Foreman→Both -->
+\ No newline at end of file
++To: Both
++<TO_PEER>
++Item(m1.week1): Execute Week 1 batch now (m05 AI/Tech)
++Outcome: Week 1 scaffolding is present; proceed to full batch execution today ; Why: Seed list and initial artifacts exist; pipeline and filters are defined and validated ; Opposite: Wait for automation/auth to unblock before scaling
++Progress(tag=week1.bootstrap): lists/seeds/m05-ai-tech-batch.csv prepared; users fetched + initial harvest files exist; filters/scoring wired per contract
++Evidence(refs=[path:lists/seeds/m05-ai-tech-batch.csv#L1, path:.cccc/work/m1/week1/users_fetched_m05.jsonl, path:.cccc/work/m1/week1/harvest.batch05.jsonl, path:.cccc/work/m1/week1/harvest.scored.jsonl, spec:docs/por/d2-pipeline-contract.md#L90]): seed list present; batch outputs exist; filter spec active
++Ask(to=peerB, action=review): Confirm filters applied with defaults (min_followers=50k, verified_min=30k, brand/risk YAMLs) and no brand leakage in a 30-record spot check (QA sample)
++Risk(sev=med): Velocity/QA instrumentation incomplete (velocity.log, qa_sample.csv headers only); ensure measurement before scaling to avoid silent quality drift
++Next(tag=week1.run): Run full Week 1 batch: enforce filters, update velocity.log with ≥10 rows and rejection breakdown, produce qa_sample.csv (N=30), validate via tools/influx-validate, and export an incremental latest; reference all artifacts under .cccc/work/m1/week1 and append a REV line to T000004
++
++Item(align.guardrails): Align POR and contract gates for M1
++Outcome: M1 strategy and gates are consistent across POR and contract ; Why: POR already marks M1 manual path PRIMARY and defines weekly quotas; we need explicit Week 1 acceptance and zero-brand QA gate ; Opposite: Proceed without explicit acceptance gates and post-hoc fixes
++Evidence(refs=[path:docs/por/POR.md#L39, path:docs/por/T000004-m1-manual-scale/SUBPOR.md#L20, spec:docs/por/d2-pipeline-contract.md#L120]): POR pivot recorded; SUBPOR acceptance defined; contract filter spec normative
++Ask(to=peerA, action=revise): Add a short “M1 Week 1 Execution” acceptance block in POR (weekly ≥250, zero brand leakage in N=30, provenance 100%, snapshot cron green) and link Week 1 artifacts directory
++Risk(sev=low): Snapshot cron drift or missing manifest checks could mask regressions
++Next(tag=por.sync): Verify .github/workflows/snapshot.yml is active; add a one-line maintenance-log entry in POR with Week 1 execution start and link to .cccc/work/m1/week1
++
++Files: docs/por/POR.md#L1, docs/por/T000004-m1-manual-scale/SUBPOR.md#L1, docs/por/d2-pipeline-contract.md#L1, lists/seeds/m05-ai-tech-batch.csv#L1, .cccc/work/m1/week1/users_fetched_m05.jsonl#L1
++</TO_PEER>
++```insight
++explore: If Twitter USER_LOOKUP throughput limits bite, shard Week 1 into two sub-batches (≤50 handles each) and parallelize validation while keeping total calls ≤150/run.
++reflect: Batch 0.5 passed with strong precision; the fastest risk is measurement gaps—lock in velocity/QA logs before scaling.
++```
+
+Plan update
+Directive drafted and written to mailbox with routing header and TO_PEER wrapper, including clear Next steps and evidence references for both peers.
+  ✓ Skim POR/PROJECT/SUBPOR/rules
+  ✓ Draft concise directive for peers
+  ✓ Write message to mailbox file
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index ae37bc4455d3761fdb6c05bd33984ee0dbbe3b17..e986524f4975db57293ef71b6ac41fe7d6a53476
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T08:27:11Z eid=834ffe1ece7b sha=4d0d0b63 route=Foreman→Both -->
+\ No newline at end of file
++<!-- MAILBOX:SENT v1 ts=2025-11-13T08:42:41Z eid=59b4416685eb sha=0e1837b5 route=Foreman→Both -->
+\ No newline at end of file
+
+codex
+Update sent to mailbox with clear Week 1 actions and POR gates.
+file update:
+diff --git a/.cccc/mailbox/foreman/to_peer.md b/.cccc/mailbox/foreman/to_peer.md
+index ae37bc4455d3761fdb6c05bd33984ee0dbbe3b17..e986524f4975db57293ef71b6ac41fe7d6a53476
+--- a/.cccc/mailbox/foreman/to_peer.md
++++ b/.cccc/mailbox/foreman/to_peer.md
+@@ -1 +1 @@
+-<!-- MAILBOX:SENT v1 ts=2025-11-13T08:27:11Z eid=834ffe1ece7b sha=4d0d0b63 route=Foreman→Both -->
+\ No newline at end of file
++<!-- MAILBOX:SENT v1 ts=2025-11-13T08:42:41Z eid=59b4416685eb sha=0e1837b5 route=Foreman→Both -->
+\ No newline at end of file
+
+tokens used
+53,505

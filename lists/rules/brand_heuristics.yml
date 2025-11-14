@@ -2,8 +2,8 @@
 # Used to filter out brand, media, official, and organizational accounts
 # from the influencer pool. Rules are evaluated as OR (any match triggers flag).
 
-version: "1.0.0"
-updated: "2025-11-13"
+version: "2.0.0"
+updated: "2025-11-14"
 
 # Keywords in name or username (case-insensitive, word boundary match)
 name_keywords:
@@ -35,6 +35,85 @@ name_keywords:
     - "sales"
     - "promo"
     - "coupon"
+
+  # Major tech companies and platforms (corporate accounts)
+  tech_corporations:
+    - "amazon web services"
+    - "aws"
+    - "microsoft azure"
+    - "azure"
+    - "google cloud"
+    - "google ai"
+    - "google deepmind"
+    - "tensor flow"
+    - "kaggle"
+    - "docker"
+    - "figma"
+    - "mongodb"
+    - "stripe"
+    - "next.js"
+    - "nextjs"
+    - "vercel"
+    - "netlify"
+    - "cloudflare"
+    - "tailwind css"
+    - "tailwindcss"
+    - "react"
+    - "reactjs"
+    - "vue.js"
+    - "vuejs"
+    - "angular"
+    - "nvidia"
+    - "github"
+    - "gitlab"
+    - "openai"
+    - "anthropic"
+    - "hugging face"
+    - "huggingface"
+    - "pytorch"
+    - "tensorflow"
+    - "def con"
+    - "defcon"
+    - "supabase"
+    - "linear"
+    - "remix"
+    - "digitalocean"
+    - "heroku"
+
+  tech_frameworks:
+    - "platform"
+    - "framework"
+    - "ecosystem"
+    - "sdk"
+    - "api"
+    - "developer tools"
+    - "open source"
+    - "library"
+    - "runtime"
+    - "database"
+    - "devtools"
+
+  conference_events:
+    - "conference"
+    - "summit"
+    - "keynote"
+    - "event"
+    - "festival"
+    - "convention"
+    - "meetup"
+
+# Chinese official account patterns (新增中文官号识别)
+  chinese_official:
+    - "官号"
+    - "官方"
+    - "公司"
+    - "企业"
+    - "组织"
+    - "机构"
+    - "平台"
+    - "官方账号"
+    - "官方推特"
+    - "客服"
 
 # Keywords in bio/description (case-insensitive, substring match)
 bio_keywords:
@@ -95,6 +174,40 @@ ratio_heuristics:
   high_ratio_threshold: 100
   # If following = 0, likely automated/official (but not sufficient alone)
   zero_following_flag: false
+
+# Known organization handles (AUTO-FILTER - these are always removed)
+# Format: handle (without @) - any match = immediate removal
+org_handles_blacklist:
+  - "github"
+  - "nvidia"
+  - "awscloud"
+  - "azure"
+  - "reactjs"
+  - "code"
+  - "huggingface"
+  - "googlecloud"
+  - "docker"
+  - "figma"
+  - "mongodb"
+  - "vuejs"
+  - "nextjs"
+  - "golang"
+  - "netlify"
+  - "cloudflare"
+  - "supabase"
+  - "linear"
+  - "remix"
+  - "gitlab"
+  - "openai"
+  - "anthropic"
+  - "pytorch"
+  - "tensorflow"
+  - "vercel"
+  - "digitalocean"
+  - "heroku"
+  - "stripe"
+  - "tailwindcss"
+  - "defcon"
 
 # Exceptions (handles that match heuristics but are known individuals)
 # Format: handle (without @)

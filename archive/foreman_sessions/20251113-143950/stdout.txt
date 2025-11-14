@@ -1,0 +1,14 @@
+- Wrote a directive to peers with clear next steps and asks.
+
+Where
+- `.cccc/mailbox/foreman/to_peer.md:1`
+
+What
+- Data assets: Asked PeerA to choose between two policies for uncompressed JSONL:
+  - A Minimal: keep latest uncompressed at `data/uncompressed/{YYYY-MM-DD}/complete_scored.m0.jsonl` + a small `data/samples/top200.jsonl`; ignore heavy intermediates.
+  - B Expanded: `data/staging/{YYYY-MM-DD-HHMM}/…` keep last 3 runs; use Git LFS for >5MB.
+- Execution: Directed PeerB to implement option A now (create dirs, move one file from `.cccc/work`, add READMEs, update README Data section, validate) in ≤30m.
+- Auth unblock: Routed GitHub OAuth relay to PeerA; asked PeerB to draft Twitter v2 support ticket and prep the 5-seed×1-page probe post‑enablement.
+
+Ask
+- Do you prefer A (minimal) or B (expanded) for uncompressed JSONL retention, or should PeerA decide by EOD JST?

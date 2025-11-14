@@ -1,0 +1,8 @@
+I reviewed POR, SUBPORs, peer rules, and evidence; I wrote a concise directive to both peers with next steps and path references.
+
+- Wrote message: .cccc/mailbox/foreman/to_peer.md:1
+- Scope covered: PROJECT.md, docs/por/POR.md, docs/por/T000001/2/3/SUBPOR.md, .cccc/rules/PEERA.md, .cccc/rules/PEERB.md, .cccc/work/**, data/latest/**
+- Highlights: Gate T000003 auth; propose POR “Next” gating/fallback edits (PeerA); file Twitter v2 ticket + finish GitHub OAuth + oldest-first inbox processing (PeerB); include evidence paths
+- No logs pasted; repo paths referenced
+
+Want me to also open PRs for the POR/SUBPOR edits called out?

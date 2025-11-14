@@ -1,0 +1,429 @@
+{
+  "description": "Preview: Top 20 influencers from influx dataset (sorted by score)",
+  "count": 20,
+  "generated_at": "2025-11-13T14:30:00Z",
+  "source": "data/latest/latest.jsonl.gz",
+  "filter": "top 20 by score (topic filtering not yet implemented)",
+  "authors": [
+    {
+      "id": "44196397",
+      "handle": "elonmusk",
+      "name": "Elon Musk",
+      "verified": "blue",
+      "followers_count": 229026322,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 100.0,
+        "last_refresh_at": "2025-11-13T04:49:57.978259+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:49:57.978259+00:00",
+            "evidence": "m02_extended_batch"
+          }
+        ],
+        "provenance_hash": "5574bbaf95fa44ed585d4bab302a7b58a58238ff00bb6009c3ca74646317620e"
+      }
+    },
+    {
+      "id": "50393960",
+      "handle": "BillGates",
+      "name": "Bill Gates",
+      "verified": "blue",
+      "followers_count": 65358188,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 100.0,
+        "last_refresh_at": "2025-11-13T04:52:52.515585+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:52:52.515585+00:00",
+            "evidence": "m02_tech_ceos"
+          }
+        ],
+        "provenance_hash": "c72ddba931e7657827a44d760d70a5cdc11084427561339b3d14cfc0be9f1370"
+      }
+    },
+    {
+      "id": "1636590253",
+      "handle": "tim_cook",
+      "name": "Tim Cook",
+      "verified": "blue",
+      "followers_count": 14812903,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 93.4,
+        "last_refresh_at": "2025-11-13T04:52:52.515585+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:52:52.515585+00:00",
+            "evidence": "m02_tech_ceos"
+          }
+        ],
+        "provenance_hash": "9d8cdc4013c2df817e03d2ff35847cd477b8dedc024527916f1f5c8fbd874828"
+      }
+    },
+    {
+      "id": "12",
+      "handle": "jack",
+      "name": "jack",
+      "verified": "blue",
+      "followers_count": 6415998,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 86.1,
+        "last_refresh_at": "2025-11-13T05:05:26.393032+00:00",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T05:05:26.393032+00:00",
+            "evidence": "Twitter API batch lookup from M0.3 curated expansion (blockchain, devops, tech leadership, security)"
+          }
+        ],
+        "provenance_hash": "f11699eddfc2ce3157410ae57f77b14cc4030f15c65d18620772306f58d584ea"
+      }
+    },
+    {
+      "id": "295218901",
+      "handle": "VitalikButerin",
+      "name": "vitalik.eth",
+      "verified": "blue",
+      "followers_count": 5855127,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 85.4,
+        "last_refresh_at": "2025-11-13T05:05:26.393032+00:00",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T05:05:26.393032+00:00",
+            "evidence": "Twitter API batch lookup from M0.3 curated expansion (blockchain, devops, tech leadership, security)"
+          }
+        ],
+        "provenance_hash": "16c6b6346ead34255dd9ad5993c5871e786052977aa02c21ff11eac67cbbcc79"
+      }
+    },
+    {
+      "id": "14130366",
+      "handle": "sundarpichai",
+      "name": "Sundar Pichai",
+      "verified": "blue",
+      "followers_count": 5615562,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 85.0,
+        "last_refresh_at": "2025-11-13T04:52:52.515585+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:52:52.515585+00:00",
+            "evidence": "m02_tech_ceos"
+          }
+        ],
+        "provenance_hash": "b6c2f11dcb8a47b60c9eeecde735aaa2a44c22fae8cbd1172a86d6da778d2c30"
+      }
+    },
+    {
+      "id": "427089628",
+      "handle": "lexfridman",
+      "name": "Lex Fridman",
+      "verified": "blue",
+      "followers_count": 4461379,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 83.0,
+        "last_refresh_at": "2025-11-13T04:34:55.210709+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:34:55.210710+00:00",
+            "evidence": "m01_team_pages"
+          }
+        ],
+        "provenance_hash": "924156d561a3583cf20ba5eafedf7fef46f7941c21a7a6644ee81bdc8df004c5"
+      }
+    },
+    {
+      "id": "1605",
+      "handle": "sama",
+      "name": "Sam Altman",
+      "verified": "blue",
+      "followers_count": 4118449,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 82.3,
+        "last_refresh_at": "2025-11-13T03:13:38Z",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T03:13:38Z",
+            "evidence": "Twitter API batch lookup from curated OpenAI/Anthropic/Huggingface team list"
+          }
+        ],
+        "provenance_hash": "6007b1fac16b69e968b6eb8b9be2ebc3e702ad787ecc47553d70944b2b139668"
+      }
+    },
+    {
+      "id": "20571756",
+      "handle": "satyanadella",
+      "name": "Satya Nadella",
+      "verified": "blue",
+      "followers_count": 3492168,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 80.9,
+        "last_refresh_at": "2025-11-13T04:52:52.515585+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:52:52.515585+00:00",
+            "evidence": "m02_tech_ceos"
+          }
+        ],
+        "provenance_hash": "9ebaff26d8fa4a46a5856559dc56a1b29437c693d1756710421fa0e23af40343"
+      }
+    },
+    {
+      "id": "745273",
+      "handle": "naval",
+      "name": "Naval",
+      "verified": "blue",
+      "followers_count": 2943404,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 79.4,
+        "last_refresh_at": "2025-11-13T04:49:57.978259+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:49:57.978259+00:00",
+            "evidence": "m02_extended_batch"
+          }
+        ],
+        "provenance_hash": "abb0b15722006e0ed5d08f13a634c548d77610e0f994a6ee4cbefde814ccbe11"
+      }
+    },
+    {
+      "id": "914061",
+      "handle": "levie",
+      "name": "Aaron Levie",
+      "verified": "blue",
+      "followers_count": 2511541,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 78.0,
+        "last_refresh_at": "2025-11-13T05:05:26.393032+00:00",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T05:05:26.393032+00:00",
+            "evidence": "Twitter API batch lookup from M0.3 curated expansion (blockchain, devops, tech leadership, security)"
+          }
+        ],
+        "provenance_hash": "66383f308ece29ebb1e72c870b02576240cfe952f1cf635536b92f4ac6d6cfae"
+      }
+    },
+    {
+      "id": "183749519",
+      "handle": "paulg",
+      "name": "Paul Graham",
+      "verified": "blue",
+      "followers_count": 2086384,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 76.4,
+        "last_refresh_at": "2025-11-13T04:49:57.978259+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:49:57.978259+00:00",
+            "evidence": "m02_extended_batch"
+          }
+        ],
+        "provenance_hash": "2085deea64fa883913bb8c33305dd0e0446e562c6e09234f783d1d3c00989911"
+      }
+    },
+    {
+      "id": "5943622",
+      "handle": "pmarca",
+      "name": "Marc Andreessen 🇺🇸",
+      "verified": "blue",
+      "followers_count": 1920839,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 75.7,
+        "last_refresh_at": "2025-11-13T04:49:57.978259+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:49:57.978259+00:00",
+            "evidence": "m02_extended_batch"
+          }
+        ],
+        "provenance_hash": "d4baf53640535f6bec829cd1b80ecded6b97138225530a243a014d61195c5ce6"
+      }
+    },
+    {
+      "id": "3291691",
+      "handle": "chamath",
+      "name": "Chamath Palihapitiya",
+      "verified": "blue",
+      "followers_count": 1913970,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 75.6,
+        "last_refresh_at": "2025-11-13T05:05:26.393032+00:00",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T05:05:26.393032+00:00",
+            "evidence": "Twitter API batch lookup from M0.3 curated expansion (blockchain, devops, tech leadership, security)"
+          }
+        ],
+        "provenance_hash": "6153122fcd739fdabc6585e4faa57947a858b02cf9e888fc1e60d40d710e0acb"
+      }
+    },
+    {
+      "id": "339061487",
+      "handle": "APompliano",
+      "name": "Anthony Pompliano 🌪",
+      "verified": "blue",
+      "followers_count": 1804738,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 75.1,
+        "last_refresh_at": "2025-11-13T05:05:26.393032+00:00",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T05:05:26.393032+00:00",
+            "evidence": "Twitter API batch lookup from M0.3 curated expansion (blockchain, devops, tech leadership, security)"
+          }
+        ],
+        "provenance_hash": "d9b67d8a4338cdf1af0c8de9e98f991c20a470db9440f3a11ac2f2797d3bbaf5"
+      }
+    },
+    {
+      "id": "33836629",
+      "handle": "karpathy",
+      "name": "Andrej Karpathy",
+      "verified": "blue",
+      "followers_count": 1465852,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 73.3,
+        "last_refresh_at": "2025-11-13T03:13:38Z",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T03:13:38Z",
+            "evidence": "Twitter API batch lookup from curated OpenAI/Anthropic/Huggingface team list"
+          }
+        ],
+        "provenance_hash": "abcf81f897d4e711fa306bdf8caa8f324c5f12f841f68073b4ea8df10cbaf1e9"
+      }
+    },
+    {
+      "id": "4398626122",
+      "handle": "OpenAI",
+      "name": "OpenAI",
+      "verified": "org",
+      "followers_count": 4492195,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 73.0,
+        "last_refresh_at": "2025-11-13T04:34:55.210836+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:34:55.210837+00:00",
+            "evidence": "m01_team_pages"
+          }
+        ],
+        "provenance_hash": "4c68b5c2e83a91004b4cd426f5cb0662f7d8817311f1de9727688b5f5ca83f64"
+      }
+    },
+    {
+      "id": "216939636",
+      "handle": "AndrewYNg",
+      "name": "Andrew Ng",
+      "verified": "blue",
+      "followers_count": 1290190,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 72.2,
+        "last_refresh_at": "2025-11-13T04:52:01.878684+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:52:01.878684+00:00",
+            "evidence": "m02_final_batch"
+          }
+        ],
+        "provenance_hash": "b9b064e89cc363d11346f5a57f10f95b80418ddb4388e68ae8222211e8873a2d"
+      }
+    },
+    {
+      "id": "2453385626",
+      "handle": "RaoulGMI",
+      "name": "Raoul Pal",
+      "verified": "blue",
+      "followers_count": 1248247,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 71.9,
+        "last_refresh_at": "2025-11-13T05:05:26.393032+00:00",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T05:05:26.393032+00:00",
+            "evidence": "Twitter API batch lookup from M0.3 curated expansion (blockchain, devops, tech leadership, security)"
+          }
+        ],
+        "provenance_hash": "21ff8f6e25306c516a81447670af3b7aa1f3f0b42d18ceaf5a4f951df23a78c8"
+      }
+    },
+    {
+      "id": "2178012643",
+      "handle": "balajis",
+      "name": "Balaji",
+      "verified": "blue",
+      "followers_count": 1213017,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 71.7,
+        "last_refresh_at": "2025-11-13T04:49:57.978259+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:49:57.978259+00:00",
+            "evidence": "m02_extended_batch"
+          }
+        ],
+        "provenance_hash": "163f5dbd349189dcb293e9d05042419b6028171b2741b8066aebcc630d67904d"
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+Update sent to peers with concrete next steps.
+
+- Wrote a Foreman directive to `.cccc/mailbox/foreman/to_peer.md` (To: Both) routing:
+  - PeerA: Reply to user about uncompressed JSONL (paths: `data/latest/latest.jsonl`, `data/uncompressed/2025-11-13/complete_scored.m0.jsonl`) and note “pause after next milestone” in `docs/por/POR.md` and T000004 acceptance if scope changes.
+  - PeerB: Execute M1 Week 1 batch per T000004 using `lists/seeds/m05-ai-tech-batch.csv`; produce `.cccc/work/m1/week1/harvest.raw.jsonl`, `velocity.log`, `qa_sample.csv`; update `data/latest/latest.jsonl(.gz)` + `manifest.json`; validate via `tools/influx-validate`; commit artifacts.
+- Noted Twitter v2 following-graph remains blocked; proceed with prefetched usernames only.
+- Reminded to triage inbox oldest-first (PeerA has a pending user ask).

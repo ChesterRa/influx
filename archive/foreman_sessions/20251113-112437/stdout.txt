@@ -1,0 +1,15 @@
+Sent a concise directive to both peers with one decisive next step.
+
+- Wrote: .cccc/mailbox/foreman/to_peer.md
+- Route: Both
+- Focus:
+  - PeerA: ACK scope for D1 (influx-validate + CI) and approve CLI/state boundaries aligned to POR/README.
+  - PeerB: After ACK, create first SUBPOR “D1 — Schema validation + CI (M0)” and own docs/schema.md stub.
+- Single Next: SUBPOR creation by PeerB after PeerA’s ACK.
+
+References
+- POR: docs/por/POR.md:21,26
+- README: README.md:115
+- Schema: schema/bigv.schema.json:1
+
+Want me to prepare a minimal influx-validate stub and ci/validate.yml in the next run?

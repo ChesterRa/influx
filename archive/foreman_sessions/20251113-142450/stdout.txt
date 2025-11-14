@@ -1,0 +1,9 @@
+Posted a concise Foreman directive to both peers with next steps.
+
+- File: .cccc/mailbox/foreman/to_peer.md:1
+- Summary:
+  - PeerA: Draft user-facing rationale for jsonl.gz vs many JSON files; add a one-line POR note; keep D2 contract unchanged.
+  - PeerB: Execute T000003 auth-unblock step 1 (list Composio connections, open tickets if needed, update SUBPOR evidence); add a minimal viewer script and preview export for readability without changing release artifacts.
+- References used: PROJECT.md, docs/por/POR.md, docs/por/T000003-auth-unblock/SUBPOR.md, docs/por/d2-pipeline-contract.md, data/latest/manifest.json
+
+Want me to also scaffold the `tools/influx-view` stub and README quick-view lines now?

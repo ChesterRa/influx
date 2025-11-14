@@ -1,0 +1,9 @@
+Wrote a concise directive to align and unblock both peers.
+
+- Mailbox: `.cccc/mailbox/foreman/to_peer.md`
+- Summary:
+  - PeerA: Lock D2 guardrails in POR (API ≤150/run, following ≤2 pages/seed, gating rules, Option A meta at every stage) and cross-link D2 contract; quick PR requested.
+  - PeerB: Implement minimal `export_latest` in `tools/influx-export` using the 48-sample to produce `data/latest/latest.jsonl.gz` + `manifest.json`, validate with `tools/influx-validate`, then note REV in T000002.
+  - Backlog: PeerB to process inbox oldest-first (000023–000026) before coding.
+
+Want me to implement the minimal `export_latest` now to accelerate PeerB?

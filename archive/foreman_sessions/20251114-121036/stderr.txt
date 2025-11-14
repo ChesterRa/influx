@@ -1,0 +1,7 @@
+YOLO mode is enabled. All tool calls will be automatically approved.
+Loaded cached credentials.
+Found stored OAuth token for server 'rube'
+Loading extension: chrome-devtools-mcp
+Skipping MCP config for server with name "chrome-devtools" from extension "chrome-devtools-mcp" as it already exists.
+Loading extension: nanobanana
+Error executing tool list_directory: Error listing directory: ENOENT: no such file or directory, stat '/home/dodd/dev/influx/.cccc/mailbox/foreman/inbox'
