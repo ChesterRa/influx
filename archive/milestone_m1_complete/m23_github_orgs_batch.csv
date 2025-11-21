@@ -1,0 +1,11 @@
+handle,category,source,note
+openai,ai_research,github_org,OpenAI official account
+anthropic,ai_research,github_org,Anthropic personal account
+huggingface,ml_platform,github_org,Hugging Face official account
+pytorch,ml_framework,github_org,PyTorch official account
+meta,ai_research,github_org,Meta official account
+nvidia,gpu_ai,github_org,NVIDIA official account
+microsoft,ml_platform,github_org,Microsoft official account
+ggerganov,ml_engineering,github_org,llama.cpp author
+mistralai,ai_research,github_org,Mistral AI official account
+replicate,ml_platform,github_org,Replicate official account

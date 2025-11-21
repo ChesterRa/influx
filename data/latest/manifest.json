@@ -1,55 +1,11 @@
 {
-  "count": 531,
-  "timestamp": "2025-11-14T09:39:00.000000+00:00",
-  "stage": "M1_premium_expansion_breakthrough",
-  "quality_compliance": "100%",
-  "foreman_directive": "exceeding_all_expectations",
-  "last_batch": "m03_final_toptier_success",
-  "new_authors": 27,
-  "key_achievement": "EXTRAORDINARY BREAKTHROUGH - Added 27 ultra-premium authors including Elon Musk (229M followers), Jack Dorsey (6.4M), Marc Andreessen (1.9M), Vitalik Buterin (5.8M), Naval (2.9M). Achieved 531 authors with 100% quality compliance through strict Foreman directive adherence. v2.0 quality gates perfectly filtered spam while preserving maximum value. Project now contains world's most valuable tech influencer network.",
-  "milestone_transcendence": {
-    "foreman_400_target": "531 achieved - 133% beyond requirement",
-    "data_quality": "Perfect - Ultra-premium individual accounts only",
-    "influence_reach": "250M+ combined followers from top-tier leaders",
-    "technical_excellence": "100% single-path influx-harvest compliance"
-  },
-  "premium_batch_results": {
-    "m03_additional_batch": {
-      "acceptance_rate": "82%",
-      "batch_yield": "14/17 authors",
-      "premium_additions": "Vitalik Buterin, Naval, François Chollet, Ben Thompson",
-      "strategic_value": "Ethereum creator, AngelList founder, Keras creator"
-    },
-    "m03_final_top_tier": {
-      "acceptance_rate": "93%",
-      "batch_yield": "13/14 authors",
-      "ultra_premium": "Elon Musk, Jack Dorsey, Marc Andreessen, Aaron Levie",
-      "quality_gates": "Perfect spam filtering while preserving maximum value"
-    }
-  },
-  "portfolio_value_breakthrough": {
-    "blockchain_leadership": {
-      "vitalik_ethereum": "Ethereum co-founder",
-      "elonmusk_tesla": "Tesla/SpaceX CEO",
-      "jack_twitter": "Twitter co-founder",
-      "novogratz_galaxy": "Galaxy Digital CEO"
-    },
-    "tech_leadership": {
-      "pmarca_a16z": "Andreessen Horowitz co-founder",
-      "levie_box": "Box CEO",
-      "dhh_rails": "Ruby on Rails creator",
-      "spolsky_stackoverflow": "Stack Overflow co-founder"
-    },
-    "investment_thought": {
-      "benthompson_stratechery": "Stratechery founder",
-      "naval_angellist": "AngelList founder",
-      "raoul_realvision": "Real Vision founder"
-    }
-  },
-  "technical_infrastructure": {
-    "quality_enforcement": "v2.0 brand heuristics with perfect spam detection",
-    "single_path_compliance": "100% Foreman directive adherence",
-    "data_enrichment_ready": "Architectural feasibility confirmed for M2",
-    "scalable_pipelines": "Proven batch processing for continued expansion"
-  }
+  "schema_version": "1.0.0",
+  "timestamp": "2025-11-21T03:07:39.173602+00:00",
+  "count": 353,
+  "sha256": "e257ba0f7e96d745a1a80aa37fe931360ba97ab697ae92b57a1d0aa96f82c3de",
+  "source_file": "data/latest/latest.jsonl",
+  "sort_order": "score desc, followers_count desc, handle asc",
+  "score_version": "unspecified_pending_confirmation",
+  "score_formula": "refer to tooling output (pending sync)",
+  "score_note": "latest_strict_compliant.jsonl set as canonical; scoring version to be confirmed"
 }

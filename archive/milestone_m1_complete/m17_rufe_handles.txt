@@ -1,0 +1,5 @@
+This script requires Claude Code RUBE MCP.
+Run via: claude-code exec rube-fetch @markruffalo @drewperkins @gchristensen @catherineklu @emilycanter @sammirk @drdevinnath @sajith @rahuldav @jonahkeriuk
+
+Then pass the JSONL output to influx-harvest:
+  influx-harvest x-lists --list-urls <csv> --prefetched-users <users.jsonl> --out harvest.raw.jsonl

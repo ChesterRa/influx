@@ -27,6 +27,15 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Import RUBE MCP tools for real metrics collection
+try:
+    from rube_RUBE_MULTI_EXECUTE_TOOL import rube_RUBE_MULTI_EXECUTE_TOOL
+    from rube_RUBE_SEARCH_TOOLS import rube_RUBE_SEARCH_TOOLS
+    RUBE_AVAILABLE = True
+except ImportError:
+    RUBE_AVAILABLE = False
+    print("Warning: RUBE MCP tools not available. Using placeholder metrics.", file=sys.stderr)
+
 
 def calculate_proxy_score(author):
     """Calculate M0 proxy score (log-based, no metrics API calls)"""
@@ -225,16 +234,164 @@ def calculate_m2_relevance_score(author):
     return round(min(100.0, max(0.0, relevance_score)), 1)
 
 
+def collect_activity_metrics_via_rube(author, session_id="wood"):
+    """Collect real 30-day activity metrics using RUBE MCP Twitter tools
+    This replaces placeholder metrics with actual API data
+    """
+    if not RUBE_AVAILABLE:
+        print("Warning: RUBE MCP not available. Using placeholder metrics.", file=sys.stderr)
+        return None
+    
+    handle = author.get("handle", "")
+    if not handle:
+        return None
+    
+    try:
+        # Get user timeline to collect 30-day metrics
+        result = rube_RUBE_MULTI_EXECUTE_TOOL(
+            session_id=session_id,
+            memory={"twitter": [f"Collecting 30-day activity metrics for @{handle}"]},
+            tools=[{
+                "tool_slug": "TWITTER_USER_TIMELINE",
+                "arguments": {
+                    "username": handle,
+                    "max_results": 100,
+                    "tweet_fields": ["created_at", "public_metrics", "text"],
+                    "expansions": ["author_id"],
+                    "user_fields": ["public_metrics", "verified_type"]
+                }
+            }],
+            current_step="COLLECT_30D_METRICS",
+            current_step_metric="1/1 users",
+            next_step="PROCESS_METRICS"
+        )
+        
+        if result.get("successful") and result.get("data", {}).get("results"):
+            timeline_data = result["data"]["results"][0]["response"]["data"]
+            
+            # Extract metrics from timeline
+            tweets = timeline_data.get("data", [])
+            total_tweets = len(tweets)
+            
+            if total_tweets == 0:
+                return None
+            
+            # Calculate 30-day metrics
+            now = datetime.now(timezone.utc)
+            thirty_days_ago = now - timezone.timedelta(days=30)
+            
+            recent_tweets = [
+                tweet for tweet in tweets
+                if datetime.fromisoformat(tweet["created_at"].replace("Z", "+00:00")) >= thirty_days_ago
+            ]
+            
+            recent_tweet_count = len(recent_tweets)
+            
+            # Calculate engagement metrics
+            total_likes = sum(tweet.get("public_metrics", {}).get("like_count", 0) for tweet in recent_tweets)
+            total_retweets = sum(tweet.get("public_metrics", {}).get("retweet_count", 0) for tweet in recent_tweets)
+            total_replies = sum(tweet.get("public_metrics", {}).get("reply_count", 0) for tweet in recent_tweets)
+            
+            # Calculate original tweets (exclude retweets)
+            original_tweets = [
+                tweet for tweet in recent_tweets
+                if not tweet.get("text", "").startswith("RT @")
+            ]
+            original_tweet_count = len(original_tweets)
+            
+            # Media richness
+            tweets_with_media = sum(1 for tweet in recent_tweets if tweet.get("attachments", {}))
+            media_rate = tweets_with_media / max(1, recent_tweet_count)
+            
+            # Return structured activity metrics
+            return {
+                "tweet_count": original_tweet_count,
+                "total_like_count": total_likes,
+                "total_retweet_count": total_retweets,
+                "total_reply_count": total_replies,
+                "media_count": tweets_with_media,
+                "account_created_at": author.get("meta", {}).get("activity_metrics", {}).get("account_created_at", ""),
+                "last_captured_at": now.isoformat(),
+                "thirty_day_window": True
+            }
+        
+        return None
+        
+    except Exception as e:
+        print(f"Error collecting metrics for @{handle}: {e}", file=sys.stderr)
+        return None
+
 def calculate_m2_score(author):
-    """Calculate full M2 composite score"""
-    activity_score = calculate_m2_activity_score(author)
-    quality_score = calculate_m2_quality_score(author)
-    relevance_score = calculate_m2_relevance_score(author)
-
-    # Weighted composite: activity(30%) + quality(50%) + relevance(20%)
-    m2_score = activity_score * 0.3 + quality_score * 0.5 + relevance_score * 0.2
-
-    return round(min(100.0, max(0.0, m2_score)), 1)
+    """Calculate full M2 composite score using real activity metrics when available"""
+    # First try to collect real metrics via RUBE
+    activity_metrics = collect_activity_metrics_via_rube(author)
+    
+    if activity_metrics and activity_metrics.get("thirty_day_window", False):
+        # Use real 30-day metrics from RUBE MCP
+        tweet_count = activity_metrics.get("tweet_count", 0)
+        total_like_count = activity_metrics.get("total_like_count", 0)
+        media_count = activity_metrics.get("media_count", 0)
+        listed_count = activity_metrics.get("listed_count", 0)
+        following_count = activity_metrics.get("following_count", 0)
+        account_created_at = activity_metrics.get("account_created_at", "")
+        pinned_tweet_id = activity_metrics.get("pinned_tweet_id", "")
+        
+        # Calculate account age in years
+        account_age_years = 0.0
+        account_age_days = 0
+        if account_created_at:
+            try:
+                created_date = datetime.fromisoformat(account_created_at.replace('Z', '+00:00'))
+                now = datetime.now(timezone.utc)
+                account_age_days = (now - created_date).days
+                account_age_years = account_age_days / 365.25
+            except (ValueError, AttributeError):
+                account_age_days = 0
+                account_age_years = 0.0
+        
+        # Frequency Score (40% of activity): Tweet rate calculation
+        tweets_per_day = tweet_count / max(1, account_age_days) if account_age_days > 0 else 0
+        frequency_score = min(100.0, tweets_per_day * 5.0 + 25.0)
+        
+        # Engagement Score (35% of activity): Like rate and content richness
+        like_rate = total_like_count / max(1, tweet_count) if tweet_count > 0 else 0
+        media_rate = media_count / max(1, tweet_count) if tweet_count > 0 else 0
+        
+        # Score components: like rate (max 15), media rate (max 10), recent activity bonus (max 10)
+        like_score = min(15.0, like_rate * 0.01)  # 0.01 likes per tweet = 1 point, max 15
+        media_score = min(10.0, media_rate * 2.0)   # 0.5 media per tweet = 1 point, max 10
+        recent_bonus = 10.0 if pinned_tweet_id else 0.0
+        
+        engagement_score = like_score + media_score + recent_bonus
+        
+        # Authority Score (25% of activity): Listed count and account maturity signals
+        listed_score = min(15.0, listed_count / 100.0)  # 100 lists = 15 points
+        maturity_score = min(10.0, account_age_years * 2.0)  # 5 years = 10 points
+        
+        authority_score = listed_score + maturity_score
+        
+        # Weighted activity score
+        activity_score = (frequency_score * 0.4 + engagement_score * 0.35 + authority_score * 0.25)
+        
+        # Quality Score (50% weight): Enhanced quality metrics
+        quality_score = calculate_m2_quality_score(author)
+        
+        # Relevance Score (20% weight): Domain relevance
+        relevance_score = calculate_m2_relevance_score(author)
+        
+        # Weighted composite: activity(30%) + quality(50%) + relevance(20%)
+        m2_score = activity_score * 0.3 + quality_score * 0.5 + relevance_score * 0.2
+        
+        return round(min(100.0, max(0.0, m2_score)), 1)
+    else:
+        # Fallback to original M2 calculation if RUBE metrics unavailable
+        activity_score = calculate_m2_activity_score(author)
+        quality_score = calculate_m2_quality_score(author)
+        relevance_score = calculate_m2_relevance_score(author)
+        
+        m2_score = activity_score * 0.3 + quality_score * 0.5 + relevance_score * 0.2
+        
+        return round(min(100.0, max(0.0, m2_score)), 1)
 
 
 def update_scores(args):
@@ -277,7 +434,9 @@ def update_scores(args):
         # Update meta.score
         if "meta" not in author:
             author["meta"] = {}
-        author["meta"]["score"] = score
+        # Ensure score is properly serialized as number, not string
+        score_value = score if isinstance(score, (int, float)) else 0
+        author["meta"]["score"] = score_value
         scored_count += 1
 
     print(f"Scored {scored_count} authors")

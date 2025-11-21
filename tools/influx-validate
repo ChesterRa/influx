@@ -80,20 +80,37 @@ def validate_strict_quality_gates(
     errors = []
     record_id = record.get('id', '?')
     handle = record.get('handle', '?')
+    meta = record.get('meta', {})
 
-    # Required quality gate fields that must be present
-    required_fields = [
+    # Required quality gate fields at root level
+    root_required_fields = [
         'is_org',
-        'is_official',
+        'is_official'
+    ]
+
+    # Required quality gate fields in meta object
+    meta_required_fields = [
         'entry_threshold_passed',
         'quality_score'
     ]
 
-    for field in required_fields:
+    # Check root-level fields
+    for field in root_required_fields:
         if field not in record:
             errors.append({
                 'line': line_num,
                 'error': f"STRICT: Missing required quality gate field: '{field}'",
+                'record_id': record_id,
+                'handle': handle,
+                'strict_violation': True
+            })
+
+    # Check meta-level fields
+    for field in meta_required_fields:
+        if field not in meta:
+            errors.append({
+                'line': line_num,
+                'error': f"STRICT: Missing required quality gate field in meta: '{field}'",
                 'record_id': record_id,
                 'handle': handle,
                 'strict_violation': True
@@ -120,10 +137,10 @@ def validate_strict_quality_gates(
         })
 
     # Validate entry_threshold_passed field (must be boolean)
-    if 'entry_threshold_passed' in record and not isinstance(record['entry_threshold_passed'], bool):
+    if 'entry_threshold_passed' in meta and not isinstance(meta['entry_threshold_passed'], bool):
         errors.append({
             'line': line_num,
-            'error': f"STRICT: Field 'entry_threshold_passed' must be boolean, got {type(record['entry_threshold_passed']).__name__}",
+            'error': f"STRICT: Field 'entry_threshold_passed' must be boolean, got {type(meta['entry_threshold_passed']).__name__}",
             'record_id': record_id,
             'handle': handle,
             'strict_violation': True
@@ -149,7 +166,7 @@ def validate_strict_quality_gates(
         })
 
     # Entry threshold must be passed
-    if not record.get('entry_threshold_passed', False):
+    if not meta.get('entry_threshold_passed', False):
         errors.append({
             'line': line_num,
             'error': f"STRICT: Entry threshold not passed (entry_threshold_passed=false)",
@@ -159,7 +176,7 @@ def validate_strict_quality_gates(
         })
 
     # Validate follower count threshold (minimum 10,000)
-    followers = record.get('public_metrics', {}).get('followers_count', 0)
+    followers = record.get('followers_count', 0)
     if followers < 10000:
         errors.append({
             'line': line_num,
@@ -169,12 +186,12 @@ def validate_strict_quality_gates(
             'strict_violation': True
         })
 
-    # Validate quality score range (0-1)
-    quality_score = record.get('quality_score', -1)
-    if not isinstance(quality_score, (int, float)) or not (0 <= quality_score <= 1):
+    # Validate quality score range (0-100)
+    quality_score = meta.get('quality_score', -1)
+    if not isinstance(quality_score, (int, float)) or not (0 <= quality_score <= 100):
         errors.append({
             'line': line_num,
-            'error': f"STRICT: quality_score must be between 0 and 1, got {quality_score}",
+            'error': f"STRICT: quality_score must be between 0 and 100, got {quality_score}",
             'record_id': record_id,
             'handle': handle,
             'strict_violation': True

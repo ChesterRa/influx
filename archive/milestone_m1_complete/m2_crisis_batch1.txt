@@ -1,0 +1,10 @@
+-e hackerfantastic
+maddiestone
+cyb3rops
+PortSwigger
+Bugcrowd
+PostgreSQL
+mitchellh
+b0rk
+mpjme
+mxstbr

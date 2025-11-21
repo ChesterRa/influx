@@ -1,0 +1,12 @@
+{
+  "start_time": "2025-11-20T19:40:05.117581+00:00",
+  "target_authors": 1500,
+  "current_authors": 380,
+  "new_authors_added": 0,
+  "batches_processed": 0,
+  "total_processing_time": 1.5020370483398438e-05,
+  "authors_per_hour": 0.0,
+  "quality_compliance_rate": 0,
+  "schema_validation_passed": 0,
+  "schema_validation_failed": 0
+}

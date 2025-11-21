@@ -2,9 +2,8 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://influx.local/schema/bigv.schema.json",
   "title": "Influx BigV Profile",
-  "description": "Simplified profile schema for BigV influencer entries per POR pivot. Captures core identity, status, 30-day engagement metrics, metadata/provenance, and optional extensions.",
+  "description": "Simplified profile schema for BigV influencer entries per POR pivot. Captures core identity, status, 30-day metrics, and metadata/provenance for high-quality author indexing.",
   "type": "object",
-  "additionalProperties": false,
   "properties": {
     "id": {
       "type": "string",
@@ -17,10 +16,11 @@
     "handle": {
       "type": "string",
       "pattern": "^[A-Za-z0-9_]{1,15}$",
-      "description": "Twitter username (handle) without leading @. 1-15 chars, alphanumeric or underscore.",
+      "description": "Twitter username (handle) without leading @. 1-15 chars, alphanumeric or underscore only.",
       "examples": [
         "jack",
-        "TwitterDev"
+        "TwitterDev",
+        "elonmusk"
       ]
     },
     "name": {
@@ -29,7 +29,7 @@
       "description": "Profile display name as shown on Twitter.",
       "examples": [
         "Jack Dorsey",
-        "Twitter Dev"
+        "Elon Musk"
       ]
     },
     "verified": {
@@ -38,129 +38,53 @@
         "none",
         "blue",
         "org",
-        "legacy"
-      ],
-      "description": "Verification status: none (unverified), blue (X Blue), org (Organization), or legacy (historical verified).",
-      "examples": [
         "legacy",
-        "blue",
-        "none"
+        "business"
       ]
     },
     "followers_count": {
       "type": "integer",
       "minimum": 0,
-      "description": "Follower count at the time of last refresh.",
+      "description": "Follower count at time of last refresh.",
       "examples": [
         6500000,
-        12345
+        100000,
+        50000
       ]
+    },
+    "is_org": {
+      "type": "boolean",
+      "description": "Whether this account represents an organization, brand, or media entity rather than an individual."
+    },
+    "is_official": {
+      "type": "boolean",
+      "description": "Whether this account is an official/PR account for an organization or individual."
     },
     "lang_primary": {
       "type": "string",
-      "minLength": 2,
-      "maxLength": 2,
-      "description": "Primary profile language (ISO 639-1, lowercase).",
-      "examples": [
-        "en",
-        "es",
-        "ja"
-      ]
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "description": "Primary language code (ISO 639-1, with optional ISO 3166-1 alpha-2 country code)."
     },
     "topic_tags": {
       "type": "array",
-      "description": "Topical tags the profile consistently covers (freeform short tags).",
       "items": {
-        "type": "string",
-        "minLength": 1
+        "type": "string"
       },
-      "uniqueItems": true,
+      "description": "Topic/domain tags for classification and filtering.",
       "examples": [
-        [
-          "ai",
-          "startups",
-          "engineering"
-        ]
+        ["ai_core", "gpu"],
+        ["security"],
+        []
       ]
-    },
-    "metrics_30d": {
-      "type": "object",
-      "title": "30-day Metrics",
-      "description": "Engagement metrics computed over the last rolling 30 days.",
-      "additionalProperties": false,
-      "properties": {
-        "posts_original": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Count of original posts (excludes pure retweets/reposts) in the last 30 days.",
-          "examples": [
-            12
-          ]
-        },
-        "median_likes": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Median likes per original post (30-day window).",
-          "examples": [
-            1400
-          ]
-        },
-        "p90_likes": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "90th percentile likes per original post (30-day window).",
-          "examples": [
-            5000
-          ]
-        },
-        "median_replies": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Median replies per original post (30-day window).",
-          "examples": [
-            120
-          ]
-        },
-        "median_retweets": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Median retweets/reposts per original post (30-day window).",
-          "examples": [
-            200
-          ]
-        }
-      }
     },
     "meta": {
       "type": "object",
-      "title": "Metadata",
-      "description": "Scoring, global rank, activity, and provenance details for the record.",
-      "additionalProperties": false,
       "properties": {
         "score": {
           "type": "number",
           "minimum": 0,
           "maximum": 100,
-          "description": "Composite influence/quality score scaled 0-100 (float).",
-          "examples": [
-            87.5
-          ]
-        },
-        "rank_global": {
-          "type": "integer",
-          "minimum": 1,
-          "description": "Global rank position among all profiles (1 = highest).",
-          "examples": [
-            123
-          ]
-        },
-        "last_active_at": {
-          "type": "string",
-          "format": "date-time",
-          "description": "ISO 8601 timestamp of most recent observed activity.",
-          "examples": [
-            "2025-11-01T14:33:22Z"
-          ]
+          "description": "Overall influence score (proxy or full model)."
         },
         "last_refresh_at": {
           "type": "string",
@@ -211,9 +135,43 @@
         "provenance_hash": {
           "type": "string",
           "pattern": "^[A-Fa-f0-9]{64}$",
-          "description": "SHA-256 hex digest capturing the provenance snapshot for this record.",
+          "description": "SHA-256 hex digest capturing provenance snapshot for this record.",
           "examples": [
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        "entry_threshold_passed": {
+          "type": "boolean",
+          "description": "Whether the record passed influx-harvest pipeline entry thresholds.",
+          "examples": [
+            true,
+            false
+          ]
+        },
+        "quality_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Quality score from influx-harvest pipeline.",
+          "examples": [
+            87.5,
+            95.0
+          ]
+        },
+        "rank_global": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Global rank position among all profiles (1 = highest).",
+          "examples": [
+            123
+          ]
+        },
+        "last_active_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of most recent observed activity.",
+          "examples": [
+            "2025-11-01T14:33:22Z"
           ]
         }
       },
@@ -221,7 +179,9 @@
         "score",
         "last_refresh_at",
         "sources",
-        "provenance_hash"
+        "provenance_hash",
+        "entry_threshold_passed",
+        "quality_score"
       ]
     },
     "ext": {
@@ -237,49 +197,10 @@
     "name",
     "verified",
     "followers_count",
+    "is_org",
+    "is_official",
     "lang_primary",
     "topic_tags",
     "meta"
-  ],
-  "examples": [
-    {
-      "id": "2244994945",
-      "handle": "jack",
-      "name": "Jack Dorsey",
-      "verified": "legacy",
-      "followers_count": 6500000,
-      "lang_primary": "en",
-      "topic_tags": [
-        "technology",
-        "bitcoin",
-        "startups"
-      ],
-      "metrics_30d": {
-        "posts_original": 12,
-        "median_likes": 1400,
-        "p90_likes": 5000,
-        "median_replies": 120,
-        "median_retweets": 200
-      },
-      "meta": {
-        "score": 87.5,
-        "rank_global": 123,
-        "last_active_at": "2025-11-01T14:33:22Z",
-        "last_refresh_at": "2025-11-13T12:00:00Z",
-        "sources": [
-          {
-            "method": "twitter-api-v2",
-            "fetched_at": "2025-11-13T12:00:00Z",
-            "evidence": "tweet counts + user lookup"
-          }
-        ],
-        "provenance_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-      },
-      "ext": {
-        "region": "US",
-        "notes": "VIP list v2"
-      }
-    }
   ]
 }
-

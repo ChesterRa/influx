@@ -1,0 +1,10 @@
+{
+  "total_handles": 575,
+  "total_batches": 56,
+  "successful_batches": 0,
+  "failed_batches": 56,
+  "total_authors_processed": 0,
+  "total_authors_passed": 0,
+  "processing_time_seconds": 0.4065115451812744,
+  "authors_per_hour": 0.0
+}
