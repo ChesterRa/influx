@@ -1,0 +1,148 @@
+# Risk Terms and Content Flags
+# Used to identify potentially problematic accounts based on bio, username, or content patterns.
+# Accounts matching these patterns are flagged with risk_flags and excluded by default.
+
+version: "1.0.0"
+updated: "2025-11-13"
+
+# NSFW / Adult Content
+nsfw:
+  bio_keywords:
+    - "18+"
+    - "nsfw"
+    - "onlyfans"
+    - "adult content"
+    - "explicit"
+    - "xxx"
+    - "🔞"
+
+  name_patterns:
+    - ".*adult.*"
+    - ".*xxx.*"
+
+  flag_name: "nsfw"
+  severity: "high"
+  auto_exclude: true
+
+# Political / Partisan (region-agnostic indicators)
+political:
+  bio_keywords:
+    - "political party"
+    - "campaign account"
+    - "official politician"
+    - "govt spokesperson"
+    - "political activist"
+
+  name_keywords:
+    - "senator"
+    - "congressman"
+    - "minister"
+    - "parliament"
+    - "政治家"  # politician (JP)
+
+  flag_name: "political"
+  severity: "medium"
+  auto_exclude: true
+  note: "Individual political commentators (not officials) are not flagged"
+
+# Controversy / Inflammatory Content
+controversy:
+  bio_keywords:
+    - "conspiracy"
+    - "truth seeker"
+    - "wake up"
+    - "banned from"
+    - "censored"
+    - "suspended"
+
+  # Excessive use of inflammatory emoji patterns
+  emoji_patterns:
+    - "🚨{3,}"  # Multiple alarm emojis
+    - "⚠️{3,}"
+    - "💀{3,}"
+
+  flag_name: "controversy"
+  severity: "medium"
+  auto_exclude: false  # Flag but allow manual review
+  note: "Genuine investigative journalists may match; review needed"
+
+# Spam / Low-Quality Indicators
+spam:
+  bio_keywords:
+    - "follow back"
+    - "follow me"
+    - "dm for"
+    - "promocode"
+    - "click link"
+    - "make money fast"
+    - "crypto giveaway"
+    - "free bitcoin"
+
+  name_patterns:
+    - ".*\\d{4,}$"  # Ends with 4+ digits (often bot)
+
+  # Excessive hashtags in name
+  excessive_hashtags: 3
+
+  flag_name: "spam"
+  severity: "high"
+  auto_exclude: true
+
+# Hate Speech / Extremism (minimal, high-confidence indicators only)
+hate_speech:
+  bio_keywords:
+    # Only include unambiguous, universally recognized hate symbols/terms
+    # Err on side of caution to avoid false positives
+    - "1488"  # Neo-Nazi code
+    - "卐"    # Swastika
+
+  flag_name: "hate_speech"
+  severity: "critical"
+  auto_exclude: true
+  note: "Minimal list to avoid false positives; manual review for edge cases"
+
+# Impersonation / Parody (without clear disclosure)
+impersonation:
+  bio_keywords:
+    - "not affiliated"
+    - "parody"
+    - "satire"
+    - "fan account"
+
+  # These are actually GOOD (disclosure), but flag for review if name is confusingly similar to known entity
+  flag_name: "impersonation_risk"
+  severity: "low"
+  auto_exclude: false
+  note: "Disclosed parody is fine; undisclosed impersonation is risk"
+
+# Scam / Phishing Indicators
+scam:
+  bio_keywords:
+    - "send me"
+    - "dm for money"
+    - "investment opportunity"
+    - "guaranteed returns"
+    - "double your"
+
+  # Links to known scam domains (placeholder)
+  domain_patterns:
+    - ".*bit\\.ly/.*"  # Shortened links often used in scams (low confidence)
+
+  flag_name: "scam"
+  severity: "critical"
+  auto_exclude: true
+
+# Inactive / Abandoned Accounts (via metrics, not bio)
+# Handled by pipeline logic, not text matching
+# Placeholder for future metric-based rules
+
+# Risk Flag Processing Rules
+processing_rules:
+  # Multiple flags increase confidence
+  multi_flag_threshold: 2  # ≥2 flags → auto_exclude even if individual flag is false
+
+  # Override: verified legacy accounts with single low-severity flag → manual review
+  verified_legacy_override: true
+
+  # Logging: all flagged accounts logged to state/flagged_accounts.jsonl for audit
+  log_flagged: true

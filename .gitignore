@@ -1,0 +1,64 @@
+# Ignore CCCC runtime domain (Ephemeral mode)
+/.cccc/**
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# State and data (only release tracked)
+state/
+archive/
+temp_work/
+*.log
+data/**
+!data/release/
+!data/release/**
+
+# Docs / audit / QA (not tracked)
+docs/**
+AGENTS.md
+
+# Lists and seeds (track only core rules)
+lists/**
+!lists/rules/
+!lists/rules/brand_heuristics.yml
+!lists/rules/risk_terms.yml
+
+# Processed/working batches (not tracked)
+processed_batches/**
+data/batches/**
+data/uncompressed/**
+data/test/**
+data/samples/**
+data/latest/**
+data/prefetched.sample.jsonl
+!data/prefetched.sample.jsonl
+
+# Scripts/tools: track only minimal publish set
+scripts/**
+!scripts/pipeline_guard.sh
+tools/**
+!tools/influx-harvest
+
+# Schema extras (not tracked)
+schema/state_db.sql
+schema/schema.md
+
+# Reports / audit outputs
+docs/qa_reports/
+docs/audit_trail/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

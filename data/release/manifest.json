@@ -1,0 +1,11 @@
+{
+  "schema_version": "https://influx.local/schema/bigv.schema.json",
+  "timestamp": "2025-11-23T15:23:02Z",
+  "count": 302,
+  "sha256": "05b88f29d2c471b5b6eed9d1b7e1a865617f92cd3cfa405998f83cea5972a078",
+  "source_file": "data/latest/latest.jsonl",
+  "sort_order": "score desc, followers_count desc, handle asc",
+  "score_version": "v2_activity_quality_relevance",
+  "score_formula": "activity(30%) + quality(50%) + relevance(20%)",
+  "score_note": "Batch merge in progress: web3_new_only_batch.jsonl"
+}

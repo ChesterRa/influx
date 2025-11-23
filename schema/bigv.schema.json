@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://influx.local/schema/bigv.schema.json",
+  "title": "Influx BigV Profile",
+  "description": "Simplified profile schema for BigV influencer entries per POR pivot. Captures core identity, status, 30-day metrics, and metadata/provenance for high-quality author indexing.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "Twitter author_id as a numeric string.",
+      "examples": [
+        "2244994945"
+      ]
+    },
+    "handle": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_]{1,15}$",
+      "description": "Twitter username (handle) without leading @. 1-15 chars, alphanumeric or underscore only.",
+      "examples": [
+        "jack",
+        "TwitterDev",
+        "elonmusk"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Profile display name as shown on Twitter.",
+      "examples": [
+        "Jack Dorsey",
+        "Elon Musk"
+      ]
+    },
+    "verified": {
+      "type": "string",
+      "enum": [
+        "none",
+        "blue",
+        "org",
+        "legacy",
+        "business"
+      ]
+    },
+    "followers_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Follower count at time of last refresh.",
+      "examples": [
+        6500000,
+        100000,
+        50000
+      ]
+    },
+    "is_org": {
+      "type": "boolean",
+      "description": "Whether this account represents an organization, brand, or media entity rather than an individual."
+    },
+    "is_official": {
+      "type": "boolean",
+      "description": "Whether this account is an official/PR account for an organization or individual."
+    },
+    "lang_primary": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "description": "Primary language code (ISO 639-1, with optional ISO 3166-1 alpha-2 country code)."
+    },
+    "topic_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Topic/domain tags for classification and filtering.",
+      "examples": [
+        ["ai_core", "gpu"],
+        ["security"],
+        []
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Overall influence score (proxy or full model)."
+        },
+        "last_refresh_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this record was last refreshed.",
+          "examples": [
+            "2025-11-13T12:00:00Z"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "description": "Data sources used to assemble this record.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "method": {
+                "type": "string",
+                "description": "Acquisition method, e.g., twitter-api-v2, firehose, web-scrape, manual.",
+                "examples": [
+                  "twitter-api-v2"
+                ]
+              },
+              "fetched_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO 8601 timestamp when the source was fetched.",
+                "examples": [
+                  "2025-11-13T12:00:00Z"
+                ]
+              },
+              "evidence": {
+                "type": "string",
+                "description": "Freeform evidence or reference (e.g., query details, URL, or notes).",
+                "examples": [
+                  "tweet counts + user lookup"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "fetched_at",
+              "evidence"
+            ]
+          },
+          "minItems": 1
+        },
+        "provenance_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 hex digest capturing provenance snapshot for this record.",
+          "examples": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        "entry_threshold_passed": {
+          "type": "boolean",
+          "description": "Whether the record passed influx-harvest pipeline entry thresholds.",
+          "examples": [
+            true,
+            false
+          ]
+        },
+        "quality_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Quality score from influx-harvest pipeline.",
+          "examples": [
+            87.5,
+            95.0
+          ]
+        },
+        "rank_global": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Global rank position among all profiles (1 = highest).",
+          "examples": [
+            123
+          ]
+        },
+        "last_active_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of most recent observed activity.",
+          "examples": [
+            "2025-11-01T14:33:22Z"
+          ]
+        }
+      },
+      "required": [
+        "score",
+        "last_refresh_at",
+        "sources",
+        "provenance_hash",
+        "entry_threshold_passed",
+        "quality_score"
+      ]
+    },
+    "ext": {
+      "type": "object",
+      "title": "Extensions",
+      "description": "Optional implementation-specific custom fields. Keys/values are not validated by this schema.",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "id",
+    "handle",
+    "name",
+    "verified",
+    "followers_count",
+    "is_org",
+    "is_official",
+    "lang_primary",
+    "topic_tags",
+    "meta"
+  ]
+}
