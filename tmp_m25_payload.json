@@ -1,0 +1,43 @@
+{
+  "batch_info": {
+    "batch_id": "m25-jeffbezos-addition",
+    "processed_date": "2025-11-23",
+    "source_file": "lists/seeds/m25-jeffbezos-addition.csv",
+    "total_handles": 1,
+    "fetched_profiles": 1,
+    "qualified_profiles": 1,
+    "success_rate": "100.0%"
+  },
+  "qualified_authors": [
+    {
+      "id": "15506669",
+      "handle": "JeffBezos",
+      "name": "Jeff Bezos",
+      "description": "Amazon. Blue Origin. Washington Post. Bezos Earth Fund. Bezos Academy.",
+      "followers_count": 6967286,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "business_executive"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 100,
+        "quality_score": 100,
+        "last_refresh_at": "2025-11-23T20:35:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T20:35:00Z",
+            "evidence": "m25-jeffbezos-addition.csv"
+          }
+        ],
+        "provenance_hash": "2bd6c7f6e02984942c82b4bcdb59aa3509535d153c6f12fd2a95e92b5506b3ae"
+      }
+    }
+  ],
+  "rejected_profiles": []
+}

@@ -1,1 +1,0 @@
-Sent a concise directive to both peers, aligned to POR. You can review it in .cccc/mailbox/foreman/to_peer.md:1.

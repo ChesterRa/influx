@@ -1,0 +1,483 @@
+{
+  "total_experts": 14,
+  "categories": {
+    "AI Security": 0,
+    "CISO Leadership": 0,
+    "Offensive Security": 1,
+    "Malware Analysis": 1,
+    "Security Research": 5,
+    "Security Journalism": 1,
+    "Security Education": 1,
+    "General Cybersecurity": 5,
+    "DevOps/Security": 0
+  },
+  "experts": [
+    {
+      "name": "ST\u00d6K \u270c\ufe0f",
+      "twitter_handle": "@stokfredrik",
+      "followers_count": 135953,
+      "verified": true,
+      "location": "Sweden",
+      "description": "Hi.. im that hacker / creative that your friends told you about.,",
+      "expertise_areas": [
+        "cybersecurity"
+      ],
+      "affiliation": "",
+      "url": "https://t.co/87NRlDPACS",
+      "created_at": "2017-07-01T15:05:57.000Z",
+      "quality_score": 100,
+      "profile_image_url": "https://pbs.twimg.com/profile_images/1904907547598786560/TGIrkaid_normal.jpg"
+    },
+    {
+      "name": "Phillip Wylie",
+      "twitter_handle": "@PhillipWylie",
+      "followers_count": 51682,
+      "verified": true,
+      "location": "Dallas, Texas, USA",
+      "description": "Sr. Consultant & Evangelist @suzulabs | Offensive Security Expert | Phillip Wylie Show Podcast Host @thehackermaker | @pentesterblue coauthor",
+      "expertise_areas": [
+        "Offensive Security",
+        "cybersecurity"
+      ],
+      "affiliation": "suzulabs",
+      "url": "https://t.co/qfcQQDLu7N",
+      "created_at": "2011-05-08T19:03:03.000Z",
+      "quality_score": 90,
+      "profile_image_url": "https://pbs.twimg.com/profile_images/1827752422782996481/RbuoX5-Z_normal.jpg"
+    },
+    {
+      "name": "briankrebs",
+      "twitter_handle": "@briankrebs",
+      "followers_count": 331684,
+      "verified": true,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Journalist"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 60.414490444600915,
+      "profile_image_url": ""
+    },
+    {
+      "name": "Troy Hunt",
+      "twitter_handle": "@troyhunt",
+      "followers_count": 241719,
+      "verified": true,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Educator"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 57.66621577777194,
+      "profile_image_url": ""
+    },
+    {
+      "name": "@mikko",
+      "twitter_handle": "@mikko",
+      "followers_count": 226702,
+      "verified": true,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Researcher"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 57.10910703112606,
+      "profile_image_url": ""
+    },
+    {
+      "name": "Schneier Blog",
+      "twitter_handle": "@schneierblog",
+      "followers_count": 142575,
+      "verified": true,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Thought Leader"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 53.08086760514286,
+      "profile_image_url": ""
+    },
+    {
+      "name": "Tavis Ormandy",
+      "twitter_handle": "@taviso",
+      "followers_count": 130413,
+      "verified": true,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Researcher"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 52.306417709337964,
+      "profile_image_url": ""
+    },
+    {
+      "name": "bugcrowd",
+      "twitter_handle": "@bugcrowd",
+      "followers_count": 190743,
+      "verified": true,
+      "location": "San Francisco, CA",
+      "description": "The leading provider of crowdsourced cybersecurity solutions purpose-built to secure the digitally connected world...Unleash Ingenuity\u2122",
+      "expertise_areas": [
+        "security"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "2012-09-01T06:29:55.000Z",
+      "quality_score": 82.8,
+      "profile_image_url": ""
+    },
+    {
+      "name": "MG",
+      "twitter_handle": "@_MG_",
+      "followers_count": 49925,
+      "verified": true,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Researcher"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 43.9663614708548,
+      "profile_image_url": ""
+    },
+    {
+      "name": "nixCraft \ud83d\udc27",
+      "twitter_handle": "@nixcraft",
+      "followers_count": 389529,
+      "verified": false,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "DevOps/Security"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 51.81079591904914,
+      "profile_image_url": ""
+    },
+    {
+      "name": "Dave Kennedy",
+      "twitter_handle": "@HackingDave",
+      "followers_count": 224961,
+      "verified": false,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Researcher"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 47.04214467752688,
+      "profile_image_url": ""
+    },
+    {
+      "name": "Malware Unicorn",
+      "twitter_handle": "@malwareunicorn",
+      "followers_count": 167750,
+      "verified": false,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Malware Analysis"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 44.49325057682059,
+      "profile_image_url": ""
+    },
+    {
+      "name": "hacker.house",
+      "twitter_handle": "@hackerfantastic",
+      "followers_count": 104403,
+      "verified": false,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Pentester"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 40.37425956426864,
+      "profile_image_url": ""
+    },
+    {
+      "name": "Maddie Stone",
+      "twitter_handle": "@maddiestone",
+      "followers_count": 61661,
+      "verified": false,
+      "location": "",
+      "description": "",
+      "expertise_areas": [
+        "Security Researcher"
+      ],
+      "affiliation": "",
+      "url": "",
+      "created_at": "",
+      "quality_score": 35.80021127416083,
+      "profile_image_url": ""
+    }
+  ],
+  "categorized_experts": {
+    "AI Security": [],
+    "CISO Leadership": [],
+    "Offensive Security": [
+      {
+        "name": "Phillip Wylie",
+        "twitter_handle": "@PhillipWylie",
+        "followers_count": 51682,
+        "verified": true,
+        "location": "Dallas, Texas, USA",
+        "description": "Sr. Consultant & Evangelist @suzulabs | Offensive Security Expert | Phillip Wylie Show Podcast Host @thehackermaker | @pentesterblue coauthor",
+        "expertise_areas": [
+          "Offensive Security",
+          "cybersecurity"
+        ],
+        "affiliation": "suzulabs",
+        "url": "https://t.co/qfcQQDLu7N",
+        "created_at": "2011-05-08T19:03:03.000Z",
+        "quality_score": 90,
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1827752422782996481/RbuoX5-Z_normal.jpg"
+      }
+    ],
+    "Malware Analysis": [
+      {
+        "name": "Malware Unicorn",
+        "twitter_handle": "@malwareunicorn",
+        "followers_count": 167750,
+        "verified": false,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Malware Analysis"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 44.49325057682059,
+        "profile_image_url": ""
+      }
+    ],
+    "Security Research": [
+      {
+        "name": "@mikko",
+        "twitter_handle": "@mikko",
+        "followers_count": 226702,
+        "verified": true,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Researcher"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 57.10910703112606,
+        "profile_image_url": ""
+      },
+      {
+        "name": "Dave Kennedy",
+        "twitter_handle": "@HackingDave",
+        "followers_count": 224961,
+        "verified": false,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Researcher"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 47.04214467752688,
+        "profile_image_url": ""
+      },
+      {
+        "name": "Tavis Ormandy",
+        "twitter_handle": "@taviso",
+        "followers_count": 130413,
+        "verified": true,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Researcher"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 52.306417709337964,
+        "profile_image_url": ""
+      },
+      {
+        "name": "Maddie Stone",
+        "twitter_handle": "@maddiestone",
+        "followers_count": 61661,
+        "verified": false,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Researcher"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 35.80021127416083,
+        "profile_image_url": ""
+      },
+      {
+        "name": "MG",
+        "twitter_handle": "@_MG_",
+        "followers_count": 49925,
+        "verified": true,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Researcher"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 43.9663614708548,
+        "profile_image_url": ""
+      }
+    ],
+    "Security Journalism": [
+      {
+        "name": "briankrebs",
+        "twitter_handle": "@briankrebs",
+        "followers_count": 331684,
+        "verified": true,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Journalist"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 60.414490444600915,
+        "profile_image_url": ""
+      }
+    ],
+    "Security Education": [
+      {
+        "name": "Troy Hunt",
+        "twitter_handle": "@troyhunt",
+        "followers_count": 241719,
+        "verified": true,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Educator"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 57.66621577777194,
+        "profile_image_url": ""
+      }
+    ],
+    "General Cybersecurity": [
+      {
+        "name": "nixCraft \ud83d\udc27",
+        "twitter_handle": "@nixcraft",
+        "followers_count": 389529,
+        "verified": false,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "DevOps/Security"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 51.81079591904914,
+        "profile_image_url": ""
+      },
+      {
+        "name": "bugcrowd",
+        "twitter_handle": "@bugcrowd",
+        "followers_count": 190743,
+        "verified": true,
+        "location": "San Francisco, CA",
+        "description": "The leading provider of crowdsourced cybersecurity solutions purpose-built to secure the digitally connected world...Unleash Ingenuity\u2122",
+        "expertise_areas": [
+          "security"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "2012-09-01T06:29:55.000Z",
+        "quality_score": 82.8,
+        "profile_image_url": ""
+      },
+      {
+        "name": "Schneier Blog",
+        "twitter_handle": "@schneierblog",
+        "followers_count": 142575,
+        "verified": true,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Security Thought Leader"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 53.08086760514286,
+        "profile_image_url": ""
+      },
+      {
+        "name": "ST\u00d6K \u270c\ufe0f",
+        "twitter_handle": "@stokfredrik",
+        "followers_count": 135953,
+        "verified": true,
+        "location": "Sweden",
+        "description": "Hi.. im that hacker / creative that your friends told you about.,",
+        "expertise_areas": [
+          "cybersecurity"
+        ],
+        "affiliation": "",
+        "url": "https://t.co/87NRlDPACS",
+        "created_at": "2017-07-01T15:05:57.000Z",
+        "quality_score": 100,
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1904907547598786560/TGIrkaid_normal.jpg"
+      },
+      {
+        "name": "hacker.house",
+        "twitter_handle": "@hackerfantastic",
+        "followers_count": 104403,
+        "verified": false,
+        "location": "",
+        "description": "",
+        "expertise_areas": [
+          "Pentester"
+        ],
+        "affiliation": "",
+        "url": "",
+        "created_at": "",
+        "quality_score": 40.37425956426864,
+        "profile_image_url": ""
+      }
+    ],
+    "DevOps/Security": []
+  }
+}

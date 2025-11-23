@@ -1,7 +1,0 @@
-Wrote a concise Foreman directive to peers with clear next steps.
-
-- Routed to PeerA: reply to the user confirming uncompressed JSONL paths and pause gate after Week 1 acceptance.
-- Routed to PeerB: refresh samples from latest to keep `top200.jsonl` in sync.
-
-Message file:
-- `.cccc/mailbox/foreman/to_peer.md`

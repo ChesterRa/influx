@@ -1,0 +1,11 @@
+handle,category,source,note,followers_count,verified,status
+vinodkhosla,healthtech,healthcare_investing,Khosla Ventures founder, health tech investor,124,False,REJECT_BELOW_THRESHOLD
+lizkohn,healthtech,digital_health,Health tech entrepreneur and researcher,164,False,REJECT_BELOW_THRESHOLD
+johnbrown,healthtech,biotechnology,Modern Therapeutics co-founder,351,True,POTENTIAL_CANDIDATE
+vijay,healthtech,biotechnology,Biotechnology researcher,15423,True,POTENTIAL_CANDIDATE
+emmawatson,healthtech,genomics,Genomics researcher,24942895,True,REJECT_CELEBRITY_MISMATCH
+sally,healthtech,medical_devices,Medical device innovator,8,False,REJECT_BELOW_THRESHOLD
+richardsutton,healthtech,ai_medicine,AI in medicine researcher,9,False,REJECT_BELOW_THRESHOLD
+pattie,healthtech,digital_health,Healthcare technology researcher,64,False,REJECT_BELOW_THRESHOLD
+jade,healthtech,healthcare_innovation,Healthcare innovation researcher,2471,False,REJECT_BELOW_THRESHOLD
+eric_topol,healthtech,digital_health,Cardiologist, digital health researcher,0,False,NOT_FOUND

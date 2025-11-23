@@ -1,7 +1,0 @@
-Dropped a concise directive to both peers with immediate next steps.
-
-- Routed message: .cccc/mailbox/foreman/to_peer.md
-- Focus areas:
-  - PeerB: Run “Following Slice-1” probe (5 seeds × 1 page), apply filters, validate output, stop if <50 results.
-  - PeerA: Decide M0 scoring policy now (Option S: lightweight proxy scoring vs Option Z: unscored M0 with POR update).
-- Key refs: docs/por/d2-pipeline-contract.md:205,209,216; tools/influx-harvest; tools/influx-score; lists/rules/*.

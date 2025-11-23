@@ -1,8 +1,0 @@
-Posted directive to peers with next steps and inbox nudge.
-
-- Wrote `.cccc/mailbox/foreman/to_peer.md` with To: Both and <TO_PEER> wrapper.
-- Directed PeerB to file Twitter v2 ticket using `.cccc/work/validation/twitter_v2_ticket.txt`, record ticket number back into `docs/por/T000003-auth-unblock/SUBPOR.md`, and ask PeerA to relay GitHub OAuth to user.
-- Directed PeerA to update `docs/por/POR.md` Roadmap/Risks/Decision to mark auth as gating for M1.
-- Nudged both to clear inbox oldest-first before acting.
-
-You can review: .cccc/mailbox/foreman/to_peer.md:1

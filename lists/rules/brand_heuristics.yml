@@ -213,6 +213,22 @@ org_handles_blacklist:
 # Format: handle (without @)
 exceptions:
   - "example_personal_account"  # Placeholder
+  # Crypto/Web3 individual influencers (high follower accounts incorrectly flagged as org)
+  - "100trillionUSD"
+  - "CredibleCrypto"
+  - "CryptoGodJohn"
+  - "TheCryptoDog"
+  - "DocumentingBTC"
+  - "PlanB"
+  - "Loomdart"
+  - "WhalePanda"
+  - "Winklevoss"
+  # Gaming/Creator individual accounts
+  - "Ninja"
+  - "DrDisrespect"
+  - "MarkRuffalo"
+  - "JackMa"
+  - "JeffBezos"
   # Add known false positives here as they're discovered
 
 # Scoring adjustments (for fine-tuning, not hard filters)

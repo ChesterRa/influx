@@ -1,1 +1,0 @@
-Message written to .cccc/mailbox/foreman/to_peer.md with routed, actionable next steps for PeerA and PeerB.

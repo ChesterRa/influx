@@ -1,1 +1,0 @@
-Drafted a concise directive to both peers with priorities (RUBE integration first, then batch 0.5 probe, heuristics calibration, inbox hygiene, cadence/CI), referencing exact repo paths for evidence and deliverables. See .cccc/mailbox/foreman/to_peer.md.

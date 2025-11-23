@@ -1,0 +1,257 @@
+{
+  "batch_info": {
+    "batch_id": "m19-vc-investing",
+    "processed_date": "2025-11-23",
+    "source_file": "lists/seeds/m19-vc-investing-batch.csv",
+    "total_handles": 10,
+    "fetched_profiles": 10,
+    "qualified_profiles": 8,
+    "success_rate": "80.0%"
+  },
+  "qualified_authors": [
+    {
+      "id": "1000591",
+      "handle": "fredwilson",
+      "name": "Fred Wilson",
+      "description": "I am a VC",
+      "followers_count": 653024,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 91,
+        "quality_score": 91,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "013ffec03084c04ae7c8780e529a72f7d0b423ed895f120b93eaa39ac615ef44"
+      }
+    },
+    {
+      "id": "3840",
+      "handle": "Jason",
+      "name": "@jason",
+      "description": "first investor in https://t.co/M6cblbFld9 Host: @twistartups @theallinpod; I also invest in 100 startups a year @launch & @founderuni jason@calacanis.com for life",
+      "followers_count": 1034557,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 95,
+        "quality_score": 95,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "bf6a6b1782cc51cbb2967429a1601d8549d3d4526d4740ae188d8a05d7e44057"
+      }
+    },
+    {
+      "id": "5943622",
+      "handle": "pmarca",
+      "name": "Marc Andreessen \ud83c\uddfa\ud83c\uddf8",
+      "description": "Build.",
+      "followers_count": 1913641,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 104,
+        "quality_score": 104,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "a6406a1280f4e2fe3501f55a4c9cc0d6a7993f7c729a392090896f5085c20fa9"
+      }
+    },
+    {
+      "id": "586",
+      "handle": "sacca",
+      "name": "Chris Sacca \ud83c\uddfa\ud83c\uddf8",
+      "description": "In love w/ @crystale & our 3 girls. Had fun on @ABCSharkTank. Been working hard to unf**k planet at Lowercarbon.",
+      "followers_count": 1511959,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 100,
+        "quality_score": 100,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "3f4291f2d96e798fe6784cb179acb2fa1f5f706b9bb61195fd8b8e633cb05d5e"
+      }
+    },
+    {
+      "id": "49736166",
+      "handle": "peterthiel",
+      "name": "Peter Thiel",
+      "description": "Technology entrepreneur, investor, philanthropist.",
+      "followers_count": 441929,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 89,
+        "quality_score": 89,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "9b7ffcde8198cc13ef94a140ed2b6af959adc20ee9010ab869059f852a5f8118"
+      }
+    },
+    {
+      "id": "2529971",
+      "handle": "cdixon",
+      "name": "Chris Dixon",
+      "description": "Programming, philosophy, history, internet, startups, crypto. Managing Partner @a16zcrypto.   See disclosures: https://t.co/Ov6kKJAmzS",
+      "followers_count": 907821,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 94,
+        "quality_score": 94,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "26d75e302d27596694c6a6883373841ad9c564ef908d8987357f01b2cc1d904d"
+      }
+    },
+    {
+      "id": "3291691",
+      "handle": "chamath",
+      "name": "Chamath Palihapitiya",
+      "description": "God is in the details.",
+      "followers_count": 1913244,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 104,
+        "quality_score": 104,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "e930ffc80c66546295bd9975f71ee6e86803d025ba762eda08a900a15e8a9271"
+      }
+    },
+    {
+      "id": "3754891",
+      "handle": "bfeld",
+      "name": "Brad Feld",
+      "description": "I'm a VC at Foundry. I live in Colorado, invest in software and Internet companies around US, run marathons, and love to read.",
+      "followers_count": 318871,
+      "verified": "blue",
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "vc_investing"
+      ],
+      "entry_threshold_passed": true,
+      "meta": {
+        "score": 88,
+        "quality_score": 88,
+        "last_refresh_at": "2025-11-23T19:50:00Z",
+        "entry_threshold_passed": true,
+        "sources": [
+          {
+            "method": "rube_mcp_direct",
+            "fetched_at": "2025-11-23T19:50:00Z",
+            "evidence": "m19-vc-investing-batch.csv"
+          }
+        ],
+        "provenance_hash": "a400855f4141a8f29e87e017cd210fd5ff8ce893277b06deae036a49eb0d36f0"
+      }
+    }
+  ],
+  "rejected_profiles": [
+    {
+      "username": "LeeRobinson",
+      "followers": 34,
+      "reason": "Below 50k follower threshold"
+    },
+    {
+      "username": "JerryNeumann",
+      "followers": 3,
+      "reason": "Below 50k follower threshold"
+    }
+  ]
+}

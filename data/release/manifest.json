@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "timestamp": "2025-11-23T00:25:06.557014+00:00",
+  "count": 253,
+  "sha256": "d63f97d72dcd511370153640d052e77390ff5946e13da0e8e074abf3a32263fa",
+  "source_file": "combined.jsonl",
+  "sort_order": "score desc, followers_count desc, handle asc",
+  "score_version": "v0_proxy_no_metrics",
+  "score_formula": "20*log10(followers/1000) + verified_boost, clipped [0,100]",
+  "score_note": "M0 proxy pending 30d metrics collection (M1)"
+}

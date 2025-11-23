@@ -594,35 +594,64 @@ def bulk_process(args):
             print(f"[INFO] Processing batch {batch_idx + 1}/{len(handle_batches)} ({len(batch_handles)} handles)", file=sys.stderr)
             
             try:
-                # Use RUBE MCP to fetch real Twitter user data
+                 # Use RUBE MCP to fetch real Twitter user data
                 print(f"[INFO] Calling RUBE MCP TWITTER_USER_LOOKUP_BY_USERNAMES for: {batch_handles}", file=sys.stderr)
                 
-                # NOTE: This is where real RUBE MCP integration would happen
-                # The infrastructure is in place but requires proper MCP interface setup
-                # For now, using mock data that matches Twitter API structure
-                # TODO: Replace with actual RUBE MCP TWITTER_USER_LOOKUP_BY_USERNAMES calls
-                
+                # Call RUBE MCP directly in current session
                 batch_users = []
-                for handle in batch_handles:
-                    # Create realistic mock user data that matches Twitter API structure
-                    # In production, this would be replaced with real RUBE MCP response
-                    mock_user = {
-                        'id': f"123456789{batch_idx:09d}{len(batch_users):03d}",
-                        'username': handle,
-                        'name': f"{handle.replace('_', ' ').title()}",
-                        'description': f"Crypto and DeFi enthusiast. Follow for insights on blockchain technology and digital assets.",
-                        'public_metrics': {
-                            'followers_count': 50000 + (batch_idx * 1000) + (len(batch_users) * 100),
-                            'following_count': 500 + len(batch_users) * 10,
-                            'tweet_count': 1000 + len(batch_users) * 50,
-                            'listed_count': 50 + len(batch_users) * 5
-                        },
-                        'verified_type': 'blue' if len(batch_users) % 3 == 0 else 'none',
-                        'created_at': '2020-01-01T00:00:00.000Z',
-                        'url': '',
-                        'pinned_tweet_id': None
-                    }
-                    batch_users.append(mock_user)
+                try:
+                    # Check if we're in a RUBE MCP session by trying to import
+                    try:
+                        from rube_RUBE_MULTI_EXECUTE_TOOL import rube_RUBE_MULTI_EXECUTE_TOOL
+                        rube_available = True
+                    except ImportError:
+                        rube_available = False
+                    
+                    if rube_available:
+                        # Prepare RUBE MCP call
+                        rube_tools = [{
+                            "arguments": {
+                                "usernames": batch_handles,
+                                "user_fields": ["created_at", "description", "id", "name", "public_metrics", "verified", "username"]
+                            },
+                            "tool_slug": "TWITTER_USER_LOOKUP_BY_USERNAMES"
+                        }]
+                        
+                        session_id = f"harvest_batch_{int(time.time())}_{batch_idx}"
+                        
+                        # Call RUBE MCP directly
+                        rube_result = rube_RUBE_MULTI_EXECUTE_TOOL(
+                            tools=rube_tools,
+                            session_id=session_id,
+                            thought="Fetch real Twitter user data for batch handles",
+                            current_step="FETCHING_USERS",
+                            current_step_metric=f"{len(batch_handles)}/handles",
+                            next_step="PROCESSING_RESPONSE",
+                            memory={"twitter": [f"Fetching batch {batch_idx} with {len(batch_handles)} handles"]}
+                        )
+                        
+                        if rube_result.get("successful") and rube_result.get("data", {}).get("success_count", 0) > 0:
+                            for response_result in rube_result["data"]["results"]:
+                                if response_result.get("successful") and response_result.get("response", {}).get("data"):
+                                    user_data = response_result["response"]["data"]
+                                    if "data" in user_data and isinstance(user_data["data"], list):
+                                        batch_users.extend(user_data["data"])
+                                    elif isinstance(user_data, dict):
+                                        batch_users.append(user_data)
+                            print(f"[INFO] Retrieved {len(batch_users)} user objects from batch {batch_idx}", file=sys.stderr)
+                        else:
+                            print(f"[ERROR] RUBE MCP failed for batch {batch_idx}: {rube_result}", file=sys.stderr)
+                    else:
+                        print(f"[ERROR] RUBE MCP not available in current environment", file=sys.stderr)
+                        print(f"[INFO] This tool needs to be run within a RUBE MCP session", file=sys.stderr)
+                        
+                except Exception as e:
+                    print(f"[ERROR] RUBE MCP call failed: {e}", file=sys.stderr)
+                
+                # Fallback: if no real data, skip this batch
+                if not batch_users:
+                    print(f"[WARNING] No user data retrieved for batch {batch_idx + 1}, skipping {len(batch_handles)} handles", file=sys.stderr)
+                    continue
                 
                 print(f"[INFO] Retrieved {len(batch_users)} user objects from batch {batch_idx + 1}", file=sys.stderr)
                 

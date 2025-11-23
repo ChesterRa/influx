@@ -1,0 +1,227 @@
+[
+  {
+    "id": "1137701",
+    "handle": "DavidSacks", 
+    "name": "David Sacks",
+    "description": "Tech founder & investor. Personal views only. Official account: @davidsacks47",
+    "followers_count": 1416768,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 100,
+      "quality_score": 100,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_DavidSacks_20251123_040500"
+    }
+  },
+  {
+    "id": "745273",
+    "handle": "naval",
+    "name": "Naval", 
+    "description": "Incompressible",
+    "followers_count": 2949719,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 100,
+      "quality_score": 100,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_naval_20251123_040500"
+    }
+  },
+  {
+    "id": "2178012643",
+    "handle": "balajis",
+    "name": "Balaji",
+    "description": "Author of Network State. Founder of Network School.",
+    "followers_count": 1222009,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 100,
+      "quality_score": 100,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_balajis_20251123_040500"
+    }
+  },
+  {
+    "id": "1605",
+    "handle": "sama",
+    "name": "Sam Altman",
+    "description": "AI is cool i guess",
+    "followers_count": 4137833,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 100,
+      "quality_score": 100,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_sama_20251123_040500"
+    }
+  },
+  {
+    "id": "24761783",
+    "handle": "nickcammarata",
+    "name": "Nick",
+    "description": "neural network interpretability, meditation, jhana brother",
+    "followers_count": 87847,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 37,
+      "quality_score": 37,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_nickcammarata_20251123_040500"
+    }
+  },
+  {
+    "id": "69426451",
+    "handle": "CaseyNewton",
+    "name": "Casey Newton",
+    "description": "Writing @platformer. Co-hosting Hard Fork @nytimes. Posting good tweets to Instagram stories @crumbler. casey@platformer.news | https://t.co/9KuJb8XCrr",
+    "followers_count": 199850,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 59,
+      "quality_score": 59,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_CaseyNewton_20251123_040500"
+    }
+  },
+  {
+    "id": "1233663476",
+    "handle": "stratechery",
+    "name": "Stratechery",
+    "description": "Articles and Updates from https://t.co/A7bGqyJ7db. For the author, follow @benthompson.",
+    "followers_count": 153810,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 50,
+      "quality_score": 50,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_stratechery_20251123_040500"
+    }
+  },
+  {
+    "id": "16246929",
+    "handle": "danprimack",
+    "name": "Dan Primack",
+    "description": "Biz editor @Axios. Pro Rata newsletter. Dan@axios.com. Native Masshole. DM for Signal/Telegram.",
+    "followers_count": 156779,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 51,
+      "quality_score": 51,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_danprimack_20251123_040500"
+    }
+  },
+  {
+    "id": "208725869",
+    "handle": "TaylorLorenz",
+    "name": "Taylor Lorenz",
+    "description": "Technology and online culture journalist and content creator. Subscribe to my newsletter @usermagazine. FREE SPEECH ENTHUSIAST 📢",
+    "followers_count": 349702,
+    "verified": "blue",
+    "is_org": false,
+    "is_official": false,
+    "lang_primary": "en",
+    "topic_tags": ["creator_economy"],
+    "entry_threshold_passed": true,
+    "meta": {
+      "score": 89,
+      "quality_score": 89,
+      "last_refresh_at": "2025-11-23T04:05:00Z",
+      "entry_threshold_passed": true,
+      "sources": [{
+        "method": "rube_mcp_direct",
+        "fetched_at": "2025-11-23T04:05:00Z",
+        "evidence": "m16-creator-economy-batch.csv"
+      }],
+      "provenance_hash": "m16_TaylorLorenz_20251123_040500"
+    }
+  }
+]

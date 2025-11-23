@@ -1,25 +1,37 @@
 # influx
 
-> **High-signal creator index** — A curated, evidence-based collection of 5k–10k active, high-quality X (Twitter) influencers across AI/Tech, Creator/Platform, and Ecosystem domains.
+> **High-signal X/Twitter creator index** — curated, evidence-based 5k–10k target; 全流程基于开源多 Agent 框架 [CCCC](https://github.com/ChesterRa/cccc)。
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Schema Version](https://img.shields.io/badge/schema-v1.0.0-green.svg)](schema/bigv.schema.json)
 
-## Purpose
+## 概览 / Overview
 
-**influx** provides a stable, auditable index of high-activity, non-official, non-brand X authors to support:
+- 立意 / Goal: 提供高活跃、非品牌/官方的大V白名单，服务抓取优先级、行业观察与研究。
+- 现状 / Status: 171 条，100% 真实 ID，已剔除粉丝数尾数“000”的疑似占位，0 占位；score_version = v1_activity_quality_relevance，manifest sha256=a819bdaec751fb8579ba0968a85c4919cc8ea958d841da0ac4b6cffd2811a379，timestamp=2025-11-22T04:21:18Z。
+- 占位清单 / Placeholder TODO: 已清空；粉丝数“000”占位已并入 pipeline_guard。
+- 防护 / Guardrails: `scripts/pipeline_guard.sh` 拒绝占位/非数字 ID、mock/test 前缀 handle、重复、粉丝数尾数“000”、manifest 不一致；发布前必跑。
+- 方法 / Method: 依托 CCCC 多-Agent 协作框架运行 influx-harvest/score/validate，使用免费层 API，发布严格校验的数据与 manifest。
+- 许可 / License: Apache-2.0（代码与数据一致）。
 
-- **Prioritized data collection** (e.g., [xoperator](https://github.com/user/xoperator) BigV-first crawling)
-- **Ecosystem intelligence** (tracking emerging voices, trends, network dynamics)
-- **Research and analysis** (reproducible, versioned datasets with provenance)
+## 面向用户 / For Users（无需跑流水线）
 
-### Principles
+- 下载 / Download: `data/release/influx-latest.jsonl`（171 条严格合规，0 占位/0 mock/0 粉丝尾数“000”）或 `data/release/influx-latest.jsonl.gz`
+- Manifest: `data/release/manifest.json`（count、sha256、score_version、timestamp）
+- 用途 / Use: 直接用于抓取、排序、分析；高活跃、非品牌/官方作者白名单。
 
-- **Quality over quantity**: 5k–10k curated authors (strict upper limit 15k) vs. uncurated millions
-- **Evidence-first**: Every author includes traceability (sources, metrics windows, provenance hash)
-- **Sustainable automation**: 6–12 hour refresh cadence using only free-tier APIs (RUBE MCP Twitter tools)
-- **Safe and compliant**: No NSFW/political/controversial by default; brand/official/risk filtering; respects X Terms of Service
-- **Open and auditable**: CC BY 4.0 license; schema versioning; governance via PR reviews
+## 面向贡献者 / For Contributors
+
+- 真相源 = `data/latest/latest.jsonl`，发布 = `data/release/*`（两者必须一致）。
+- 发布前必跑：`./scripts/pipeline_guard.sh data/latest/latest.jsonl data/latest/manifest.json schema/bigv.schema.json`（现已增加占位 ID 拒绝、去重、manifest 对齐、strict 校验）。
+- 评分模型必须在 manifest 中标注 `score_version/score_formula/score_note`（当前 v1 activity+quality+relevance，≥95% 覆盖）。
+- 仅允许 `influx-harvest` 产物入库；旁路/临时文件归档，不计进度。
+- 占位/粉丝数“000”已清空；如再出现直接拒绝，不得入库。
+
+## Story / 项目价值
+
+- **Purpose**: 高信噪比作者索引，支持 xoperator 等下游抓取优先级、生态情报与研究。
+- **原则 Principles**: 质量优先（5k–10k 上限）、证据可追溯、免费层可持续、品牌/官方过滤、严格校验、开源可审计。
 
 ### Non-Goals
 
@@ -90,22 +102,23 @@ tools/influx-view              # View first 20 records with syntax highlighting
 tools/influx-view --lines 10   # View first 10 records
 ```
 
-### Quick Start
+### Quick Start（直接用现成数据）
 
-1. **Download latest dataset**:
+1. **载入本仓库附带的最新数据**:
    ```bash
-   curl -L https://github.com/user/influx/releases/latest/download/latest.jsonl.gz -o latest.jsonl.gz
-   gunzip latest.jsonl.gz
+   cp data/release/influx-latest.jsonl .
+   # 或使用压缩版
+   cp data/release/influx-latest.jsonl.gz . && gunzip influx-latest.jsonl.gz
    ```
 
-2. **Load and filter**:
+2. **加载与筛选示例**:
    ```python
    import json
 
-   with open("latest.jsonl") as f:
+   with open("influx-latest.jsonl") as f:
        authors = [json.loads(line) for line in f]
 
-   # Filter: AI/Tech domain, English, score ≥ 60
+   # 示例：筛选 AI/Tech 英文作者，score ≥ 60
    ai_authors = [
        a for a in authors
        if "ai_core" in a.get("topic_tags", [])
@@ -116,10 +129,10 @@ tools/influx-view --lines 10   # View first 10 records
    print(f"Found {len(ai_authors)} AI/Tech authors")
    ```
 
-3. **Integrate with your pipeline**:
-   - Use `handle` to construct X URLs: `https://x.com/{handle}`
-   - Use `id` (author_id) for API calls
-   - Use `score` and `rank_global` for prioritization
+3. **集成到你自己的流程**:
+   - `handle` → `https://x.com/{handle}`
+   - `id` (author_id) → API 调用
+   - `score/rank_*` → 优先级排序
 
 ### Data Format
 
@@ -191,10 +204,8 @@ The pipeline uses **RUBE MCP Twitter tools** (free tier) exclusively:
 
 ### License & Disclaimer
 
-**License**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE)
-- ✅ Share, remix, build upon for any purpose (including commercial)
-- ✅ Attribution required
-- ❌ No warranty; use at your own risk
+- **当前状态**: 统一使用 Apache-2.0（代码与数据一致）。
+- **免责声明**: No warranty; use at your own risk。
 
 **Disclaimer**:
 - This dataset aggregates **publicly available information** from X (Twitter)
@@ -248,7 +259,7 @@ The pipeline uses **RUBE MCP Twitter tools** (free tier) exclusively:
 
 - **Issues**: [GitHub Issues](https://github.com/user/influx/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/user/influx/discussions)
-- **License**: [CC BY 4.0](LICENSE)
+- **License**: [Apache-2.0](LICENSE)
 
 ---
 

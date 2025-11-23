@@ -1,9 +1,0 @@
-I reviewed POR + SUBPORs and posted a concise Foreman directive to both peers with immediate M1 Week1 next steps and alignment asks.
-
-- Wrote: .cccc/mailbox/foreman/to_peer.md
-- Highlights:
-  - PeerA: Confirm POR Roadmap reflects pivot to M1 manual path and link T000004; add Week1 alignment note.
-  - PeerB: Promote T000004 to active; create .cccc/work/m1/week1/ and scaffold lists/seeds/m05-ai-tech-batch.csv (≥25 handles with source_url); record paths in SUBPOR.
-- Evidence refs: docs/por/T000003-auth-unblock/SUBPOR.md, docs/por/T000004-m1-manual-scale/SUBPOR.md, .cccc/work/m1/batch05/velocity.log, data/latest/manifest.json.
-
-Want me to also scaffold the Week1 directory and seed CSV now?
