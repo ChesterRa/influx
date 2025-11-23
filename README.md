@@ -1,6 +1,6 @@
 # influx
 
-High-signal X/Twitter creator index — functional demo built on the open-source multi-agent framework [CCCC](https://github.com/ChesterRa/cccc). Ready-to-use whitelist of influential individual accounts (non-brand/non-official), curated for downstream ingestion.
+High-signal X/Twitter influencer list — functional demo built on the open-source multi-agent framework [CCCC](https://github.com/ChesterRa/cccc). Ready-to-use whitelist of influential individual accounts (non-brand/non-official), curated for downstream ingestion. This open-source bundle is a **download-and-use** minimal set; the full production flow requires CCCC + RUBE MCP (Twitter tools) for data fetching.
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Schema](https://img.shields.io/badge/schema-v1.0.0-green.svg)](schema/bigv.schema.json)
 
@@ -13,6 +13,12 @@ High-signal X/Twitter creator index — functional demo built on the open-source
   - Gzipped: [`data/release/influx-latest.jsonl.gz`](data/release/influx-latest.jsonl.gz)  
   - Manifest: [`data/release/manifest.json`](data/release/manifest.json)
 - Delivered as data only; you don’t need to run the pipeline to use it.
+- Components included here (minimal open-source set):
+  - Data: `data/release/` (latest JSONL + manifest)
+  - Guard: `scripts/pipeline_guard.sh`
+  - Schema: `schema/bigv.schema.json`
+  - Rules: `lists/rules/brand_heuristics.yml`, `lists/rules/risk_terms.yml`
+  - Sample prefetched JSONL: `data/prefetched.sample.jsonl` (for local filter demo)
 
 ## Why it’s useful
 - **Content ingestion/ranking:** high signal-to-noise whitelist reduces crawl and processing cost.
@@ -52,9 +58,9 @@ print(len(ai_authors))
 - Full schema: [`schema/bigv.schema.json`](schema/bigv.schema.json)
 - Key fields: `id` (author_id), `handle`, `name`, `verified`, `followers_count`, `lang_primary`, `topic_tags`, `metrics_30d*`, `meta.sources` (with evidence/fetched_at), `provenance_hash`.
 
-## How it’s produced (context only; not required to use)
-- Two-step, no local MCP dependency: fetch Twitter users in an MCP-capable environment → save prefetched JSONL → run `influx-harvest x-lists|bulk --prefetched-users <file>` here → enforce `scripts/pipeline_guard.sh` (dedup handle/id, evidence required, placeholder/“000” rejection, strict schema) → publish to `data/release/`.
-- Only prefetched JSONL inputs are accepted; manual edits to `latest` are forbidden.
+## How it’s produced (context; requires external deps)
+- Full flow requires: **CCCC + RUBE MCP (Twitter tools)** to fetch users → prefetched JSONL → run `influx-harvest x-lists|bulk --prefetched-users <file>` → enforce `scripts/pipeline_guard.sh` (dedup handle/id, evidence required, placeholder/“000” rejection, strict schema) → publish to `data/release/`.
+- This repo ships the minimal set (data + guard + schema + rules + sample prefetched); MCP fetching is not included here.
 
 ## License
 - Apache-2.0 (covers code and released data).

@@ -1,12 +1,13 @@
 # influx
 
-基于开源多 Agent 框架 [CCCC](https://github.com/ChesterRa/cccc) 的功能性示范项目，提供高价值的 X.com 热门推主白名单（高活跃、非品牌/官方），直接下载即可使用。
+基于开源多 Agent 框架 [CCCC](https://github.com/ChesterRa/cccc) 的功能性示范项目，提供高价值的 X.com 热门推主清单（influencer list，强调个人非品牌/官方），直接下载即可使用。本仓库仅包含“可下载使用”的最小集；完整生产流程需要 CCCC + RUBE MCP（Twitter 工具）来抓取数据。
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Schema](https://img.shields.io/badge/schema-v1.0.0-green.svg)](schema/bigv.schema.json)
 
 ## 这是什么
 - 一份严格过滤的热门推主名单（个人账号，非品牌/官方），目标规模 5k–10k。
 - 当前发布：`data/release/influx-latest.jsonl`（302 条）及 `manifest.json`（含 count/sha256/schema_version/timestamp/score_version）。
+- 已包含的开源最小集：发布数据、`scripts/pipeline_guard.sh`、`schema/bigv.schema.json`、规则（`lists/rules/brand_heuristics.yml`、`lists/rules/risk_terms.yml`）、示例 `data/prefetched.sample.jsonl`（本地过滤演示用）。
 - 面向使用者直接消费数据，无需运行生产流水线。
 
 ## 为什么有价值
@@ -53,8 +54,8 @@ print(len(ai_authors))
 - 关键字段：`id`（author_id）、`handle`、`name`、`verified`、`followers_count`、`lang_primary`、`topic_tags`、`metrics_30d*`、`meta.sources`（含 evidence/fetched_at）、`provenance_hash`。
 
 ## 生产方式（了解即可，使用者无需运行）
-- 两段式、无本地 MCP 依赖：在具备 MCP 的环境批量获取 Twitter 用户 JSONL（prefetched）→ 在本仓库用 `influx-harvest x-lists|bulk --prefetched-users <file>` 过滤 → 运行 `scripts/pipeline_guard.sh`（handle/id 去重、证据必填、占位/“000”拒绝、strict schema）→ 发布到 `data/release/`。
-- 只接受 prefetched JSONL；禁止手工编辑 latest。
+- 完整流程需：CCCC + RUBE MCP（Twitter 工具）获取用户 → 生成 prefetched JSONL → 用 `influx-harvest x-lists|bulk --prefetched-users <file>` 过滤 → 运行 `scripts/pipeline_guard.sh`（去重 handle/id、证据必填、占位/“000”拒绝、strict schema）→ 发布到 `data/release/`。
+- 本仓库仅提供数据、guard、schema、规则及示例，不包含 MCP 抓取部分。
 
 ## 许可
 - Apache-2.0（代码与数据一致）。
