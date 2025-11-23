@@ -21,6 +21,27 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Set, Tuple, Any, Optional
 
+# Canonical output order (align with schema and release files)
+CANONICAL_FIELDS = [
+    'id', 'handle', 'name', 'verified', 'followers_count',
+    'is_org', 'is_official', 'lang_primary', 'topic_tags', 'metrics_30d',
+    'meta', 'entry_threshold_passed', 'quality_score', 'risk_flags', 'banned',
+    'last_active_at', 'rank_global', 'rank_by_topic', 'description',
+    'profile_image_url', 'source', 'harvest_timestamp', 'ext'
+]
+
+
+def canonicalize_record(record: Dict[str, Any]) -> Dict[str, Any]:
+    """Reorder fields to canonical order for deterministic JSONL."""
+    ordered = {}
+    for key in CANONICAL_FIELDS:
+        if key in record:
+            ordered[key] = record[key]
+    # append any remaining keys (stable sorted) to avoid loss
+    for key in sorted(k for k in record.keys() if k not in ordered):
+        ordered[key] = record[key]
+    return ordered
+
 
 def load_yaml_rules(path: str) -> Dict:
     """Load YAML filter rules from file"""
@@ -604,7 +625,7 @@ def bulk_process(args):
             category = categories.get(user.get('username', ''), args.default_category)
             record = transform_to_schema(user, method='prefetched_bulk', category=category,
                                         brand_rules=brand_rules, allow_brands=args.allow_brands)
-            filtered_users.append(record)
+            filtered_users.append(canonicalize_record(record))
             filter_stats['passed'] += 1
 
         output_path = Path(args.out)

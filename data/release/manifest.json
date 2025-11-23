@@ -1,8 +1,8 @@
 {
   "schema_version": "https://influx.local/schema/bigv.schema.json",
-  "timestamp": "2025-11-23T15:19:39Z",
+  "timestamp": "2025-11-23T15:23:02Z",
   "count": 302,
-  "sha256": "75ee8d332c11a8f285c1d8934fd4d8b98e42d849902ec8e8d344a197cf8c27a5",
+  "sha256": "05b88f29d2c471b5b6eed9d1b7e1a865617f92cd3cfa405998f83cea5972a078",
   "source_file": "data/latest/latest.jsonl",
   "sort_order": "score desc, followers_count desc, handle asc",
   "score_version": "v2_activity_quality_relevance",
