@@ -20,6 +20,9 @@ data/snapshots/
 archive/
 temp_work/
 *.log
+# Reports / audit outputs
+docs/qa_reports/
+docs/audit_trail/evidence/
 
 # IDE
 .vscode/
