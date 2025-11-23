@@ -20,6 +20,7 @@ data/**
 
 # Docs / audit / QA (not tracked)
 docs/**
+AGENTS.md
 
 # Lists and seeds (track only core rules)
 lists/**
