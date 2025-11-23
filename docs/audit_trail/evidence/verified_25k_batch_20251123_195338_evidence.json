@@ -1,0 +1,145 @@
+{
+  "batch_id": "verified_25k_batch_20251123_195338",
+  "batch_file": "verified_25k_batch.jsonl",
+  "pipeline_guard_result": "Exit code: 1\nStdout: \nStderr: ERROR: manifest count 264 != actual 272\n",
+  "qa_check_result": "",
+  "timestamp": "2025-11-23T10:53:38.250245+00:00",
+  "batch_sample": [
+    {
+      "id": "1378017343641640961",
+      "handle": "amanrsanger",
+      "name": "Aman Sanger",
+      "verified": "blue",
+      "followers_count": 45748,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 43.2,
+        "last_refresh_at": "2025-11-13T03:13:38Z",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T03:13:38Z",
+            "evidence": "Twitter API batch lookup from curated OpenAI/Anthropic/Huggingface team list"
+          }
+        ],
+        "provenance_hash": "ea8dc343f27b233a51a142befbf9fe0d2dd935cf5ad3b3c478d54b5a5e81d810",
+        "entry_threshold_passed": true,
+        "quality_score": 43.2
+      }
+    },
+    {
+      "id": "117233133",
+      "handle": "cHHillee",
+      "name": "Horace He",
+      "verified": "blue",
+      "followers_count": 43344,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 42.7,
+        "last_refresh_at": "2025-11-13T03:13:38Z",
+        "sources": [
+          {
+            "method": "manual_seed",
+            "fetched_at": "2025-11-13T03:13:38Z",
+            "evidence": "Twitter API batch lookup from curated OpenAI/Anthropic/Huggingface team list"
+          }
+        ],
+        "provenance_hash": "127b5aaa639c633d25e2655c73e3933ae1ddb78ca20ee3223adba4d630f28636",
+        "entry_threshold_passed": true,
+        "quality_score": 42.7
+      }
+    },
+    {
+      "id": "825766640",
+      "handle": "HamelHusain",
+      "name": "Hamel Husain",
+      "verified": "blue",
+      "followers_count": 40436,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 42.1,
+        "last_refresh_at": "2025-11-13T04:49:57.978259+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:49:57.978259+00:00",
+            "evidence": "m02_extended_batch"
+          }
+        ],
+        "provenance_hash": "63377ddbc4353c4c75ef4010d7610c8ff6a00b64c56824e20b78f0783273f171",
+        "entry_threshold_passed": true,
+        "quality_score": 42.1
+      }
+    },
+    {
+      "id": "1393424079634395139",
+      "handle": "AnimaAnandkumar",
+      "name": "Prof. Anima Anandkumar",
+      "verified": "blue",
+      "followers_count": 34805,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 40.8,
+        "last_refresh_at": "2025-11-13T04:52:01.878684+00:00",
+        "sources": [
+          {
+            "method": "manual_curation",
+            "fetched_at": "2025-11-13T04:52:01.878684+00:00",
+            "evidence": "m02_final_batch"
+          }
+        ],
+        "provenance_hash": "bcc68b349c8c9f7a7fe8b594af6f18d7f263732019d524042adc80648b8a9b80",
+        "entry_threshold_passed": true,
+        "quality_score": 40.8
+      }
+    },
+    {
+      "id": "115069952",
+      "handle": "dankrad",
+      "name": "Dankrad Feist",
+      "verified": "blue",
+      "followers_count": 34444,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "web3"
+      ],
+      "meta": {
+        "score": 48.4,
+        "last_refresh_at": "2025-11-22T22:34:23.800380+00:00",
+        "sources": [
+          {
+            "method": "manual_csv",
+            "fetched_at": "2025-11-22T22:34:23.800380+00:00",
+            "evidence": "@dankrad"
+          }
+        ],
+        "provenance_hash": "d654fa66ffac12ef0ca9ef53e311ee7df388c064d3b18cad6c32f51e967a3387",
+        "entry_threshold_passed": true,
+        "quality_score": 40.74227161118055,
+        "activity_metrics": {
+          "account_created_at": "2010-02-17T14:28:15.000Z",
+          "tweet_count": 5440,
+          "total_like_count": 3420,
+          "media_count": 66,
+          "listed_count": 721,
+          "following_count": 488,
+          "last_captured_at": "2025-11-22T22:34:23.800380+00:00"
+        }
+      }
+    }
+  ]
+}

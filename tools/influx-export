@@ -1,0 +1,226 @@
+#!/usr/bin/env python3
+"""
+influx-export: Export scored authors to latest.jsonl.gz with manifest
+
+Usage:
+    influx-export latest --input scored.jsonl --out data/latest/
+    influx-export snapshot --date 2025-11-13 --input scored.jsonl --out data/snapshots/
+
+Output:
+- latest.jsonl.gz (sorted by score desc → followers desc → handle lex)
+- manifest.json (schema_version, timestamp, count, sha256, generation params)
+"""
+import argparse
+import gzip
+import hashlib
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+def export_latest(args):
+    """Export to data/latest/ (authoritative release)"""
+    input_path = Path(args.input)
+    out_dir = Path(args.out)
+
+    # Read and parse all authors
+    print(f"Reading authors from {input_path}")
+    authors = []
+    with open(input_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                authors.append(json.loads(line))
+
+    print(f"Loaded {len(authors)} authors")
+
+    # Sort: score desc → followers_count desc → handle lex
+    # For records with score=0 (placeholders), sort by followers desc then handle lex
+    authors.sort(
+        key=lambda a: (
+            -a.get("meta", {}).get("score", 0),  # Negative for descending
+            -a.get("followers_count", 0),
+            a.get("handle", "")
+        )
+    )
+    print(f"Sorted by score desc → followers desc → handle lex")
+
+    # Create output directory
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write both uncompressed and gzipped JSONL + compute sha256
+    output_path_gz = out_dir / "latest.jsonl.gz"
+    output_path_plain = out_dir / "latest.jsonl"
+    sha256_hash = hashlib.sha256()
+
+    print(f"Writing {output_path_plain}")
+    print(f"Writing {output_path_gz}")
+    with open(output_path_plain, "w", encoding="utf-8") as plain, \
+         gzip.open(output_path_gz, "wt", encoding="utf-8") as gz:
+        for author in authors:
+            line = json.dumps(author, ensure_ascii=False, separators=(',', ':'))
+            line_with_newline = line + "\n"
+            # Write to both files
+            plain.write(line_with_newline)
+            gz.write(line_with_newline)
+            # Hash the line
+            sha256_hash.update(line_with_newline.encode("utf-8"))
+
+    sha256_digest = sha256_hash.hexdigest()
+    print(f"SHA-256: {sha256_digest}")
+
+    # Generate manifest.json
+    # Read score metadata from the first author if available, otherwise default to M0
+    score_version = "v0_proxy_no_metrics"
+    score_formula = "20*log10(followers/1000) + verified_boost, clipped [0,100]"
+    score_note = "M0 proxy pending 30d metrics collection (M1)"
+
+    if authors and "meta" in authors[0] and "score_version" in authors[0]["meta"]:
+        score_version = authors[0]["meta"].get("score_version", score_version)
+        score_formula = authors[0]["meta"].get("score_formula", score_formula)
+        score_note = authors[0]["meta"].get("score_note", score_note)
+        # Assuming if score_version is present, score_formula and score_note are also correct
+
+    manifest = {
+        "schema_version": "1.0.0",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "count": len(authors),
+        "sha256": sha256_digest,
+        "source_file": str(input_path),
+        "sort_order": "score desc, followers_count desc, handle asc",
+        "score_version": score_version,
+        "score_formula": score_formula,
+        "score_note": score_note
+    }
+
+    manifest_path = out_dir / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as mf:
+        json.dump(manifest, mf, indent=2, ensure_ascii=False)
+        mf.write("\n")
+
+    print(f"Manifest: {manifest_path}")
+    print(f"✓ Export complete: {len(authors)} authors")
+
+    return 0
+
+
+def export_snapshot(args):
+    """Export daily snapshot to data/snapshots/YYYY-MM-DD/"""
+    input_path = Path(args.input)
+    out_dir = Path(args.out) / args.date
+
+    # Validate date format
+    try:
+        datetime.strptime(args.date, "%Y-%m-%d")
+    except ValueError:
+        print(f"Error: Invalid date format '{args.date}' (expected YYYY-MM-DD)")
+        return 1
+
+    # Read and parse all authors
+    print(f"Reading authors from {input_path}")
+    authors = []
+    with open(input_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                authors.append(json.loads(line))
+
+    print(f"Loaded {len(authors)} authors")
+
+    # Sort: score desc → followers_count desc → handle lex
+    authors.sort(
+        key=lambda a: (
+            -a.get("meta", {}).get("score", 0),
+            -a.get("followers_count", 0),
+            a.get("handle", "")
+        )
+    )
+    print(f"Sorted by score desc → followers desc → handle lex")
+
+    # Create output directory
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write both uncompressed and gzipped JSONL + compute sha256
+    # Filename format: bigv-YYYYMMDD.jsonl.gz (no dashes in date)
+    date_compact = args.date.replace("-", "")
+    output_filename_gz = f"bigv-{date_compact}.jsonl.gz"
+    output_filename_plain = f"bigv-{date_compact}.jsonl"
+    output_path_gz = out_dir / output_filename_gz
+    output_path_plain = out_dir / output_filename_plain
+    sha256_hash = hashlib.sha256()
+
+    print(f"Writing {output_path_plain}")
+    print(f"Writing {output_path_gz}")
+    with open(output_path_plain, "w", encoding="utf-8") as plain, \
+         gzip.open(output_path_gz, "wt", encoding="utf-8") as gz:
+        for author in authors:
+            line = json.dumps(author, ensure_ascii=False, separators=(',', ':'))
+            line_with_newline = line + "\n"
+            # Write to both files
+            plain.write(line_with_newline)
+            gz.write(line_with_newline)
+            # Hash the line
+            sha256_hash.update(line_with_newline.encode("utf-8"))
+
+    sha256_digest = sha256_hash.hexdigest()
+    print(f"SHA-256: {sha256_digest}")
+
+    # Generate manifest.json
+    manifest = {
+        "schema_version": "1.0.0",
+        "snapshot_date": args.date,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "count": len(authors),
+        "sha256": sha256_digest,
+        "filename": output_filename_gz,
+        "source_file": str(input_path),
+        "sort_order": "score desc, followers_count desc, handle asc",
+        "score_version": "v0_proxy_no_metrics",
+        "score_formula": "20*log10(followers/1000) + verified_boost, clipped [0,100]",
+        "score_note": "M0 proxy pending 30d metrics collection (M1)"
+    }
+
+    manifest_path = out_dir / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as mf:
+        json.dump(manifest, mf, indent=2, ensure_ascii=False)
+        mf.write("\n")
+
+    print(f"Manifest: {manifest_path}")
+    print(f"✓ Snapshot export complete: {len(authors)} authors → {out_dir}")
+
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="influx-export: Export authors to latest/snapshots"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # latest subcommand
+    latest_parser = subparsers.add_parser(
+        "latest", help="Export to data/latest/ (authoritative)"
+    )
+    latest_parser.add_argument("--input", required=True, help="Scored authors JSONL")
+    latest_parser.add_argument("--out", required=True, help="Output directory")
+
+    # snapshot subcommand
+    snapshot_parser = subparsers.add_parser(
+        "snapshot", help="Export daily snapshot"
+    )
+    snapshot_parser.add_argument("--date", required=True, help="Snapshot date (YYYY-MM-DD)")
+    snapshot_parser.add_argument("--input", required=True, help="Scored authors JSONL")
+    snapshot_parser.add_argument("--out", required=True, help="Output directory")
+
+    args = parser.parse_args()
+
+    if args.command == "latest":
+        return export_latest(args)
+    elif args.command == "snapshot":
+        return export_snapshot(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

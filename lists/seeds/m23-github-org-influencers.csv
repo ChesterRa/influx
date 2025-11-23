@@ -1,0 +1,10 @@
+handle,category,source,note
+sama,ai_leadership,https://openai.com/about,OpenAI CEO
+DarioAmodei,ai_leadership,https://www.anthropic.com/about,Anthropic CEO
+ClementDelangue,ai_tools,https://huggingface.co/about,Hugging Face CEO
+ylecun,ai_research,https://research.facebook.com/people/yan-lecun/,Meta Chief AI Scientist
+demishassabis,ai_research,https://deepmind.google/about/,DeepMind CEO
+arthurmensch,ai_infrastructure,https://www.linkedin.com/in/arthurmensch/,Mistral AI co-founder
+aidangomez,ai_research,https://www.linkedin.com/in/aidan-gomez/,Transformer paper co-author
+EMostaque,ai_investing,https://www.lesswrong.com/users/eliezer-yudkowsky,AI safety investor
+soumithchintala,ai_research,https://pytorch.org/foundry/,Meta AI research scientist

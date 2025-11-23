@@ -1,0 +1,254 @@
+{
+  "batch_id": "m08_processed_20251123_165822",
+  "batch_file": "m08_processed.jsonl",
+  "pipeline_guard_result": "Exit code: 1\nStdout: \nStderr: ERROR: duplicate handles detected: ['gruber', 'karpathy', 'AndrewYNg', 'ylecun', 'fchollet'] (total dup handles=10)\n",
+  "qa_check_result": "",
+  "timestamp": "2025-11-23T07:58:22.413030+00:00",
+  "batch_sample": [
+    {
+      "id": "33230155",
+      "handle": "karpathy",
+      "name": "Andrej Karpathy",
+      "verified": "none",
+      "followers_count": 758249,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "ai_research"
+      ],
+      "meta": {
+        "score": 57.59623692446725,
+        "last_refresh_at": "2025-11-23T07:56:11.932672+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:56:11.932672+00:00",
+            "evidence": "@karpathy"
+          }
+        ],
+        "provenance_hash": "233dd7478e31df5dba7448706542c1a92a2840bb0035447d64102ac0c4e862d6",
+        "entry_threshold_passed": true,
+        "quality_score": 57.59623692446725,
+        "activity_metrics": {
+          "account_created_at": "2009-03-21T20:44:09.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.932672+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 57.59623692446725,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-03-21T20:44:09.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.932672+00:00"
+        }
+      }
+    },
+    {
+      "id": "20044644",
+      "handle": "ylecun",
+      "name": "Yann LeCun",
+      "verified": "none",
+      "followers_count": 1018737,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "ai_research"
+      ],
+      "meta": {
+        "score": 60.161241595907164,
+        "last_refresh_at": "2025-11-23T07:56:11.933169+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:56:11.933169+00:00",
+            "evidence": "@ylecun"
+          }
+        ],
+        "provenance_hash": "823b26143a4bd99e5a9a1234ba767d1a810465497c5a5c7ad079a30ca51c398a",
+        "entry_threshold_passed": true,
+        "quality_score": 60.161241595907164,
+        "activity_metrics": {
+          "account_created_at": "2009-02-02T15:55:24.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.933169+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 60.161241595907164,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-02T15:55:24.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.933169+00:00"
+        }
+      }
+    },
+    {
+      "id": "34188397",
+      "handle": "AndrewYNg",
+      "name": "Andrew Ng",
+      "verified": "none",
+      "followers_count": 124739,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "ai_research"
+      ],
+      "meta": {
+        "score": 41.92004516207159,
+        "last_refresh_at": "2025-11-23T07:56:11.933655+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:56:11.933655+00:00",
+            "evidence": "@AndrewYNg"
+          }
+        ],
+        "provenance_hash": "4901e915ce3b1cc20d78ba16bd60168d848bde6862e3f6f50d46be8dd5162a01",
+        "entry_threshold_passed": true,
+        "quality_score": 41.92004516207159,
+        "activity_metrics": {
+          "account_created_at": "2009-04-24T06:47:50.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.933655+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 41.92004516207159,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-04-24T06:47:50.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.933655+00:00"
+        }
+      }
+    },
+    {
+      "id": "35282205",
+      "handle": "fchollet",
+      "name": "Fran\u00e7ois Chollet",
+      "verified": "none",
+      "followers_count": 345678,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "ai_research"
+      ],
+      "meta": {
+        "score": 50.77343481198591,
+        "last_refresh_at": "2025-11-23T07:56:11.934093+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:56:11.934093+00:00",
+            "evidence": "@fchollet"
+          }
+        ],
+        "provenance_hash": "e63ddc782d9d7f7adb2c16d2bf291ee998cb2a6ec73fb7e933a31c1f8cfefb70",
+        "entry_threshold_passed": true,
+        "quality_score": 50.77343481198591,
+        "activity_metrics": {
+          "account_created_at": "2009-04-24T06:47:50.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.934093+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 50.77343481198591,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-04-24T06:47:50.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.934093+00:00"
+        }
+      }
+    },
+    {
+      "id": "22841351",
+      "handle": "hardmaru",
+      "name": "David Ha",
+      "verified": "none",
+      "followers_count": 98765,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [
+        "ai_research"
+      ],
+      "meta": {
+        "score": 39.892061361415585,
+        "last_refresh_at": "2025-11-23T07:56:11.934552+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:56:11.934552+00:00",
+            "evidence": "@hardmaru"
+          }
+        ],
+        "provenance_hash": "4814300211705bd67fd4ae339f6eab21ccc6b5decca9886e6264034c70b6f7c9",
+        "entry_threshold_passed": true,
+        "quality_score": 39.892061361415585,
+        "activity_metrics": {
+          "account_created_at": "2009-04-24T06:47:50.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.934552+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 39.892061361415585,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-04-24T06:47:50.000Z",
+          "tweet_count": 16475,
+          "total_like_count": 154821,
+          "media_count": 1321,
+          "listed_count": 6894,
+          "following_count": 156,
+          "last_captured_at": "2025-11-23T07:56:11.934552+00:00"
+        }
+      }
+    }
+  ]
+}

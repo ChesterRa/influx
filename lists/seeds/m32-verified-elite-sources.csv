@@ -1,0 +1,16 @@
+handle,category,source_url,evidence,note
+karpathy,ai_research,https://github.com/karpathy,https://cs.stanford.edu/~asamorse/cs230-website/2019-winter/projects/projects/karpathy/,Stanford CS230 - Former Tesla AI Director, OpenAI
+ylecun,ai_research,https://github.com/ylab,https://research.fb.com/category/people/,Meta Chief AI Scientist - Turing Award winner
+AndrewYNg,ai_research,https://github.com/andrewng,https://www.andrewng.org/,DeepLearning.AI founder - Stanford Adjunct Professor
+fchollet,ai_research,https://github.com/fchollet,https://twitter.com/fchollet/status/1529212340883431424,Keras creator - Google Brain researcher
+hardmaru,ai_research,https://github.com/hardmaru,https://research.google/people/author/116400/,Google Brain researcher - RL expert
+JeffDean,ai_research,https://github.com/jeffdean,https://research.google/people/author/3233/,Google SVP - TensorFlow/Transformer pioneer
+jeremyphoward,ai_research,https://github.com/fastai,https://www.fast.ai/about/,fast.ai founder - Kaggle former President
+arankomatsuzaki,ai_research,https://github.com/arankomatsuzaki,https://twitter.com/arankomatsuzaki/status/1640023959868923904,Independent AI researcher - EleutherAI contributor
+sama,ai_leadership,https://github.com/sama,https://openai.com/about,OpenAI CEO - GPT series architect
+DarioAmodei,ai_leadership,https://github.com/darioamodei,https://www.anthropic.com/about,Anthropic CEO - Former OpenAI VP Research
+ClementDelangue,ai_tools,https://github.com/clementdelangue,https://huggingface.co/about,Hugging Face CEO - Transformers/Datasets platform
+demishassabis,ai_research,https://github.com/demis-hassabis,https://deepmind.google/about/,DeepMind CEO - AlphaGo/AlphaFold architect
+EMostaque,ai_investing,https://github.com/mostaque,https://www.youtube.com/watch?v=pYXy-A4siMw,AI safety investor - Effective Altruism, Anthropic investor
+aidangomez,ai_research,https://github.com/aidan-gomez,https://www.cs.toronto.edu/~aiganor/,University of Toronto - Transformer paper co-author
+soumithchintala,ai_research,https://github.com/soumith,https://pytorch.org/foundry/,Meta AI research scientist - PyTorch co-creator

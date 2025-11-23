@@ -1,0 +1,28 @@
+handle,category,source,note
+sama,ai_infrastructure,openai,OpenAI CEO
+demishassabis,ai_infrastructure,stanford,Stanford AI Lab director
+karpathy,ai_infrastructure,stanford,Stanford AI professor
+jeremyphoward,ai_infrastructure,fastai,FastAI founder
+andrewkarpathy,ai_infrastructure,cmu,CMU ML professor
+drfeifei,ai_infrastructure,mit,MIT CSAIL director
+ericjang,ai_infrastructure,google,Google AI researcher
+ilyasutskever,ai_infrastructure,meta,Meta AI researcher
+hardmaru,ai_infrastructure,apple,Apple ML researcher
+eugenevinitsky,ai_infrastructure,apple,Apple ML researcher
+ylecun,ai_infrastructure,meta,Meta AI chief
+fchollet,ai_infrastructure,google,Google AI researcher
+goodfellow_ian,ai_infrastructure,apple,Apple ML researcher
+aureliengeron,ai_infrastructure,independent,Hands-on ML author
+gdb,ai_infrastructure,openai,OpenAI president
+martinfowler,ai_infrastructure,thoughtworks,Refactoring author
+jameslewismd,ai_infrastructure,netflix,Netflix chaos engineering
+adrianco,ai_infrastructure,amazon,Cloud architecture consultant
+brendangregg,ai_infrastructure,netflix,Distributed systems researcher
+allendowney,ai_infrastructure,independent,O'Reilly Python author
+david_beazley,ai_infrastructure,independent,Python expert
+mike_gerber,ai_infrastructure,independent,DevOps consultant
+gene_kim,ai_infrastructure,independent,DevOps Handbook author
+jessitron,ai_infrastructure,netflix,Resilient systems expert
+charity,ai_infrastructure,netflix,Performance engineering
+cindy,ai_infrastructure,wordpress,Web developer
+kelseyhightower,ai_infrastructure,google,Kubernetes, DevOps

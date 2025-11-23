@@ -1,0 +1,243 @@
+# Brand and Official Account Heuristics
+# Used to filter out brand, media, official, and organizational accounts
+# from the influencer pool. Rules are evaluated as OR (any match triggers flag).
+
+version: "2.0.0"
+updated: "2025-11-14"
+
+# Keywords in name or username (case-insensitive, word boundary match)
+name_keywords:
+  official_indicators:
+    - "official"
+    - "team"  # NOTE: May FP on gaming/esports teams ("Team Liquid player"). Recommend context check (gaming domain indicators).
+    - "support"
+    - "help"
+    - "press"
+    - "pr"
+    - "media"
+    - "news"
+    - "newsroom"
+
+  corporate_indicators:
+    - "corp"
+    - "inc"  # NOTE: "Inc" as personal nickname (e.g., "John Doe Inc") may cause FP; use context/verified status to override
+    - "ltd"
+    - "llc"
+    - "gmbh"
+    - "company"
+    - "enterprises"
+
+  brand_commerce:
+    - "store"
+    - "shop"  # NOTE: May FP on job descriptions ("at Shopify"). Recommend word-boundary match in implementation.
+    - "shopping"
+    - "deals"
+    - "sales"
+    - "promo"
+    - "coupon"
+
+  # Major tech companies and platforms (corporate accounts)
+  tech_corporations:
+    - "amazon web services"
+    - "aws"
+    - "microsoft azure"
+    - "azure"
+    - "google cloud"
+    - "google ai"
+    - "google deepmind"
+    - "tensor flow"
+    - "kaggle"
+    - "docker"
+    - "figma"
+    - "mongodb"
+    - "stripe"
+    - "next.js"
+    - "nextjs"
+    - "vercel"
+    - "netlify"
+    - "cloudflare"
+    - "tailwind css"
+    - "tailwindcss"
+    - "react"
+    - "reactjs"
+    - "vue.js"
+    - "vuejs"
+    - "angular"
+    - "nvidia"
+    - "github"
+    - "gitlab"
+    - "openai"
+    - "anthropic"
+    - "hugging face"
+    - "huggingface"
+    - "pytorch"
+    - "tensorflow"
+    - "def con"
+    - "defcon"
+    - "supabase"
+    - "linear"
+    - "remix"
+    - "digitalocean"
+    - "heroku"
+
+  tech_frameworks:
+    - "platform"
+    - "framework"
+    - "ecosystem"
+    - "sdk"
+    - "api"
+    - "developer tools"
+    - "open source"
+    - "library"
+    - "runtime"
+    - "database"
+    - "devtools"
+
+  conference_events:
+    - "conference"
+    - "summit"
+    - "keynote"
+    - "event"
+    - "festival"
+    - "convention"
+    - "meetup"
+
+# Chinese official account patterns (新增中文官号识别)
+  chinese_official:
+    - "官号"
+    - "官方"
+    - "公司"
+    - "企业"
+    - "组织"
+    - "机构"
+    - "平台"
+    - "官方账号"
+    - "官方推特"
+    - "客服"
+
+# Keywords in bio/description (case-insensitive, substring match)
+bio_keywords:
+  organizational:
+    - "official account"
+    - "official twitter"
+    - "official page"
+    - "managed by"
+    - "run by our team"
+    - "corporate account"
+    - "company news"
+    - "press releases"
+    - "media inquiries"
+    - "for support"
+    - "customer service"
+
+  media_publishers:
+    - "news outlet"
+    - "news organization"
+    - "media company"
+    - "news network"
+    - "publishing"
+    - "journalist at"
+    - "reporter for"
+    - "editor at"
+
+  aggregators_bots:
+    - "automated"
+    - "bot account"
+    - "news aggregator"
+    - "auto-tweet"
+    - "rss feed"
+
+# Domain patterns in profile URL or bio links (regex)
+domain_patterns:
+  - pattern: ".*\\.(gov|edu|org)$"
+    reason: "institutional_domain"
+    exceptions: ["github.org", "huggingface.co"]
+
+  - pattern: ".*(shop|store|deals|buy|cart|checkout).*"
+    reason: "ecommerce_domain"
+
+  - pattern: ".*(news|press|media|journal|times|post|tribune).*"
+    reason: "media_domain"
+
+# Verification status rules
+verification_rules:
+  # X Blue (verified=blue) is personal; keep unless other heuristics match
+  # Organization verification (verified=org) is always flagged
+  flag_org_verification: true
+
+  # Legacy verified (verified=legacy) before 2023: mixed (keep unless other heuristics match)
+  # Gold verified (not in current schema): future-proof placeholder
+
+# Follower/following ratio heuristics (optional, low weight)
+ratio_heuristics:
+  # If followers/following > 100 AND bio matches corporate, likely brand
+  high_ratio_threshold: 100
+  # If following = 0, likely automated/official (but not sufficient alone)
+  zero_following_flag: false
+
+# Known organization handles (AUTO-FILTER - these are always removed)
+# Format: handle (without @) - any match = immediate removal
+org_handles_blacklist:
+  - "github"
+  - "nvidia"
+  - "awscloud"
+  - "azure"
+  - "reactjs"
+  - "code"
+  - "huggingface"
+  - "googlecloud"
+  - "docker"
+  - "figma"
+  - "mongodb"
+  - "vuejs"
+  - "nextjs"
+  - "golang"
+  - "netlify"
+  - "cloudflare"
+  - "supabase"
+  - "linear"
+  - "remix"
+  - "gitlab"
+  - "openai"
+  - "anthropic"
+  - "pytorch"
+  - "tensorflow"
+  - "vercel"
+  - "digitalocean"
+  - "heroku"
+  - "stripe"
+  - "tailwindcss"
+  - "defcon"
+
+# Exceptions (handles that match heuristics but are known individuals)
+# Format: handle (without @)
+exceptions:
+  - "example_personal_account"  # Placeholder
+  # Crypto/Web3 individual influencers (high follower accounts incorrectly flagged as org)
+  - "100trillionUSD"
+  - "CredibleCrypto"
+  - "CryptoGodJohn"
+  - "TheCryptoDog"
+  - "DocumentingBTC"
+  - "PlanB"
+  - "Loomdart"
+  - "WhalePanda"
+  - "Winklevoss"
+  # Gaming/Creator individual accounts
+  - "Ninja"
+  - "DrDisrespect"
+  - "MarkRuffalo"
+  - "JackMa"
+  - "JeffBezos"
+  # Add known false positives here as they're discovered
+
+# Scoring adjustments (for fine-tuning, not hard filters)
+# These adjust the is_org / is_official confidence score
+confidence_weights:
+  name_keyword_match: 0.6
+  bio_keyword_match: 0.4
+  domain_match: 0.8
+  org_verification: 1.0
+
+  # Threshold for flagging (sum of weights)
+  flag_threshold: 0.7  # ≥0.7 → is_org or is_official = true

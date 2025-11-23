@@ -1,0 +1,26 @@
+# Foreman Audit Trail
+
+This directory contains comprehensive audit records for all batch operations.
+
+## Structure
+- `audit_index.jsonl`: Sequential log of all batch operations
+- `evidence/`: Evidence files for each batch operation
+- `audit_report_*.md`: Generated audit reports and summaries
+
+## Audit Record Contents
+Each audit record includes:
+- Operation type (validate, merge, reject, rollback)
+- Quality gate results (pipeline_guard, QA抽查)
+- Decision and reasoning
+- Evidence snapshots
+- SHA256 hashes before/after
+- Operator identification
+
+## Access and Accountability
+All operations are logged with full traceability for:
+- Decision making accountability
+- Quality violation tracking
+- Rollback capability
+- Pattern analysis and improvement
+
+This audit trail enforces the foreman's zero-tolerance quality policy.

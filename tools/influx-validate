@@ -1,0 +1,402 @@
+#!/usr/bin/env python3
+"""
+influx-validate - Schema validation tool for influx BigV author records
+
+Usage:
+    python tools/influx-validate -s schema/bigv.schema.json input.jsonl
+    cat input.jsonl | python tools/influx-validate -s schema/bigv.schema.json
+    python tools/influx-validate -s schema/bigv.schema.json -m data/latest/manifest.json input.jsonl.gz
+
+Validates JSONL records against JSON Schema and optionally checks manifest consistency.
+Exits 0 if all records valid, 1 if any invalid (with error details to stderr).
+"""
+
+import sys
+import argparse
+import json
+import gzip
+import hashlib
+from pathlib import Path
+from typing import Dict, Any, List, Tuple
+import os
+
+try:
+    import jsonschema
+    from jsonschema import Draft7Validator, ValidationError
+except ImportError:
+    print("ERROR: jsonschema library not installed. Install with: pip install jsonschema", file=sys.stderr)
+    sys.exit(1)
+
+
+def load_schema(schema_path: Path) -> Dict[str, Any]:
+    """Load and parse JSON Schema from file."""
+    try:
+        with open(schema_path, 'r', encoding='utf-8') as f:
+            schema = json.load(f)
+        return schema
+    except FileNotFoundError:
+        print(f"ERROR: Schema file not found: {schema_path}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Invalid JSON in schema file: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def load_manifest(manifest_path: Path) -> Dict[str, Any]:
+    """Load and parse manifest.json."""
+    try:
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            manifest = json.load(f)
+        return manifest
+    except FileNotFoundError:
+        print(f"ERROR: Manifest file not found: {manifest_path}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Invalid JSON in manifest file: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def open_input_file(input_path: Path):
+    """Open input file (supports .jsonl and .jsonl.gz)."""
+    if input_path.suffix == '.gz':
+        return gzip.open(input_path, 'rt', encoding='utf-8')
+    else:
+        return open(input_path, 'r', encoding='utf-8')
+
+
+def validate_strict_quality_gates(
+    record: Dict[str, Any],
+    line_num: int
+) -> List[Dict[str, Any]]:
+    """
+    Validate strict quality gate compliance for influx-harvest pipeline.
+
+    This ensures records have been processed through the single-path influx-harvest tool
+    and contain all required quality filtering fields.
+
+    Returns:
+        List of validation errors
+    """
+    errors = []
+    record_id = record.get('id', '?')
+    handle = record.get('handle', '?')
+    meta = record.get('meta', {})
+
+    # Required quality gate fields at root level
+    root_required_fields = [
+        'is_org',
+        'is_official'
+    ]
+
+    # Required quality gate fields in meta object
+    meta_required_fields = [
+        'entry_threshold_passed',
+        'quality_score'
+    ]
+
+    # Check root-level fields
+    for field in root_required_fields:
+        if field not in record:
+            errors.append({
+                'line': line_num,
+                'error': f"STRICT: Missing required quality gate field: '{field}'",
+                'record_id': record_id,
+                'handle': handle,
+                'strict_violation': True
+            })
+
+    # Check meta-level fields
+    for field in meta_required_fields:
+        if field not in meta:
+            errors.append({
+                'line': line_num,
+                'error': f"STRICT: Missing required quality gate field in meta: '{field}'",
+                'record_id': record_id,
+                'handle': handle,
+                'strict_violation': True
+            })
+
+    # Validate is_org field (must be boolean)
+    if 'is_org' in record and not isinstance(record['is_org'], bool):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Field 'is_org' must be boolean, got {type(record['is_org']).__name__}",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    # Validate is_official field (must be boolean)
+    if 'is_official' in record and not isinstance(record['is_official'], bool):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Field 'is_official' must be boolean, got {type(record['is_official']).__name__}",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    # Validate entry_threshold_passed field (must be boolean)
+    if 'entry_threshold_passed' in meta and not isinstance(meta['entry_threshold_passed'], bool):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Field 'entry_threshold_passed' must be boolean, got {type(meta['entry_threshold_passed']).__name__}",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    # Strict quality rule: No org or official accounts allowed in final dataset
+    if record.get('is_org', False):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Org/brand accounts not allowed in dataset (is_org=true)",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    if record.get('is_official', False):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Official accounts not allowed in dataset (is_official=true)",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    # Entry threshold must be passed
+    if not meta.get('entry_threshold_passed', False):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Entry threshold not passed (entry_threshold_passed=false)",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    # Validate follower count threshold (minimum 10,000)
+    followers = record.get('followers_count', 0)
+    if followers < 10000:
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: Followers count {followers} below minimum threshold (10,000)",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    # Validate quality score range (0-100)
+    quality_score = meta.get('quality_score', -1)
+    if not isinstance(quality_score, (int, float)) or not (0 <= quality_score <= 100):
+        errors.append({
+            'line': line_num,
+            'error': f"STRICT: quality_score must be between 0 and 100, got {quality_score}",
+            'record_id': record_id,
+            'handle': handle,
+            'strict_violation': True
+        })
+
+    return errors
+
+
+def validate_records(
+    input_file,
+    validator: Draft7Validator,
+    schema_version: str = None,
+    verbose: bool = False,
+    strict: bool = False
+) -> Tuple[int, int, List[Dict[str, Any]]]:
+    """
+    Validate JSONL records against schema and optionally strict quality gates.
+
+    Returns:
+        (valid_count, total_count, errors)
+    """
+    valid_count = 0
+    total_count = 0
+    errors = []
+
+    for line_num, line in enumerate(input_file, start=1):
+        line = line.strip()
+        if not line:
+            continue  # Skip empty lines
+
+        total_count += 1
+
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as e:
+            errors.append({
+                'line': line_num,
+                'error': f"Invalid JSON: {e}",
+                'record_id': None
+            })
+            continue
+
+        # Validate against schema
+        try:
+            validator.validate(record)
+
+            # If strict mode enabled, also validate quality gates
+            if strict:
+                strict_errors = validate_strict_quality_gates(record, line_num)
+                if strict_errors:
+                    errors.extend(strict_errors)
+                    continue
+
+            valid_count += 1
+
+            if verbose:
+                record_id = record.get('id', '?')
+                handle = record.get('handle', '?')
+                print(f"✓ Line {line_num}: id={record_id}, handle={handle}", file=sys.stderr)
+
+        except ValidationError as e:
+            record_id = record.get('id', '?')
+            handle = record.get('handle', '?')
+            # Simplify error message (show path and message)
+            path = '.'.join(str(p) for p in e.absolute_path) if e.absolute_path else 'root'
+            errors.append({
+                'line': line_num,
+                'error': f"Schema validation failed at '{path}': {e.message}",
+                'record_id': record_id,
+                'handle': handle
+            })
+
+    return valid_count, total_count, errors
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Validate influx BigV author records against JSON Schema',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__
+    )
+    parser.add_argument(
+        '-s', '--schema',
+        type=Path,
+        required=True,
+        help='Path to JSON Schema file (e.g., schema/bigv.schema.json)'
+    )
+    parser.add_argument(
+        '-m', '--manifest',
+        type=Path,
+        help='Path to manifest.json (optional; if provided, checks schema_version match)'
+    )
+    parser.add_argument(
+        'input',
+        type=Path,
+        nargs='?',
+        help='Input JSONL file (.jsonl or .jsonl.gz); if omitted, reads from stdin'
+    )
+    parser.add_argument(
+        '-v', '--verbose',
+        action='store_true',
+        help='Verbose mode: print validation status for each record'
+    )
+    parser.add_argument(
+        '--strict',
+        action='store_true',
+        help='Strict mode: enforce influx-harvest quality gate compliance (no org/official accounts, required fields, minimum thresholds)'
+    )
+
+    args = parser.parse_args()
+
+    # Load schema
+    schema = load_schema(args.schema)
+
+    # Check schema version (if manifest provided)
+    schema_version = schema.get('version', schema.get('$id', 'unknown'))
+    if args.manifest:
+        manifest = load_manifest(args.manifest)
+        manifest_schema_version = manifest.get('schema_version', 'unknown')
+
+        if manifest_schema_version != schema_version:
+            print(
+                f"WARNING: Manifest schema_version ({manifest_schema_version}) "
+                f"does not match schema version ({schema_version})",
+                file=sys.stderr
+            )
+
+    # Create validator
+    try:
+        validator = Draft7Validator(schema)
+        # Check schema itself is valid
+        Draft7Validator.check_schema(schema)
+    except Exception as e:
+        print(f"ERROR: Invalid schema: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # Open input (stdin or file)
+    if args.input:
+        try:
+            input_file = open_input_file(args.input)
+        except Exception as e:
+            print(f"ERROR: Cannot open input file: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        input_file = sys.stdin
+
+    # Validate records
+    try:
+        valid_count, total_count, errors = validate_records(
+            input_file,
+            validator,
+            schema_version=schema_version,
+            verbose=args.verbose,
+            strict=args.strict
+        )
+    finally:
+        if input_file != sys.stdin:
+            input_file.close()
+
+    # Report results
+    if errors:
+        # Count strict vs regular violations
+        strict_errors = [e for e in errors if e.get('strict_violation', False)]
+        regular_errors = [e for e in errors if not e.get('strict_violation', False)]
+
+        if args.strict:
+            print(f"\n❌ STRICT Validation FAILED: {len(strict_errors)} strict violations, {len(regular_errors)} regular errors in {total_count} records", file=sys.stderr)
+        else:
+            print(f"\n❌ Validation FAILED: {len(errors)} errors in {total_count} records", file=sys.stderr)
+
+        print(f"Valid: {valid_count}, Invalid: {len(errors)}, Total: {total_count}", file=sys.stderr)
+
+        if strict_errors:
+            print("\nSTRICT Violations (Quality Gate Compliance):", file=sys.stderr)
+            for err in strict_errors[:5]:  # Show first 5 strict errors
+                print(f"  Line {err['line']}: {err['error']}", file=sys.stderr)
+                if err['record_id']:
+                    print(f"    (id={err['record_id']}, handle={err.get('handle', '?')})", file=sys.stderr)
+            if len(strict_errors) > 5:
+                print(f"  ... and {len(strict_errors) - 5} more strict violations", file=sys.stderr)
+
+        if regular_errors:
+            print("\nRegular Errors:", file=sys.stderr)
+            for err in regular_errors[:5]:  # Show first 5 regular errors
+                print(f"  Line {err['line']}: {err['error']}", file=sys.stderr)
+                if err['record_id']:
+                    print(f"    (id={err['record_id']}, handle={err.get('handle', '?')})", file=sys.stderr)
+            if len(regular_errors) > 5:
+                print(f"  ... and {len(regular_errors) - 5} more errors", file=sys.stderr)
+
+        if args.strict:
+            print("\n💡 STRICT mode enforces influx-harvest pipeline compliance:")
+            print("   - All records must pass through influx-harvest quality gates")
+            print("   - No org/official accounts allowed")
+            print("   - Required quality fields: is_org, is_official, entry_threshold_passed, quality_score")
+            print("   - Minimum follower count: 10,000")
+
+        sys.exit(1)
+    else:
+        if args.strict:
+            print(f"✓ STRICT Validation PASSED: {valid_count}/{total_count} records compliant with influx-harvest pipeline", file=sys.stderr)
+        else:
+            print(f"✓ Validation PASSED: {valid_count}/{total_count} records valid", file=sys.stderr)
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

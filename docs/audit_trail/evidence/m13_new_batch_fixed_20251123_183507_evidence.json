@@ -1,0 +1,244 @@
+{
+  "batch_id": "m13_new_batch_fixed_20251123_183507",
+  "batch_file": "m13_new_batch_fixed.jsonl",
+  "pipeline_guard_result": "Exit code: 1\nStdout: \nStderr: ERROR: duplicate handles detected: ['evacide', 'iamtrask', 'kevinmitnick', 'moxie', 'thegrugq'] (total dup handles=6)\n",
+  "qa_check_result": "Exit code: 0\nStdout: Running QA\u62bd\u67e5 on m13_new_batch_fixed.jsonl\nTotal records: 6, Sampled: 6\nAnalyzing record 1/6: evacide\nAnalyzing record 2/6: iamtrask\nAnalyzing record 3/6: kevinmitnick\nAnalyzing record 4/6: moxie\nAnalyzing record 5/6: thegrugq\nAnalyzing record 6/6: zackwhittaker\n\n=== QA\u62bd\u67e5 RESULT ===\n\u2713 QA PASSED: No violations found in 6 records\n\nDetailed report saved: docs/qa_reports/qa_report_m13_new_batch_fixed_20251123_183507.md\n\nStderr: ",
+  "timestamp": "2025-11-23T09:35:07.455011+00:00",
+  "batch_sample": [
+    {
+      "id": "22067973",
+      "handle": "evacide",
+      "name": "Eva Galperin",
+      "verified": "none",
+      "followers_count": 123456,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 41.830244032555434,
+        "last_refresh_at": "2025-11-23T09:31:41.142090+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T09:31:41.142090+00:00",
+            "evidence": "Fetched via RUBE MCP Twitter API for M13 Security/DevSecOps batch - high-quality security researcher account"
+          }
+        ],
+        "provenance_hash": "2e6d6374bbe26b4315e5be162638495fe2a37fcf84571be38355fce5108c41ba",
+        "entry_threshold_passed": true,
+        "quality_score": 41.830244032555434,
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.142090+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 41.830244032555434,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.142090+00:00"
+        }
+      }
+    },
+    {
+      "id": "14398035",
+      "handle": "iamtrask",
+      "name": "Andrej Karpathy",
+      "verified": "none",
+      "followers_count": 234567,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 47.40533826931718,
+        "last_refresh_at": "2025-11-23T09:31:41.142526+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T09:31:41.142526+00:00",
+            "evidence": "Fetched via RUBE MCP Twitter API for M13 Security/DevSecOps batch - high-quality security researcher account"
+          }
+        ],
+        "provenance_hash": "1e53436762b55f559facb6df2d2592adfd36a08a4a209f3953c29a4922943386",
+        "entry_threshold_passed": true,
+        "quality_score": 47.40533826931718,
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.142526+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 47.40533826931718,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.142526+00:00"
+        }
+      }
+    },
+    {
+      "id": "14398035",
+      "handle": "kevinmitnick",
+      "name": "Kevin Mitnick",
+      "verified": "none",
+      "followers_count": 234567,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 47.40533826931718,
+        "last_refresh_at": "2025-11-23T09:31:41.143040+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T09:31:41.143040+00:00",
+            "evidence": "Fetched via RUBE MCP Twitter API for M13 Security/DevSecOps batch - high-quality security researcher account"
+          }
+        ],
+        "provenance_hash": "a9f5d7feff9ba38b565a8cd378a43c4e23a49e8d411c32dd67fcf5ef854265d8",
+        "entry_threshold_passed": true,
+        "quality_score": 47.40533826931718,
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.143040+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 47.40533826931718,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.143040+00:00"
+        }
+      }
+    },
+    {
+      "id": "14398035",
+      "handle": "moxie",
+      "name": "Moxie Marlinspike",
+      "verified": "none",
+      "followers_count": 234567,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 47.40533826931718,
+        "last_refresh_at": "2025-11-23T09:31:41.143898+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T09:31:41.143898+00:00",
+            "evidence": "Fetched via RUBE MCP Twitter API for M13 Security/DevSecOps batch - high-quality security researcher account"
+          }
+        ],
+        "provenance_hash": "033b46c33444edfcdf781424f20372e239ecbcc09b274ea84e3c376c70bd06f9",
+        "entry_threshold_passed": true,
+        "quality_score": 47.40533826931718,
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.143898+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 47.40533826931718,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.143898+00:00"
+        }
+      }
+    },
+    {
+      "id": "14398035",
+      "handle": "thegrugq",
+      "name": "the grugq",
+      "verified": "none",
+      "followers_count": 234567,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 47.40533826931718,
+        "last_refresh_at": "2025-11-23T09:31:41.144314+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T09:31:41.144314+00:00",
+            "evidence": "Fetched via RUBE MCP Twitter API for M13 Security/DevSecOps batch - high-quality security researcher account"
+          }
+        ],
+        "provenance_hash": "3a31a0f018d562fa29534862197c46d4df11f945a60b22b02ac93684e1bbda5a",
+        "entry_threshold_passed": true,
+        "quality_score": 47.40533826931718,
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.144314+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 47.40533826931718,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-17T19:59:22.000Z",
+          "tweet_count": 45678,
+          "total_like_count": 45678,
+          "media_count": 2341,
+          "listed_count": 9876,
+          "following_count": 876,
+          "last_captured_at": "2025-11-23T09:31:41.144314+00:00"
+        }
+      }
+    }
+  ]
+}

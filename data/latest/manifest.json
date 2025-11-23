@@ -1,0 +1,13 @@
+{
+  "schema_version": "https://influx.local/schema/bigv.schema.json",
+  "timestamp": "2025-11-23T13:14:40Z",
+  "count": 302,
+  "sha256": "da51f1a6f1b5cdb6134f8584e09154a73280995126bc0c9316f961b912bd1e6d",
+  "source_file": "data/latest/latest.jsonl",
+  "sort_order": "score desc, followers_count desc, handle asc",
+  "score_version": "v2_activity_quality_relevance",
+  "score_formula": "activity(30%) + quality(50%) + relevance(20%)",
+  "created_at": "2025-11-23T13:35:17Z",
+  "processing_note": "Removed 2 M13 batch records with fake sequential placeholder data (iamtrask, evacide)",
+  "score_note": "Batch merge in progress: web3_new_only_batch.jsonl"
+}

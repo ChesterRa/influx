@@ -1,0 +1,11 @@
+org_name,category,source_url,note
+openai,ai_research,https://github.com/orgs/openai/people,GPT/DALL-E research team
+anthropic,ai_research,https://github.com/orgs/anthropic/people,Claude research team
+huggingface,ml_platform,https://github.com/orgs/huggingface/people,Transformers/Datasets maintainers
+pytorch,ml_framework,https://github.com/orgs/pytorch/people,PyTorch core team
+meta,ai_research,https://github.com/orgs/meta/people,Meta FAIR researchers
+nvidia,gpu_ai,https://github.com/orgs/nvidia/people,NVIDIA DevRel and AI architects
+microsoft,ml_platform,https://github.com/orgs/microsoft/people,Azure ML and research teams
+ggerganov,ml_engineering,https://github.com/orgs/ggerganov/people,llama.cpp author and contributors
+mistralai,ai_research,https://github.com/orgs/mistralai/people,Mistral AI research team
+replicate,ml_platform,https://github.com/orgs/replicate/people,Replicate model deployment platform
