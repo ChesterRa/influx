@@ -22,8 +22,11 @@
 # Score authors
 python add_quality_fields.py INPUT.jsonl OUTPUT.jsonl
 
-# Merge new authors
-python merge_new_authors.py SCORED_FILE.jsonl
+# Merge new authors (FOREMAN ENFORCED - use enhanced_merge_batch.sh only)
+./scripts/enhanced_merge_batch.sh BATCH_FILE.jsonl [operator]
+
+# Legacy merge (deprecated - may be rejected by foreman)
+./scripts/merge_batch.sh SCORED_FILE.jsonl
 ```
 
 ---
@@ -65,6 +68,7 @@ python merge_new_authors.py SCORED_FILE.jsonl
 - `is_official: false` (no official/team/PR accounts)
 - `entry_threshold_passed: true` (meets minimum criteria)
 - `quality_score: 0-100` range in meta
+- **Foreman Zero Tolerance**: No placeholder IDs, mock prefixes, or evidence-less records
 
 ---
 
@@ -81,6 +85,7 @@ python merge_new_authors.py SCORED_FILE.jsonl
 - **Single Path**: All data must use `influx-harvest` pipeline
 - **No Bypass**: Never import data directly without quality gates
 - **Quality First**: Maintain perfect validation over speed
+- **Foreman Enforcement**: All merges must pass `enhanced_merge_batch.sh` with QA抽查 and audit trail
 
 ---
 

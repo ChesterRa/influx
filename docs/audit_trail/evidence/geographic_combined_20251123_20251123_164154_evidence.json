@@ -1,0 +1,244 @@
+{
+  "batch_id": "geographic_combined_20251123_20251123_164154",
+  "batch_file": "/home/dodd/dev/influx/data/batches/geographic_combined_20251123.jsonl",
+  "pipeline_guard_result": "Exit code: 1\nStdout: \nStderr: ERROR: duplicate handles detected: ['JackMa', 'vijayshekhar', 'kim', 'sundarpichai', 'satyanadella'] (total dup handles=8)\n",
+  "qa_check_result": "",
+  "timestamp": "2025-11-23T07:41:54.680356+00:00",
+  "batch_sample": [
+    {
+      "id": "2507565574",
+      "handle": "Vinny",
+      "name": "Vinny",
+      "verified": "blue",
+      "followers_count": 57346,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 45.17006260742679,
+        "last_refresh_at": "2025-11-23T07:10:26.446785+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:10:26.446785+00:00",
+            "evidence": "@Vinny"
+          }
+        ],
+        "provenance_hash": "a0e68356e09ddd6e2e61b0c515c47f7b46815640ba5950a714d4083ed4dfa1b5",
+        "entry_threshold_passed": true,
+        "quality_score": 45.17006260742679,
+        "activity_metrics": {
+          "account_created_at": "2014-04-25T03:53:33.000Z",
+          "tweet_count": 63087,
+          "total_like_count": 93185,
+          "media_count": 14608,
+          "listed_count": 63,
+          "following_count": 1705,
+          "last_captured_at": "2025-11-23T07:10:26.446785+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 45.17006260742679,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2014-04-25T03:53:33.000Z",
+          "tweet_count": 63087,
+          "total_like_count": 93185,
+          "media_count": 14608,
+          "listed_count": 63,
+          "following_count": 1705,
+          "last_captured_at": "2025-11-23T07:10:26.446785+00:00"
+        }
+      }
+    },
+    {
+      "id": "20571756",
+      "handle": "satyanadella",
+      "name": "Satya Nadella",
+      "verified": "blue",
+      "followers_count": 3486466,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 80.84770868647695,
+        "last_refresh_at": "2025-11-23T07:10:55.323160+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:10:55.323160+00:00",
+            "evidence": "@satyanadella"
+          }
+        ],
+        "provenance_hash": "39cc354b16e8a472e24baaaf7fb1b72b636f80900d82ac82e1555d06443cd940",
+        "entry_threshold_passed": true,
+        "quality_score": 80.84770868647695,
+        "activity_metrics": {
+          "account_created_at": "2009-02-11T04:45:34.000Z",
+          "tweet_count": 2171,
+          "total_like_count": 527,
+          "media_count": 221,
+          "listed_count": 11607,
+          "following_count": 301,
+          "last_captured_at": "2025-11-23T07:10:55.323160+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 80.84770868647695,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-02-11T04:45:34.000Z",
+          "tweet_count": 2171,
+          "total_like_count": 527,
+          "media_count": 221,
+          "listed_count": 11607,
+          "following_count": 301,
+          "last_captured_at": "2025-11-23T07:10:55.323160+00:00"
+        }
+      }
+    },
+    {
+      "id": "14130366",
+      "handle": "sundarpichai",
+      "name": "Sundar Pichai",
+      "verified": "blue",
+      "followers_count": 5624746,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 85.00205831064027,
+        "last_refresh_at": "2025-11-23T07:10:55.323733+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:10:55.323733+00:00",
+            "evidence": "@sundarpichai"
+          }
+        ],
+        "provenance_hash": "581c5ad597c8e26b1474154e64ad396676ac44445a505e8b5cb052933caec5e6",
+        "entry_threshold_passed": true,
+        "quality_score": 85.00205831064027,
+        "activity_metrics": {
+          "account_created_at": "2008-03-12T05:51:53.000Z",
+          "tweet_count": 2558,
+          "total_like_count": 1141,
+          "media_count": 317,
+          "listed_count": 10880,
+          "following_count": 186,
+          "last_captured_at": "2025-11-23T07:10:55.323733+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 85.00205831064027,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2008-03-12T05:51:53.000Z",
+          "tweet_count": 2558,
+          "total_like_count": 1141,
+          "media_count": 317,
+          "listed_count": 10880,
+          "following_count": 186,
+          "last_captured_at": "2025-11-23T07:10:55.323733+00:00"
+        }
+      }
+    },
+    {
+      "id": "24204488",
+      "handle": "ArvindKrishna",
+      "name": "Arvind Krishna",
+      "verified": "blue",
+      "followers_count": 43668,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 42.8032660326772,
+        "last_refresh_at": "2025-11-23T07:10:55.324192+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:10:55.324192+00:00",
+            "evidence": "@ArvindKrishna"
+          }
+        ],
+        "provenance_hash": "66492018be754065bc544824c8ca7e48f9b98cc631b37cba34cc926931862a42",
+        "entry_threshold_passed": true,
+        "quality_score": 42.8032660326772,
+        "activity_metrics": {
+          "account_created_at": "2009-03-13T16:55:19.000Z",
+          "tweet_count": 205,
+          "total_like_count": 694,
+          "media_count": 42,
+          "listed_count": 314,
+          "following_count": 565,
+          "last_captured_at": "2025-11-23T07:10:55.324192+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 42.8032660326772,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2009-03-13T16:55:19.000Z",
+          "tweet_count": 205,
+          "total_like_count": 694,
+          "media_count": 42,
+          "listed_count": 314,
+          "following_count": 565,
+          "last_captured_at": "2025-11-23T07:10:55.324192+00:00"
+        }
+      }
+    },
+    {
+      "id": "17239667",
+      "handle": "vijayshekhar",
+      "name": "Vijay Shekhar Sharma",
+      "verified": "blue",
+      "followers_count": 640612,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 66.13190139292419,
+        "last_refresh_at": "2025-11-23T07:10:55.324649+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T07:10:55.324649+00:00",
+            "evidence": "@vijayshekhar"
+          }
+        ],
+        "provenance_hash": "42367b879885d2d01c2b250cfce301aa086ce704a5f22b804cfa517f07a3064c",
+        "entry_threshold_passed": true,
+        "quality_score": 66.13190139292419,
+        "activity_metrics": {
+          "account_created_at": "2008-11-07T21:47:03.000Z",
+          "tweet_count": 40681,
+          "total_like_count": 33463,
+          "media_count": 3846,
+          "listed_count": 1310,
+          "following_count": 727,
+          "last_captured_at": "2025-11-23T07:10:55.324649+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 66.13190139292419,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2008-11-07T21:47:03.000Z",
+          "tweet_count": 40681,
+          "total_like_count": 33463,
+          "media_count": 3846,
+          "listed_count": 1310,
+          "following_count": 727,
+          "last_captured_at": "2025-11-23T07:10:55.324649+00:00"
+        }
+      }
+    }
+  ]
+}

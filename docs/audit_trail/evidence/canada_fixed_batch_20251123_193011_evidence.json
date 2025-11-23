@@ -1,0 +1,150 @@
+{
+  "batch_id": "canada_fixed_batch_20251123_193011",
+  "batch_file": "canada_fixed_batch.jsonl",
+  "pipeline_guard_result": "Exit code: 1\nStdout: \nStderr: ERROR: duplicate handles detected: ['tobi'] (total dup handles=1)\n",
+  "qa_check_result": "",
+  "timestamp": "2025-11-23T10:30:11.195398+00:00",
+  "batch_sample": [
+    {
+      "id": "676573",
+      "handle": "tobi",
+      "name": "tobi lutke",
+      "verified": "none",
+      "followers_count": 427162,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 52.611852224775824,
+        "last_refresh_at": "2025-11-23T10:27:05.896355+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T10:29:11Z",
+            "evidence": "Fetched via RUBE MCP Twitter API for Canada geographic batch - high-quality tech entrepreneur account"
+          }
+        ],
+        "provenance_hash": "8b7c12d51d5684039738d8e192955a585771cccd43e7f7edc347f04a520f57aa",
+        "entry_threshold_passed": true,
+        "quality_score": 52.611852224775824,
+        "activity_metrics": {
+          "account_created_at": "2007-01-21T20:23:15.000Z",
+          "tweet_count": 7764,
+          "total_like_count": 7304,
+          "media_count": 449,
+          "listed_count": 4144,
+          "following_count": 2115,
+          "last_captured_at": "2025-11-23T10:27:05.896355+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 52.611852224775824,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2007-01-21T20:23:15.000Z",
+          "tweet_count": 7764,
+          "total_like_count": 7304,
+          "media_count": 449,
+          "listed_count": 4144,
+          "following_count": 2115,
+          "last_captured_at": "2025-11-23T10:27:05.896355+00:00"
+        }
+      }
+    },
+    {
+      "id": "17151344",
+      "handle": "john",
+      "name": "John Shahidi",
+      "verified": "none",
+      "followers_count": 486148,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 53.73537006831134,
+        "last_refresh_at": "2025-11-23T10:27:05.896848+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T10:29:11Z",
+            "evidence": "Fetched via RUBE MCP Twitter API for Canada geographic batch - high-quality tech entrepreneur account"
+          }
+        ],
+        "provenance_hash": "a9a53d1b42483f09f9e48d04cf1bec7f1f100a4aa2bf0bfdeb0143fb78e06c6d",
+        "entry_threshold_passed": true,
+        "quality_score": 53.73537006831134,
+        "activity_metrics": {
+          "account_created_at": "2008-11-04T08:00:56.000Z",
+          "tweet_count": 10294,
+          "total_like_count": 17517,
+          "media_count": 2143,
+          "listed_count": 2619,
+          "following_count": 3312,
+          "last_captured_at": "2025-11-23T10:27:05.896848+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 53.73537006831134,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2008-11-04T08:00:56.000Z",
+          "tweet_count": 10294,
+          "total_like_count": 17517,
+          "media_count": 2143,
+          "listed_count": 2619,
+          "following_count": 3312,
+          "last_captured_at": "2025-11-23T10:27:05.896848+00:00"
+        }
+      }
+    },
+    {
+      "id": "749963",
+      "handle": "pierre",
+      "name": "Pierre Omidyar",
+      "verified": "none",
+      "followers_count": 413064,
+      "is_org": false,
+      "is_official": false,
+      "lang_primary": "en",
+      "topic_tags": [],
+      "meta": {
+        "score": 52.32034692627419,
+        "last_refresh_at": "2025-11-23T10:27:05.897467+00:00",
+        "sources": [
+          {
+            "method": "prefetched_bulk",
+            "fetched_at": "2025-11-23T10:29:11Z",
+            "evidence": "Fetched via RUBE MCP Twitter API for Canada geographic batch - high-quality tech entrepreneur account"
+          }
+        ],
+        "provenance_hash": "e542b858ffb7fed02929c9a47cb807c0502054c6f8ed30ef9762b2895823af88",
+        "entry_threshold_passed": true,
+        "quality_score": 52.32034692627419,
+        "activity_metrics": {
+          "account_created_at": "2007-02-03T02:41:31.000Z",
+          "tweet_count": 12933,
+          "total_like_count": 135,
+          "media_count": 125,
+          "listed_count": 3557,
+          "following_count": 424,
+          "last_captured_at": "2025-11-23T10:27:05.897467+00:00"
+        }
+      },
+      "entry_threshold_passed": true,
+      "quality_score": 52.32034692627419,
+      "ext": {
+        "activity_metrics": {
+          "account_created_at": "2007-02-03T02:41:31.000Z",
+          "tweet_count": 12933,
+          "total_like_count": 135,
+          "media_count": 125,
+          "listed_count": 3557,
+          "following_count": 424,
+          "last_captured_at": "2025-11-23T10:27:05.897467+00:00"
+        }
+      }
+    }
+  ]
+}

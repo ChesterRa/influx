@@ -412,40 +412,12 @@ def x_lists(args):
                         continue
             print(f"[INFO] Loaded {count} user objects", file=sys.stderr)
         else:
-            # Attempt to call the bridge which outputs instructions and exits 2
-            bridge_path = str(Path(__file__).with_name('influx-rube-bridge'))
-            cmd = [bridge_path, "--handles", ",".join(handles)]
-            print(f"[INFO] Looking up Twitter users via bridge (n={len(handles)})", file=sys.stderr)
-            try:
-                result = subprocess.run(
-                    cmd,
-                    text=True,
-                    capture_output=True,
-                    check=False,
-                )
-            except FileNotFoundError:
-                print(f"[ERROR] Bridge not found at {bridge_path}", file=sys.stderr)
-                return 1
-
-            if result.returncode == 0:
-                # Not expected for the bridge; proceed if any output provided
-                if result.stdout.strip():
-                    print(result.stdout, file=sys.stderr)
-                print("[ERROR] Bridge returned 0 unexpectedly; no users loaded", file=sys.stderr)
-                return 1
-            elif result.returncode == 2:
-                # Friendly workflow instructions
-                if result.stdout.strip():
-                    print(result.stdout, file=sys.stderr)
-                print("[INFO] Re-run x-lists with --prefetched-users once you have JSONL", file=sys.stderr)
-                return 2
-            else:
-                if result.stdout.strip():
-                    print(result.stdout, file=sys.stderr)
-                if result.stderr.strip():
-                    print(result.stderr, file=sys.stderr)
-                print(f"[ERROR] Bridge failed with exit code {result.returncode}", file=sys.stderr)
-                return result.returncode
+            print("[ERROR] No prefetched users provided.", file=sys.stderr)
+            print("[ACTION] Two-stage workflow required:", file=sys.stderr)
+            print("  Stage 1: Fetch Twitter user data externally and save as JSONL (one user object per line)", file=sys.stderr)
+            print("  Stage 2: Run this command again with --prefetched-users <file>", file=sys.stderr)
+            print("[INFO] This repository has no direct Twitter API access - external fetching required", file=sys.stderr)
+            return 2
 
         # Apply filters
         print(f"[INFO] Applying filters...", file=sys.stderr)
@@ -523,19 +495,15 @@ def x_lists(args):
 
 
 def bulk_process(args):
-    """Enhanced bulk processing with RUBE MCP integration"""
+    """Bulk processing using prefetched users (no MCP fetch here)"""
     try:
-        # Load filter rules
         brand_rules = load_yaml_rules(args.brand_rules)
         risk_rules = load_yaml_rules(args.risk_rules)
         allow_risk = set(args.allow_risk.split(',')) if args.allow_risk else set()
-        
-        # Load handles from file
+
         handles = []
         categories = {}
-        
         if args.handles_file:
-            # Load from CSV or text file
             file_path = Path(args.handles_file)
             if file_path.suffix.lower() == '.csv':
                 import csv
@@ -548,7 +516,6 @@ def bulk_process(args):
                             handles.append(handle)
                             categories[handle] = category
             else:
-                # Text file - one handle per line
                 category = args.default_category
                 with open(file_path, 'r', encoding='utf-8') as f:
                     for line in f:
@@ -556,187 +523,118 @@ def bulk_process(args):
                         if handle and not handle.startswith('#'):
                             handles.append(handle)
                             categories[handle] = category
-        
+
         if args.handles:
-            # Direct handles input
             category = args.default_category
             for handle in args.handles.split(','):
                 handle = handle.strip().lstrip('@')
                 if handle:
                     handles.append(handle)
                     categories[handle] = category
-        
+
         if not handles:
             print("[ERROR] No handles provided", file=sys.stderr)
             return 1
-        
-        print(f"[INFO] Processing {len(handles)} handles in batches of {args.batch_size}", file=sys.stderr)
-        print(f"[INFO] Using RUBE MCP for real data fetching", file=sys.stderr)
-        
-        # Process handles in batches using real RUBE MCP data
-        all_processed_users = []
+
+        if not getattr(args, 'prefetched_users', None):
+            print("[ERROR] No prefetched users provided.", file=sys.stderr)
+            print("[ACTION] Two-stage workflow required:", file=sys.stderr)
+            print("  Stage 1: Fetch Twitter user data externally and save as JSONL (one user object per line)", file=sys.stderr)
+            print("  Stage 2: Run this command again with --prefetched-users <file>", file=sys.stderr)
+            print("[INFO] This repository has no direct Twitter API access - external fetching required", file=sys.stderr)
+            return 2
+
+        users = []
+        try:
+            with open(args.prefetched_users, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        obj = json.loads(line)
+                        if isinstance(obj, dict) and 'data' in obj and isinstance(obj['data'], dict):
+                            obj = obj['data']
+                        if isinstance(obj, dict):
+                            users.append(obj)
+                    except json.JSONDecodeError:
+                        continue
+        except Exception as e:
+            print(f"[ERROR] Failed to load prefetched users: {e}", file=sys.stderr)
+            return 1
+
+        if not users:
+            print("[ERROR] Prefetched users file is empty or invalid", file=sys.stderr)
+            return 1
+
+        print(f"[INFO] Applying filters to {len(users)} prefetched users", file=sys.stderr)
+        filtered_users = []
         filter_stats = {
             'total': 0,
             'entry_threshold_fail': 0,
             'brand_filtered': 0,
             'risk_filtered': 0,
-            'api_errors': 0,
             'passed': 0
         }
-        
-        # Create batches of up to 100 handles (Twitter API limit)
-        batch_size = min(args.batch_size, 100)
-        handle_batches = [handles[i:i + batch_size] for i in range(0, len(handles), batch_size)]
-        
-        print(f"[INFO] Created {len(handle_batches)} batches of max {batch_size} handles each", file=sys.stderr)
-        
-        for batch_idx, batch_handles in enumerate(handle_batches):
-            print(f"[INFO] Processing batch {batch_idx + 1}/{len(handle_batches)} ({len(batch_handles)} handles)", file=sys.stderr)
-            
-            try:
-                 # Use RUBE MCP to fetch real Twitter user data
-                print(f"[INFO] Calling RUBE MCP TWITTER_USER_LOOKUP_BY_USERNAMES for: {batch_handles}", file=sys.stderr)
-                
-                # Call RUBE MCP directly in current session
-                batch_users = []
-                try:
-                    # Check if we're in a RUBE MCP session by trying to import
-                    try:
-                        from rube_RUBE_MULTI_EXECUTE_TOOL import rube_RUBE_MULTI_EXECUTE_TOOL
-                        rube_available = True
-                    except ImportError:
-                        rube_available = False
-                    
-                    if rube_available:
-                        # Prepare RUBE MCP call
-                        rube_tools = [{
-                            "arguments": {
-                                "usernames": batch_handles,
-                                "user_fields": ["created_at", "description", "id", "name", "public_metrics", "verified", "username"]
-                            },
-                            "tool_slug": "TWITTER_USER_LOOKUP_BY_USERNAMES"
-                        }]
-                        
-                        session_id = f"harvest_batch_{int(time.time())}_{batch_idx}"
-                        
-                        # Call RUBE MCP directly
-                        rube_result = rube_RUBE_MULTI_EXECUTE_TOOL(
-                            tools=rube_tools,
-                            session_id=session_id,
-                            thought="Fetch real Twitter user data for batch handles",
-                            current_step="FETCHING_USERS",
-                            current_step_metric=f"{len(batch_handles)}/handles",
-                            next_step="PROCESSING_RESPONSE",
-                            memory={"twitter": [f"Fetching batch {batch_idx} with {len(batch_handles)} handles"]}
-                        )
-                        
-                        if rube_result.get("successful") and rube_result.get("data", {}).get("success_count", 0) > 0:
-                            for response_result in rube_result["data"]["results"]:
-                                if response_result.get("successful") and response_result.get("response", {}).get("data"):
-                                    user_data = response_result["response"]["data"]
-                                    if "data" in user_data and isinstance(user_data["data"], list):
-                                        batch_users.extend(user_data["data"])
-                                    elif isinstance(user_data, dict):
-                                        batch_users.append(user_data)
-                            print(f"[INFO] Retrieved {len(batch_users)} user objects from batch {batch_idx}", file=sys.stderr)
-                        else:
-                            print(f"[ERROR] RUBE MCP failed for batch {batch_idx}: {rube_result}", file=sys.stderr)
-                    else:
-                        print(f"[ERROR] RUBE MCP not available in current environment", file=sys.stderr)
-                        print(f"[INFO] This tool needs to be run within a RUBE MCP session", file=sys.stderr)
-                        
-                except Exception as e:
-                    print(f"[ERROR] RUBE MCP call failed: {e}", file=sys.stderr)
-                
-                # Fallback: if no real data, skip this batch
-                if not batch_users:
-                    print(f"[WARNING] No user data retrieved for batch {batch_idx + 1}, skipping {len(batch_handles)} handles", file=sys.stderr)
-                    continue
-                
-                print(f"[INFO] Retrieved {len(batch_users)} user objects from batch {batch_idx + 1}", file=sys.stderr)
-                
-                # Process each user in batch
-                for user in batch_users:
-                    if not isinstance(user, dict):
-                        continue
-                    
-                    filter_stats['total'] += 1
-                    username = user.get('username', '')
-                    
-                    # Apply entry threshold filter
-                    followers = user.get('public_metrics', {}).get('followers_count', 0)
-                    verified_type = user.get('verified_type', 'none')
-                    verified = verified_type != 'none'
-                    
-                    entry_pass = (verified and followers >= args.verified_min_followers) or (followers >= args.min_followers)
-                    if not entry_pass:
-                        filter_stats['entry_threshold_fail'] += 1
-                        continue
-                    
-                    # Apply brand heuristics
-                    is_brand, brand_conf, brand_matches = check_brand_heuristics(user, brand_rules, args.allow_brands)
-                    if is_brand:
-                        filter_stats['brand_filtered'] += 1
-                        print(f"[FILTER] Brand: @{username} (conf={brand_conf:.2f}, rules={brand_matches})", file=sys.stderr)
-                        continue
-                    
-                    # Apply risk flags
-                    risk_flags, risk_matches = check_risk_flags(user, risk_rules, allow_risk)
-                    if risk_flags:
-                        filter_stats['risk_filtered'] += 1
-                        print(f"[FILTER] Risk: @{username} (flags={risk_flags}, rules={risk_matches})", file=sys.stderr)
-                        continue
-                    
-                    # Transform to schema format
-                    category = categories.get(username, args.default_category)
-                    record = transform_to_schema(user, method='bulk_rube_mcp', category=category,
-                                               brand_rules=brand_rules, allow_brands=args.allow_brands)
-                    all_processed_users.append(record)
-                    filter_stats['passed'] += 1
-                
-                # Add small delay between batches to respect rate limits
-                time.sleep(1)
-                
-            except Exception as batch_error:
-                print(f"[ERROR] Exception processing batch {batch_idx + 1}: {batch_error}", file=sys.stderr)
-                filter_stats['api_errors'] += len(batch_handles)
+
+        for user in users:
+            if not isinstance(user, dict):
                 continue
-        
-        # Write output
+
+            filter_stats['total'] += 1
+            followers = user.get('public_metrics', {}).get('followers_count', 0)
+            verified = user.get('verified_type', 'none') != 'none'
+            entry_pass = (verified and followers >= args.verified_min_followers) or (followers >= args.min_followers)
+            if not entry_pass:
+                filter_stats['entry_threshold_fail'] += 1
+                continue
+
+            is_brand, brand_conf, brand_matches = check_brand_heuristics(user, brand_rules, args.allow_brands)
+            if is_brand:
+                filter_stats['brand_filtered'] += 1
+                print(f"[FILTER] Brand: @{user.get('username')} (conf={brand_conf:.2f}, rules={brand_matches})", file=sys.stderr)
+                continue
+
+            risk_flags, risk_matches = check_risk_flags(user, risk_rules, allow_risk)
+            if risk_flags:
+                filter_stats['risk_filtered'] += 1
+                print(f"[FILTER] Risk: @{user.get('username')} (flags={risk_flags}, rules={risk_matches})", file=sys.stderr)
+                continue
+
+            category = categories.get(user.get('username', ''), args.default_category)
+            record = transform_to_schema(user, method='prefetched_bulk', category=category,
+                                        brand_rules=brand_rules, allow_brands=args.allow_brands)
+            filtered_users.append(record)
+            filter_stats['passed'] += 1
+
         output_path = Path(args.out)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
         with open(output_path, 'w', encoding='utf-8') as f:
-            for record in all_processed_users:
+            for record in filtered_users:
                 f.write(json.dumps(record, ensure_ascii=False) + '\n')
-        
-        # Print comprehensive summary
-        print(f"\n[SUMMARY] Bulk Processing Results:", file=sys.stderr)
-        print(f"  Total handles: {len(handles)}", file=sys.stderr)
-        print(f"  Total users fetched: {filter_stats['total']}", file=sys.stderr)
-        print(f"  Entry threshold fail: {filter_stats['entry_threshold_fail']}", file=sys.stderr)
-        print(f"  Brand filtered: {filter_stats['brand_filtered']}", file=sys.stderr)
-        print(f"  Risk filtered: {filter_stats['risk_filtered']}", file=sys.stderr)
-        print(f"  API errors: {filter_stats['api_errors']}", file=sys.stderr)
-        print(f"  ✅ Passed: {filter_stats['passed']}", file=sys.stderr)
-        print(f"\n[OUTPUT] {args.out} ({len(all_processed_users)} records)", file=sys.stderr)
-        
+
+        print(f"\n[SUMMARY] Prefetched bulk filter stats:", file=sys.stderr)
+        for k, v in filter_stats.items():
+            print(f"  {k}: {v}", file=sys.stderr)
+        print(f"\n[OUTPUT] {args.out} ({filter_stats['passed']} records)", file=sys.stderr)
+        if filter_stats['passed'] == 0:
+            print("[WARN] No records passed filters - output file is empty", file=sys.stderr)
+
         return 0
-        
+
     except Exception as e:
         print(f"[ERROR] {e}", file=sys.stderr)
         import traceback
         traceback.print_exc(file=sys.stderr)
         return 1
 
-
 def main():
     parser = argparse.ArgumentParser(
-        description="influx-harvest: Discover authors via curated X Lists."
+        description="influx-harvest: Two-stage author discovery workflow. Stage 1: Fetch Twitter users externally and save as JSONL. Stage 2: Filter and import here using --prefetched-users parameter."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    # x-lists subcommand
+    # x-lists subcommand (prefetched JSONL required; no MCP fetch in this repo)
     lists_parser = subparsers.add_parser(
         "x-lists", help="Import curated X Lists (manual CSV)"
     )
@@ -771,12 +669,12 @@ def main():
     )
     lists_parser.add_argument(
         "--prefetched-users",
-        help="JSONL file with Twitter user objects (one per line) from RUBE MCP TWITTER_USER_LOOKUP_BY_USERNAMES"
+        help="REQUIRED: JSONL file with Twitter user objects (one per line). Fetch externally first, then use this parameter."
     )
 
-    # bulk subcommand
+    # bulk subcommand (prefetched JSONL required; no direct Twitter API in this repo)
     bulk_parser = subparsers.add_parser(
-        "bulk", help="Enhanced bulk processing with RUBE MCP (50-100 authors per batch)"
+        "bulk", help="Process prefetched Twitter users in batches (two-stage workflow)"
     )
     bulk_parser.add_argument(
         "--handles-file",
@@ -825,6 +723,10 @@ def main():
     bulk_parser.add_argument(
         "--allow-risk", default="",
         help="Comma-separated risk flags to allow (default: none)"
+    )
+    bulk_parser.add_argument(
+        "--prefetched-users",
+        help="REQUIRED: JSONL file with Twitter user objects (one per line). Fetch externally first, then use this parameter."
     )
 
     args = parser.parse_args()

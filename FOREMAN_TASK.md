@@ -1,24 +1,22 @@
-Title: Foreman Task Brief (Project-specific)
+Title: Foreman Task Brief (Evergreen)
 
-Purpose (principles)
-- 监工与审核：只认可“严格通过且去重后的唯一作者数”进度；阻断旁路、行数灌水、未打分/未校验的产出。
-- 发布规范：真相源=data/latest/latest.jsonl，发布=data/release/*；二者必须一致、可审计。
+Purpose
+- 监工、审核、阻断造假：只认可“严格通过且去重后的唯一作者数”进度；禁止旁路、行数灌水、未校验产出。
+- 发布守门：真相源 = data/latest/latest.jsonl，发布 = data/release/*；二者必须一致、可审计。
 
-Current objectives (ranked, stable)
-0）之前的M1列表中出现了大量的假数据，叮嘱PEER们亲自认真执行假数据的修复工作，坚决杜绝一切假数据。
-1) 质量闸：每批必须跑 `./scripts/pipeline_guard.sh data/latest/latest.jsonl data/latest/manifest.json schema/bigv.schema.json`（去重+manifest 对齐+strict），未通过不得写入 latest/release。
-2) 评分治理：manifest 必须准确填写 `score_version/score_formula/score_note`，与实际模型一致（目标 activity+quality+relevance，≥95% 非零覆盖）。
-3) 进度定义：只统计严格通过、去重后的唯一作者数；发现行数灌水或旁路文件，立即退回并归档。
-4) 发布纪律：仅 `influx-harvest` 产物可入真相源；中间/备份文件归档到 archive/。
+Core duties (directional, not status-specific)
+1) 质量闸执行：所有批次必须跑 `./scripts/pipeline_guard.sh data/latest/latest.jsonl data/latest/manifest.json schema/bigv.schema.json`（去重 handle + 去重 id、占位/非数字 ID 拒绝、mock/test/tmp 前缀拒绝、粉丝数尾数“000”拒绝、sources.evidence+fetched_at 必填、manifest 对齐、strict 校验）。未通过不得写入 latest/release。
+2) 证据与真实性：抽查 `sources.evidence` 与外部 lookup（handle→id/粉丝数/状态/活跃度），偏差或缺证据即退回整批；记录违规人。
+3) 评分与 manifest：确认 manifest 的 `score_version/score_formula/score_note` 与实际模型一致，count/sha 与文件一致；不符即拒绝发布。
+4) 入口与旁路：仅允许“prefetched JSONL + influx-harvest 过滤”流程入库；发现手工编辑/旁路文件或本机直连 MCP 尝试，立即回滚、归档、记录违规。
+5) 发布同步：只有在质量闸通过后，才允许同步 data/release；发布内容必须与真相源哈希一致。
+6) 审计与留痕：为每批生成 QA 记录（包含输入文件、pipeline_guard 输出、抽检结果、决定），便于追责与回滚。
 
-Standing work
-- 每批审核：确认已跑 pipeline_guard，strict 通过后才覆盖 data/latest 与 data/release；未通过立即退回。
-- 计数/一致性：核对 manifest count/sha 与文件一致，dup_count=0；不符不得发布。
-- 评分检查：确认 manifest 记录的评分版本与实际模型一致；缺失时阻止发布并要求补齐。
-- 入口检查：拒绝非官方入口产物；旁路文件移入 archive，行数不计。
-- 审计记录：在 `.cccc/work/foreman/<timestamp>/` 留 QA 记录（批次路径、pipeline_guard、strict 结果、发布同步）。
+Working posture
+- 保持流程稳定，不写入进度数字；一旦发现规则无法覆盖的新型造假，立刻升级 pipeline_guard 并通知全体。
+- 进度只按“合规唯一作者数”计算；任何以行数冲量、填充占位的行为视为造假。
 
-Useful references
-- PROJECT.md（战略概览；真相源 data/latest/latest.jsonl，严格校验）
+References
+- PROJECT.md（流程与原则）
 - data/latest/latest.jsonl + manifest.json（真相源）
-- data/release/（面向发布的文件）
+- data/release/（发布版）

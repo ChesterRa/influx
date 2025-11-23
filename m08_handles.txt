@@ -1,0 +1,10 @@
+karpathy
+ylecun
+AndrewYNg
+fchollet
+hardmaru
+JeffDean
+sama
+demishassabis
+goodfellow_ian
+gruber
