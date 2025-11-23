@@ -11,15 +11,13 @@ __pycache__/
 
 # State and data (keep in .gitignore, publish via Releases)
 state/
-data/latest/*.jsonl.gz
-data/latest/archive_*/
-data/latest/latest_backup*
-data/latest/latest_with_*
-data/latest/latest_temp*
-data/snapshots/
 archive/
 temp_work/
 *.log
+# keep only release data in repo
+data/**
+!data/release/
+!data/release/**
 # Reports / audit outputs
 docs/qa_reports/
 docs/audit_trail/evidence/
