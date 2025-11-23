@@ -23,9 +23,9 @@
 - 硬防线：handle 和 id 全局唯一；占位 ID、粉丝“000”、mock/test 前缀、非数字 ID 一律拒绝；strict schema 校验。
 
 ## 下载
-- 最新数据：`data/release/influx-latest.jsonl`（或压缩版 `.gz`）
-- Manifest：`data/release/manifest.json`
-> 若发布到 GitHub，可直接在仓库/Release 资产中获取上述文件。
+- 最新数据：[`data/release/influx-latest.jsonl`](data/release/influx-latest.jsonl)
+- 压缩版：[`data/release/influx-latest.jsonl.gz`](data/release/influx-latest.jsonl.gz)
+- Manifest：[`data/release/manifest.json`](data/release/manifest.json)
 
 ## 快速使用
 ```bash
