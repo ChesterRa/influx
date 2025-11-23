@@ -9,20 +9,39 @@ __pycache__/
 *.pyd
 .Python
 
-# State and data (keep in .gitignore, publish via Releases)
+# State and data (only release tracked)
 state/
-data/latest/*.jsonl.gz
-data/latest/archive_*/
-data/latest/latest_backup*
-data/latest/latest_with_*
-data/latest/latest_temp*
-data/snapshots/
 archive/
 temp_work/
 *.log
+data/**
+!data/release/
+!data/release/**
+
+# Docs / audit / QA (not tracked)
+docs/**
+
+# Lists and seeds (not tracked)
+lists/**
+
+# Processed/working batches (not tracked)
+processed_batches/**
+data/batches/**
+data/uncompressed/**
+data/test/**
+data/samples/**
+data/latest/**
+data/prefetched.sample.jsonl
+
+# Scripts/tools: track only minimal publish set
+scripts/**
+!scripts/pipeline_guard.sh
+tools/**
+!tools/influx-harvest
+
 # Reports / audit outputs
 docs/qa_reports/
-docs/audit_trail/evidence/
+docs/audit_trail/
 
 # IDE
 .vscode/
