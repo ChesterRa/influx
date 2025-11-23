@@ -39,6 +39,10 @@ scripts/**
 tools/**
 !tools/influx-harvest
 
+# Schema extras (not tracked)
+schema/state_db.sql
+schema/schema.md
+
 # Reports / audit outputs
 docs/qa_reports/
 docs/audit_trail/
