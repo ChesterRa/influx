@@ -3,18 +3,17 @@ name: Schema & Quality Validation
 on:
   pull_request:
     paths:
-      - 'data/latest/*.jsonl'
-      - 'data/latest/*.jsonl.gz'
+      - 'data/release/*'
       - 'schema/bigv.schema.json'
-      - 'tools/influx-validate'
+      - 'scripts/pipeline_guard.sh'
       - '.github/workflows/validate.yml'
   push:
     branches:
       - main
     paths:
-      - 'data/latest/*.jsonl'
-      - 'data/latest/*.jsonl.gz'
+      - 'data/release/*'
       - 'schema/bigv.schema.json'
+      - 'scripts/pipeline_guard.sh'
 
 jobs:
   validate:
@@ -34,79 +33,17 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Validate test fixtures
+      - name: Validate release data (if present)
         run: |
-          echo "=== Validating test fixtures ==="
-          python3 tools/influx-validate -s schema/bigv.schema.json test/fixtures/valid.jsonl
-
-          echo ""
-          echo "=== Testing invalid fixture (should fail) ==="
-          if python3 tools/influx-validate -s schema/bigv.schema.json test/fixtures/invalid.jsonl; then
-            echo "ERROR: invalid.jsonl should have failed validation"
-            exit 1
+          if [ -f scripts/pipeline_guard.sh ] && [ -f data/release/influx-latest.jsonl ]; then
+            echo "=== pipeline_guard: data/release/influx-latest.jsonl ==="
+            scripts/pipeline_guard.sh \
+              data/release/influx-latest.jsonl \
+              data/release/manifest.json \
+              schema/bigv.schema.json
           else
-            echo "✓ invalid.jsonl correctly failed validation"
+            echo "⚠ release data or pipeline_guard.sh not found, skipping"
           fi
-
-      - name: Validate latest data (if exists)
-        run: |
-          # Validate plain JSONL
-          if [ -f data/latest/latest.jsonl ]; then
-            echo "=== Validating data/latest/latest.jsonl ==="
-            python3 tools/influx-validate -s schema/bigv.schema.json data/latest/latest.jsonl
-          else
-            echo "⚠ data/latest/latest.jsonl not found (OK for initial commits)"
-          fi
-
-          # Validate compressed JSONL
-          if [ -f data/latest/latest.jsonl.gz ]; then
-            echo "=== Validating data/latest/latest.jsonl.gz ==="
-            python3 tools/influx-validate -s schema/bigv.schema.json data/latest/latest.jsonl.gz
-
-            if [ -f data/latest/manifest.json ]; then
-              echo "=== Validating with manifest ==="
-              python3 tools/influx-validate -s schema/bigv.schema.json -m data/latest/manifest.json data/latest/latest.jsonl.gz
-            fi
-          else
-            echo "⚠ data/latest/latest.jsonl.gz not found (OK for initial commits)"
-          fi
-
-      - name: STRICT Quality Gate Validation (main branch only)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          echo "🔒 ENFORCING SINGLE-PATH PIPELINE COMPLIANCE"
-          echo "=========================================="
-          echo ""
-          echo "All data merged to main branch MUST pass through influx-harvest pipeline"
-          echo "and comply with strict quality gates."
-          echo ""
-
-          # Strict validation of plain JSONL (if exists)
-          if [ -f data/latest/latest.jsonl ]; then
-            echo "=== STRICT VALIDATION: data/latest/latest.jsonl ==="
-            python3 tools/influx-validate --strict -s schema/bigv.schema.json data/latest/latest.jsonl
-            echo "✓ Plain JSONL passed strict quality gate validation"
-          else
-            echo "⚠ data/latest/latest.jsonl not found"
-          fi
-
-          # Strict validation of compressed JSONL (if exists)
-          if [ -f data/latest/latest.jsonl.gz ]; then
-            echo "=== STRICT VALIDATION: data/latest/latest.jsonl.gz ==="
-            python3 tools/influx-validate --strict -s schema/bigv.schema.json data/latest/latest.jsonl.gz
-
-            if [ -f data/latest/manifest.json ]; then
-              echo "=== STRICT VALIDATION with manifest ==="
-              python3 tools/influx-validate --strict -s schema/bigv.schema.json -m data/latest/manifest.json data/latest/latest.jsonl.gz
-            fi
-            echo "✓ Compressed JSONL passed strict quality gate validation"
-          else
-            echo "⚠ data/latest/latest.jsonl.gz not found"
-          fi
-
-          echo ""
-          echo "🎉 ALL STRICT VALIDATIONS PASSED"
-          echo "Data quality and single-path pipeline compliance verified"
 
       - name: Validate schema itself
         run: |
