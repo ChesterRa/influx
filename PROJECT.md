@@ -41,6 +41,11 @@
 - **PEER（执行）**：采集、清洗、跑 pipeline_guard、提交差分与证据、同步 release。
 - **项目负责人**：审核差分与证据、抽检质量、维护 schema/脚本、决策许可/发布节奏。
 
+## 技术保障措施
+- **Git Pre-commit Hook**: 自动阻止直接修改 `data/release/` 文件，强制使用 `./scripts/merge_batch.sh` 工作流
+- **强制执行**: 违反时提供明确错误信息和正确操作指引
+- **合规检查**: 确保 PROJECT.md 原则 6（发布同步）的技术层面强制执行
+
 ## Schema 设计 (v1.0.0 摘要)
 关键字段：`id`（author_id）、`handle`、`name`、`verified`、`followers_count`、`is_org`、`is_official`、`lang_primary`、`topic_tags`、`metrics_30d`、`meta`（score/last_refresh_at/sources/provenance_hash）。
 完整 schema 见 `schema/bigv.schema.json`。
