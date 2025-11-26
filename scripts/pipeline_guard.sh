@@ -51,6 +51,16 @@ if fake_ids:
     print(f"ERROR: detected placeholder/non-numeric ids (prefix {PLACEHOLDER_PREFIX}), count={len(fake_ids)}; aborting", file=sys.stderr)
     sys.exit(1)
 
+# Twitter ID length validation (64-bit integer max 19 digits)
+long_ids = []
+for item in data:
+    user_id = str(item.get('id', ''))
+    if user_id and len(user_id) > 19:
+        long_ids.append((item.get('handle', 'unknown'), user_id, len(user_id)))
+if long_ids:
+    print(f"ERROR: detected Twitter IDs exceeding 64-bit integer limit (max 19 digits), count={len(long_ids)}, sample={long_ids[:5]}", file=sys.stderr)
+    sys.exit(1)
+
 # Mock handles
 mock_handles = [h for h in handles if h and h.lower().startswith(MOCK_PREFIXES)]
 if mock_handles:
@@ -76,6 +86,16 @@ for item in data:
         sequential_followers.append((item.get('handle'), item.get('followers_count')))
 if sequential_followers:
     print(f"ERROR: sequential placeholder followers_count detected (123456, 234567, etc.), count={len(sequential_followers)}, sample={sequential_followers[:5]}", file=sys.stderr)
+    sys.exit(1)
+
+# Placeholder URL detection in profile field
+placeholder_urls = []
+for item in data:
+    url = item.get('url', '')
+    if url and ('placeholder' in url.lower() or 't.co/placeholder' in url):
+        placeholder_urls.append((item.get('handle'), url))
+if placeholder_urls:
+    print(f"ERROR: placeholder URLs detected in profile field, count={len(placeholder_urls)}, sample={placeholder_urls[:5]}", file=sys.stderr)
     sys.exit(1)
 
 # Evidence required (sources.evidence + fetched_at)
@@ -106,7 +126,7 @@ ms = manifest.get('sha256')
 if ms and ms != sha:
     print(f"ERROR: manifest sha256 mismatch {ms} != {sha}", file=sys.stderr)
     sys.exit(1)
-print(f"OK: dup_handles=0, dup_ids=0, placeholder_ids=0, mock_handles=0, evidence_ok, count={len(data)}, sha256 matches manifest {sha}")
+print(f"OK: dup_handles=0, dup_ids=0, placeholder_ids=0, mock_handles=0, long_ids=0, placeholder_urls=0, evidence_ok, count={len(data)}, sha256 matches manifest {sha}")
 PY
 
 # Strict validation
