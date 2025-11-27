@@ -98,6 +98,15 @@ if placeholder_urls:
     print(f"ERROR: placeholder URLs detected in profile field, count={len(placeholder_urls)}, sample={placeholder_urls[:5]}", file=sys.stderr)
     sys.exit(1)
 
+# Schema drift detection - metrics_30d is deprecated in favor of ext.activity_metrics
+schema_drift = []
+for item in data:
+    if 'metrics_30d' in item:
+        schema_drift.append(item.get('handle'))
+if schema_drift:
+    print(f"ERROR: schema drift detected - deprecated 'metrics_30d' field found (use 'ext.activity_metrics' instead), count={len(schema_drift)}, sample={schema_drift[:5]}", file=sys.stderr)
+    sys.exit(1)
+
 # Evidence required (sources.evidence + fetched_at)
 missing_evidence = []
 for item in data:
@@ -116,6 +125,16 @@ if missing_evidence:
     print(f"ERROR: sources.evidence/fetched_at missing for {len(missing_evidence)} records, sample={missing_evidence[:5]}", file=sys.stderr)
     sys.exit(1)
 
+# Provenance hash validation - prevent empty provenance_hash
+empty_provenance = []
+for item in data:
+    prov_hash = item.get('provenance_hash', '')
+    if not prov_hash or prov_hash == '':
+        empty_provenance.append(item.get('handle'))
+if empty_provenance:
+    print(f"ERROR: empty provenance_hash detected (data corruption risk), count={len(empty_provenance)}, sample={empty_provenance[:5]}", file=sys.stderr)
+    sys.exit(1)
+
 sha = hashlib.sha256(input_path.read_bytes()).hexdigest()
 manifest = json.loads(man_path.read_text())
 mc = manifest.get('count')
@@ -126,7 +145,7 @@ ms = manifest.get('sha256')
 if ms and ms != sha:
     print(f"ERROR: manifest sha256 mismatch {ms} != {sha}", file=sys.stderr)
     sys.exit(1)
-print(f"OK: dup_handles=0, dup_ids=0, placeholder_ids=0, mock_handles=0, long_ids=0, placeholder_urls=0, evidence_ok, count={len(data)}, sha256 matches manifest {sha}")
+print(f"OK: dup_handles=0, dup_ids=0, placeholder_ids=0, mock_handles=0, long_ids=0, placeholder_urls=0, provenance_hash_ok, evidence_ok, count={len(data)}, sha256 matches manifest {sha}")
 PY
 
 # Strict validation

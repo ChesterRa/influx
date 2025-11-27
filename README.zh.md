@@ -6,7 +6,7 @@
 
 ## 这是什么
 - 一份严格过滤的热门推主名单（个人账号，非品牌/官方），目标规模 5k–10k。
-- 当前发布：`data/release/influx-latest.jsonl`（302 条）及 `manifest.json`（含 count/sha256/schema_version/timestamp/score_version）。
+- 当前发布：`data/release/influx-latest.jsonl`（365 条）及 `manifest.json`（含 count/sha256/schema_version/timestamp/score_version）。
 - 已包含的开源最小集：发布数据、`scripts/pipeline_guard.sh`、`schema/bigv.schema.json`、规则（`lists/rules/brand_heuristics.yml`、`lists/rules/risk_terms.yml`）、示例 `data/prefetched.sample.jsonl`（本地过滤演示用）。
 - 面向使用者直接消费数据，无需运行生产流水线。
 

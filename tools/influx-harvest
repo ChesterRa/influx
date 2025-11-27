@@ -334,10 +334,25 @@ def transform_to_schema(user: Dict, method: str, category: str = '', brand_rules
     # For now, capture current timestamp for recency calculations
     activity_metrics['last_captured_at'] = now
 
-    # Determine if entry threshold passed
+    # Determine if entry threshold passed - Dual-track system
     followers_count = public_metrics.get('followers_count', 0)
-    verified_boost_threshold = 30000 if verified != 'none' else 50000
-    entry_threshold_passed = followers_count >= verified_boost_threshold
+    
+    # Track A (Elite): verified OR ≥50k followers
+    # Track B (Domain Expert): 30-50k followers WITH domain evidence
+    if verified != 'none':
+        verified_boost_threshold = 30000  # Lower threshold for verified accounts
+    else:
+        verified_boost_threshold = 50000  # Standard threshold for unverified
+    
+    # Entry threshold logic for dual-track system
+    if followers_count >= 50000:
+        # Track A: Elite creators pass automatically
+        entry_threshold_passed = True
+    elif followers_count >= 30000 and verified != 'none':
+        # Track B: Verified domain experts with 30k+ followers
+        entry_threshold_passed = True
+    else:
+        entry_threshold_passed = False
     
     # Calculate quality score (M0 proxy)
     import math

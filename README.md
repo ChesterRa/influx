@@ -8,7 +8,7 @@ High-signal X/Twitter influencer list — functional demo built on the open-sour
 
 ## What this is
 - A rigorously filtered list of active, individual X.com authors (no brands/officials), aiming for 5k–10k high-value entries.
-- Current release (302 records):  
+- Current release (365 records):  
   - JSONL: [`data/release/influx-latest.jsonl`](data/release/influx-latest.jsonl)  
   - Gzipped: [`data/release/influx-latest.jsonl.gz`](data/release/influx-latest.jsonl.gz)  
   - Manifest: [`data/release/manifest.json`](data/release/manifest.json)
