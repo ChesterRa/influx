@@ -135,6 +135,32 @@ if empty_provenance:
     print(f"ERROR: empty provenance_hash detected (data corruption risk), count={len(empty_provenance)}, sample={empty_provenance[:5]}", file=sys.stderr)
     sys.exit(1)
 
+# Domain distribution validation - enforce 25% hard limits
+domain_counts = Counter()
+for item in data:
+    topic_tags = item.get('topic_tags', [])
+    if topic_tags:
+        domain = topic_tags[0]  # Use primary topic tag as domain
+    else:
+        domain = 'unknown'
+    domain_counts[domain] += 1
+
+total = len(data)
+general_count = domain_counts.get('general', 0)
+general_pct = (general_count / total) * 100 if total > 0 else 0
+
+if general_pct > 25.0:
+    print(f"ERROR: General domain exceeds 25% hard limit: {general_pct:.1f}% ({general_count}/{total})", file=sys.stderr)
+    sys.exit(1)
+
+# Log domain distribution for monitoring
+cybersecurity_pct = (domain_counts.get('cybersecurity', 0)/total)*100 if total > 0 else 0
+health_tech_pct = (domain_counts.get('health-tech', 0)/total)*100 if total > 0 else 0
+climate_tech_pct = (domain_counts.get('climate-tech', 0)/total)*100 if total > 0 else 0
+fintech_pct = (domain_counts.get('fintech', 0)/total)*100 if total > 0 else 0
+
+print(f"INFO: Domain distribution - General: {general_pct:.1f}%, Cybersecurity: {cybersecurity_pct:.1f}%, Health-tech: {health_tech_pct:.1f}%, Climate-tech: {climate_tech_pct:.1f}%, Fintech: {fintech_pct:.1f}%")
+
 sha = hashlib.sha256(input_path.read_bytes()).hexdigest()
 manifest = json.loads(man_path.read_text())
 mc = manifest.get('count')
@@ -145,7 +171,7 @@ ms = manifest.get('sha256')
 if ms and ms != sha:
     print(f"ERROR: manifest sha256 mismatch {ms} != {sha}", file=sys.stderr)
     sys.exit(1)
-print(f"OK: dup_handles=0, dup_ids=0, placeholder_ids=0, mock_handles=0, long_ids=0, placeholder_urls=0, provenance_hash_ok, evidence_ok, count={len(data)}, sha256 matches manifest {sha}")
+print(f"OK: dup_handles=0, dup_ids=0, placeholder_ids=0, mock_handles=0, long_ids=0, placeholder_urls=0, provenance_hash_ok, evidence_ok, domain_limits_ok, count={len(data)}, sha256 matches manifest {sha}")
 PY
 
 # Strict validation

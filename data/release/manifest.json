@@ -1,11 +1,11 @@
 {
-  "sha256": "d7835b4071898375ea48adf2b5bb4602745addf1ebe0f51083cdf71e7eb0af57",
-  "count": 404,
-  "timestamp": "2025-11-27T23:21:56.207884Z",
+  "sha256": "e8934d93888f4e03d6b21bba0650a63cc5ecdb614eaa52477c6fb1807f885f83",
+  "count": 355,
+  "timestamp": "2025-11-28T02:46:44Z",
   "schema_version": "1.0.0",
   "score_version": "1.0.0",
   "score_formula": "followers_count * 1.0 + verified_bonus * 0.5",
-  "score_note": "Added 7 cybersecurity handles: SwiftOnSecurity, briankrebs, cyber, nytimestech, mikko, thegrugq, KimZetter",
+  "score_note": "Batch merge in progress: climate_tech_batch_3.jsonl",
   "source_file": "data/latest/latest.jsonl",
   "sort_order": "followers_count:desc"
 }
